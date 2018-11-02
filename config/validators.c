@@ -11,15 +11,19 @@ char* getCommand(){
 		command[i-1]='\0';
 		return command;
 }
-int isReserverWord(char* word){
-
+int isReserverdWord(char* word, char** reserved){
+	return getWordIndex(word, reserved);
 }
 int validate(char* command){
 	char* first_word = getFirstWord(command);
-	return 1;
+	if (isReserverdWord(first_word, reserved)!=-1)
+	{
+		return 1;
+	}
+	return 0;
 }
 void execute(char* command){
-	validate(command);
+	printf("%i\n", validate(command)); 
 }
 void run(){
 	while(1){
