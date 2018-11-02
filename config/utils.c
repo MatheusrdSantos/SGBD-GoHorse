@@ -11,7 +11,7 @@ char* getFirstWord(char* command){
 }
 
 int getWordIndex(char* word, char** array){
-	for (int i = 0; i < 17; ++i)
+	for (int i = 0; i < RESERVED_WORDS_SIZE; ++i)
 	{
 		if (strcmp(word, array[i])==0)
 		{

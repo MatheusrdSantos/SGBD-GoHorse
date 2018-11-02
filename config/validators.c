@@ -16,14 +16,36 @@ int isReserverdWord(char* word, char** reserved){
 }
 int validate(char* command){
 	char* first_word = getFirstWord(command);
-	if (isReserverdWord(first_word, reserved)!=-1)
-	{
-		return 1;
-	}
-	return 0;
+	return isReserverdWord(first_word, reserved_words);
+	
 }
 void execute(char* command){
-	printf("%i\n", validate(command)); 
+	int command_index = validate(command);
+	if (command_index == -1)
+	{
+	 	printf("Comando \"%s\" não reconhecido!\n", getFirstWord(command));
+	}else{
+		// após identificação do comando executa-o
+		if (command_index==0)
+		{
+			//printHelp();
+		}else if(command_index == 1){
+			//exec_create(command);
+		}else if(command_index == 2){
+			//exec_delete(command);
+		}else if(command_index == 3){
+			//exec_select(command);
+		}else if(command_index == 4){
+			//exec_set(command);
+		}else if(command_index == 5){
+			//exec_list(command);
+		}else if(command_index == 6){
+			//exec_insert(command);
+		}else if(command_index == 7){
+			//exec_add(command);
+		}
+		printf("Executando operação \"%s\"\n", reserved_words[command_index]);
+	}
 }
 void run(){
 	while(1){
