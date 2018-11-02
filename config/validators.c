@@ -1,7 +1,8 @@
 char* getCommand(){
-	char*command = malloc(sizeof(char));
+	// liberar espaço na memória após executar o comando free(command)
+	char* command = (char*) malloc(sizeof(char));
 
-		int i=0;
+		int i = 0;
 		while(command[i-1]!='\n'){
 			command=realloc(command, (sizeof(char)*i+sizeof(char)));
 			command[i]=getchar();
@@ -10,6 +11,16 @@ char* getCommand(){
 		command[i-1]='\0';
 		return command;
 }
+int isReserverWord(char* word){
+
+}
+int validate(char* command){
+	char* first_word = getFirstWord(command);
+	return 1;
+}
+void execute(char* command){
+	validate(command);
+}
 void run(){
 	while(1){
 		char*command=getCommand();
@@ -17,7 +28,6 @@ void run(){
 			bye();
 			break;
 		}
-		printf("%s\n", command);
-		//validate(v);
+		execute(command);
 	}
 }
