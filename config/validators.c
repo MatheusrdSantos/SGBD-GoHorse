@@ -38,7 +38,7 @@ void execute(char* command){
 		}else if(command_index == 4){
 			//exec_set(command);
 		}else if(command_index == 5){
-			//exec_list(command);
+			exec_list(command);
 		}else if(command_index == 6){
 			//exec_insert(command);
 		}else if(command_index == 7){
