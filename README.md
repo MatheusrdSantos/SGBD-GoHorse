@@ -3,6 +3,6 @@ Projeto final para a  disciplina de ITP (Introdução às Técnicas de Programa�
 
 Para executar digite o comando abaixo:
 
-('-std=99' é necessário para algumas versões do gcc)
+('-std=c99' é necessário para algumas versões do gcc)
 
 gcc main.c -o exec -std=c99
