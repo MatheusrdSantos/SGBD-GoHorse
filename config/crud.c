@@ -1,3 +1,11 @@
+char* exec_create(char* command){
+	// se o comando tem apenas duas palavras
+	// executa a criação de um novo banco
+	if (countWords(command, ' ')==2){
+		char* db_name = getWordFromIndex(command, ' ', 2);
+		int result = mkdir(concat("storage/", db_name), 0777);
+	}
+}
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
 		green();

@@ -30,7 +30,7 @@ void execute(char* command){
 		{
 			//printHelp();
 		}else if(command_index == 1){
-			//exec_create(command);
+			exec_create(command);
 		}else if(command_index == 2){
 			//exec_delete(command);
 		}else if(command_index == 3){
