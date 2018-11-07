@@ -5,6 +5,8 @@ char* exec_create(char* command){
 		char* db_name = getWordFromIndex(command, ' ', 2);
 		int result = mkdir(concat("storage/", db_name), 0777);
 	}
+
+	//checar se banco já existe
 }
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
@@ -30,6 +32,7 @@ char* exec_list(char* command){
 		printf("Você solicitou listar os bancos.\n");
 		resetColor();
 
+		// colocar dentro de uma função no utils.h: getDatabasesName()
 		DIR *dir;
 		struct dirent *ent;
 		if ((dir = opendir ("storage/")) != NULL) {
@@ -42,6 +45,7 @@ char* exec_list(char* command){
 	  		perror ("Não há databases criados.");
 	  		return 0;
 		}
+		// fim
 
 	}else{
 		red();
@@ -49,4 +53,25 @@ char* exec_list(char* command){
 		resetColor();
 
 	}
+}
+
+int exec_set(char* command){
+	FILE *default_db;
+	char* db_name = getWordFromIndex(command, ' ', 2);
+	int exist = databaseExist(db_name);
+	default_db = fopen("storage/default_db.csv", "w+");
+	if (default_db == NULL)
+	{
+		red();
+	    printf("Error opening file!\n");
+	    resetColor();
+	    return 0;
+	}
+	fprintf(default_db, "%s", db_name);
+	green();
+	printf("Banco \"%s\" escolhido com sucesso!\n", db_name);
+	resetColor();
+	fclose(default_db);
+	return 1;
+
 }

@@ -28,7 +28,7 @@ void execute(char* command){
 		// após identificação do comando executa-o
 		if (command_index==0)
 		{
-			//printHelp();
+			printHelp();
 		}else if(command_index == 1){
 			exec_create(command);
 		}else if(command_index == 2){
@@ -36,7 +36,7 @@ void execute(char* command){
 		}else if(command_index == 3){
 			//exec_select(command);
 		}else if(command_index == 4){
-			//exec_set(command);
+			exec_set(command);
 		}else if(command_index == 5){
 			exec_list(command);
 		}else if(command_index == 6){

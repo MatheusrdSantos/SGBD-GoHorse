@@ -81,3 +81,10 @@ char* concat(char *string1, char *string2){
     strcat(result, string2);
     return result;
 }
+
+// verifica se o db_name é o nome de um banco existente
+int databaseExist(char* db_name){
+	//getDatabasesName()
+	// verifica se db_name está dentro do vetor de string
+	// retorna 1 em caso positivo e 0 em caso negativo
+}
