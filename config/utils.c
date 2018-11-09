@@ -103,7 +103,7 @@ char** getTablesName(char* db_name){
 			tables[i] = malloc(strlen(ent->d_name) * sizeof(char)); 
 			tables[i] = ent->d_name;
 			i++;
-			tables = realloc(tables, sizeof(char)*(i+1));
+			tables = realloc(tables, sizeof(char*)*(i+1));
 		}
 
 		return tables;
@@ -117,6 +117,35 @@ char** getTablesName(char* db_name){
 		closedir (dir);
 	} else {
 	  	perror ("Não há tabelas criadas.");
+	  	return 0;
+	}
+}
+
+char** getDatabasesName(){
+	char** databases = malloc(sizeof(char*));
+	int i = 0;
+
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir ("storage/")) != NULL) {
+		while ((ent = readdir (dir)) != NULL) {
+			databases[i] = malloc(strlen(ent->d_name) * sizeof(char)); 
+			databases[i] = ent->d_name;
+			i++;
+			databases = realloc(databases, sizeof(char*)*(i+1));
+		}
+
+		return databases;
+
+		for (int j = 0; j <= i; j++)
+		{
+			free(databases[j]);
+		}
+		free(databases);
+
+		closedir (dir);
+	} else {
+	  	perror ("Não há bancos criados.");
 	  	return 0;
 	}
 }

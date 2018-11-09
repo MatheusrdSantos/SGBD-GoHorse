@@ -26,20 +26,12 @@ char* exec_list(char* command){
 		printf("Você solicitou listar os bancos.\n");
 		resetColor();
 
-		// colocar dentro de uma função no utils.h: getDatabasesName()
-		DIR *dir;
-		struct dirent *ent;
-		if ((dir = opendir ("storage/")) != NULL) {
-		//printa todos os arquivos e pastas dentro do diretório
-			while ((ent = readdir (dir)) != NULL) {
-				printf ("%s\n", ent->d_name);
-			}
-			closedir (dir);
-		} else {
-	  		perror ("Não há databases criados.");
-	  		return 0;
-		}
-		// fim
+		char** databases = getDatabasesName();
+
+		//printf("%s\n", databases[0]);
+		//printf("%s\n", databases[1]);
+		//printf("%s\n", databases[2]);
+		printf("%s\n", databases[3]);
 
 	}else{
 		red();
