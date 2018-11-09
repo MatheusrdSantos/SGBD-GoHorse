@@ -18,7 +18,11 @@ char* exec_list(char* command){
 
 		int i = 2;
 		while(tables[i] != NULL){
-			printf("%s\n", tables[i]);
+			for (int j = 0; j < strlen(tables[i])-4; j++)
+			{
+				printf("%c", tables[i][j]);
+			}
+			printf("\n");
 			i++;
 		}
 
