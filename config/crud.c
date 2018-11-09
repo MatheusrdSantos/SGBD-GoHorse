@@ -14,18 +14,12 @@ char* exec_list(char* command){
 		printf("Você solicitou listar as tabelas.\n");
 		resetColor();
 
-		DIR *dir;
-		struct dirent *ent;
-		if ((dir = opendir ("storage/db1/")) != NULL) {
-		//printa todos os arquivos e pastas dentro do diretório
-			while ((ent = readdir (dir)) != NULL) {
-				printf ("%s\n", ent->d_name);
-			}
-			closedir (dir);
-		} else {
-		  	perror ("Não há tabelas criadas.");
-		  	return 0;
-		}
+		char** tables = getTablesName("db1");
+
+		//printf("%s\n", tables[0]);
+		//printf("%s\n", tables[1]);
+		printf("%s\n", tables[2]);
+
 
 	}else if(strcmp(command, "list databases") == 0){
 		green();

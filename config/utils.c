@@ -88,3 +88,35 @@ int databaseExist(char* db_name){
 	// verifica se db_name está dentro do vetor de string
 	// retorna 1 em caso positivo e 0 em caso negativo
 }
+
+char** getTablesName(char* db_name){
+	char** tables = malloc(sizeof(char*));
+	int i = 0;
+
+	char* firstparturl = concat("storage/", db_name);
+	char* finalurl = concat(firstparturl, "/");
+
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir(finalurl)) != NULL) {
+		while ((ent = readdir (dir)) != NULL) {
+			tables[i] = malloc(strlen(ent->d_name) * sizeof(char)); 
+			tables[i] = ent->d_name;
+			i++;
+			tables = realloc(tables, sizeof(char)*(i+1));
+		}
+
+		return tables;
+
+		for (int j = 0; j <= i; j++)
+		{
+			free(tables[j]);
+		}
+		free(tables);
+
+		closedir (dir);
+	} else {
+	  	perror ("Não há tabelas criadas.");
+	  	return 0;
+	}
+}

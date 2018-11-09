@@ -4,4 +4,5 @@ int countWords(char* command, char separator);
 char* getWordFromIndex(char* command, char separator, int index);
 char* concat(char *string1, char *string2);
 int databaseExist(char* db_name);
+char** getTablesName(char* db_name);
 #include "utils.c"
