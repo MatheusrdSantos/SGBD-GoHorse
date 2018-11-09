@@ -106,6 +106,8 @@ char** getTablesName(char* db_name){
 			tables = realloc(tables, sizeof(char*)*(i+1));
 		}
 
+		tables[i] = NULL;
+
 		return tables;
 
 		for (int j = 0; j <= i; j++)
@@ -134,6 +136,8 @@ char** getDatabasesName(){
 			i++;
 			databases = realloc(databases, sizeof(char*)*(i+1));
 		}
+
+		databases[i] = NULL;
 
 		return databases;
 

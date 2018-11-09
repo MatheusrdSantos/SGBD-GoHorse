@@ -16,10 +16,11 @@ char* exec_list(char* command){
 
 		char** tables = getTablesName("db1");
 
-		//printf("%s\n", tables[0]);
-		//printf("%s\n", tables[1]);
-		printf("%s\n", tables[2]);
-
+		int i = 2;
+		while(tables[i] != NULL){
+			printf("%s\n", tables[i]);
+			i++;
+		}
 
 	}else if(strcmp(command, "list databases") == 0){
 		green();
@@ -28,10 +29,11 @@ char* exec_list(char* command){
 
 		char** databases = getDatabasesName();
 
-		//printf("%s\n", databases[0]);
-		//printf("%s\n", databases[1]);
-		//printf("%s\n", databases[2]);
-		printf("%s\n", databases[3]);
+		int i = 3;
+		while(databases[i] != NULL){
+			printf("%s\n", databases[i]);
+			i++;
+		}
 
 	}else{
 		red();
