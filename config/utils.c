@@ -170,6 +170,34 @@ char* getDefaultDatabaseName(){
 	return db_name;
 }
 
+/*
+* remove todos os caracteres encontrado na string
+*/
+char* removeChar(char* old_string, char symbol){
+	char* new_string = malloc(sizeof(char));
+	int size = strlen(old_string);
+	for (int i = 0; i < size; ++i)
+	{
+		if (old_string[i]==symbol)
+		{
+			continue;  		
+	 	}
+	 	new_string = realloc(new_string, sizeof(char)*(i+1));
+	 	new_string[i] = old_string[i];
+		if (i==size-1)
+		{
+			new_string = realloc(new_string, sizeof(char)*(i+2));
+			new_string[i+1] = '\0';
+		}
+	}
+	return new_string;
+}
+
+int countColumns(char* columns_name_command){
+	// validar a sintaxe
+	// e formatar a srting para um formato divisivel por ','
+	return 1;
+}
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
 	char* column_name = malloc(sizeof(char));
@@ -183,10 +211,10 @@ char* getTableHeader(char* columns_name_command){
 		* TODO: termina esse fluxo.
 		*/
 		// remover o último ')'
-		// removeChar(columns_name_command, ')')
+		removeChar(columns_name_command, ')');
 		
 		int n_columns = 0;
-		// n_columns = countColumns(columns_name_command)
+		n_columns = countColumns(columns_name_command);
 		for (int i = 1; i <= n_columns; ++i)
 		{
 			char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
