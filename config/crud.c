@@ -31,7 +31,10 @@ char* exec_create(char* command){
 }
 int createTable(char* table_name, char* columns_name_command){
 	//deve validar e retornar a string que será escrita como cabeçalho da tabela
-	getTableHeader(columns_name_command);
+	//getTableHeader(columns_name_command);
+	green();
+	printf("criando tabela \"%s\"\n", table_name);
+	resetColor();
 }
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){

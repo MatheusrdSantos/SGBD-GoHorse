@@ -171,5 +171,31 @@ char* getDefaultDatabaseName(){
 }
 
 char* getTableHeader(char* columns_name_command){
+	// int *id, varchar[255] name, float height, date birthday)
+	char* column_name = malloc(sizeof(char));
+	if (columns_name_command[strlen(columns_name_command)-1]!=')')
+	{
+		printf("sintaxe error\n");
+		return "error";
+	}else{
+
+		/*
+		* TODO: termina esse fluxo.
+		*/
+		// remover o último ')'
+		// removeChar(columns_name_command, ')')
+		
+		int n_columns = 0;
+		// n_columns = countColumns(columns_name_command)
+		for (int i = 1; i <= n_columns; ++i)
+		{
+			char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
+			// valida a declaração da coluna
+			// ex: int* id -> correto
+			// ex: sharr[10] nome -> errado pois sharr não é tipo primitivo 
+			// validateColumnDeclaration(column_declaration)
+			// depois concatena com column_name 
+		}
 	
+	}
 }
