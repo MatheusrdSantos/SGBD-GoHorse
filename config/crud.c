@@ -7,9 +7,31 @@ char* exec_create(char* command){
 		int result = mkdir(concat("storage/", db_name), 0777);
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
 		char* default_db = getDefaultDatabaseName();
+		char* table_name = getWordFromIndex(command, ' ', 3);
+		if (getWordIndex(getWordFromIndex(command, ' ', 4), reserved_words)==11)
+		{
+			char* columns_name = getWordFromIndex(command, '(', 2);
+			// se elas tem tamanho igual significa que a função acima não encontrou o char
+			// '(', ou seja, exixte um erro de sintaxe
+			if (strlen(columns_name) == strlen(command))
+			{
+				red();
+				printf("Está faltando um \"(\" após o comando \"columns\"!\n");
+				resetColor();
+			}else{
+				createTable(table_name, columns_name);
+			}
+		}else{
+			red();
+			printf("Comando inesperado: \"%s\"\n",  getWordFromIndex(command, ' ', 4));
+			resetColor();
+		}
 	}
-
-
+	return "ok";
+}
+int createTable(char* table_name, char* columns_name_command){
+	//deve validar e retornar a string que será escrita como cabeçalho da tabela
+	getTableHeader(columns_name_command);
 }
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){

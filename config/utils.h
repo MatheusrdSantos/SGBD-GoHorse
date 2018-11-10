@@ -7,4 +7,5 @@ int databaseExist(char* db_name);
 char** getTablesName(char* db_name);
 char** getDatabasesName();
 char* getDefaultDatabaseName();
+char* getTableHeader(char* columns_name_command);
 #include "utils.c"

@@ -169,3 +169,7 @@ char* getDefaultDatabaseName(){
 	fclose(default_db);
 	return db_name;
 }
+
+char* getTableHeader(char* columns_name_command){
+	
+}
