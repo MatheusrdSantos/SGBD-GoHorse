@@ -1,12 +1,15 @@
 char* exec_create(char* command){
 	// se o comando tem apenas duas palavras
 	// executa a criação de um novo banco
+	//checar se banco já existe
 	if (countWords(command, ' ')==2){
 		char* db_name = getWordFromIndex(command, ' ', 2);
 		int result = mkdir(concat("storage/", db_name), 0777);
+	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
+		char* default_db = getDefaultDatabaseName();
 	}
 
-	//checar se banco já existe
+
 }
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
@@ -14,7 +17,7 @@ char* exec_list(char* command){
 		printf("Você solicitou listar as tabelas.\n");
 		resetColor();
 
-		char** tables = getTablesName("db1");
+		char** tables = getTablesName(getDefaultDatabaseName());
 
 		int i = 2;
 		while(tables[i] != NULL){

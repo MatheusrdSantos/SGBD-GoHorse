@@ -153,3 +153,19 @@ char** getDatabasesName(){
 	  	return 0;
 	}
 }
+
+char* getDefaultDatabaseName(){
+	FILE *default_db;
+	char* db_name;
+	default_db = fopen("storage/default_db.csv", "r");
+	if (default_db == NULL)
+	{
+		red();
+	    printf("Error opening file!\n");
+	    resetColor();
+	    return 0;
+	}
+	fscanf(default_db, "%s", db_name);
+	fclose(default_db);
+	return db_name;
+}

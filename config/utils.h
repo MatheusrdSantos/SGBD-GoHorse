@@ -6,4 +6,5 @@ char* concat(char *string1, char *string2);
 int databaseExist(char* db_name);
 char** getTablesName(char* db_name);
 char** getDatabasesName();
+char* getDefaultDatabaseName();
 #include "utils.c"
