@@ -7,7 +7,7 @@ char* getWordFromIndex(char* command, char separator, int index){
 	int cont = 1;
 	int size = strlen(command);
 	char* word = (char*) malloc(sizeof(char));
-	for (int i = 1; i < size; ++i)
+	for (int i = 0; i < size; ++i)
 	{
 		if (cont == index)
 		{
@@ -175,21 +175,19 @@ char* getDefaultDatabaseName(){
 */
 char* removeChar(char* old_string, char symbol){
 	char* new_string = malloc(sizeof(char));
-	int size = strlen(old_string);
-	for (int i = 0; i < size; ++i)
+	int size = strlen(old_string), k=0;
+	for (int i = 0; i < size; ++i, ++k)
 	{
 		if (old_string[i]==symbol)
 		{
+			k--;
 			continue;  		
 	 	}
-	 	new_string = realloc(new_string, sizeof(char)*(i+1));
-	 	new_string[i] = old_string[i];
-		if (i==size-1)
-		{
-			new_string = realloc(new_string, sizeof(char)*(i+2));
-			new_string[i+1] = '\0';
-		}
+	 	new_string = realloc(new_string, sizeof(char)*(k+1));
+	 	new_string[k] = old_string[i];
 	}
+	new_string = realloc(new_string, sizeof(char)*(k+1));
+	new_string[k] = '\0';
 	return new_string;
 }
 char** split(char* text, char separator, int* size){
@@ -201,7 +199,8 @@ char** split(char* text, char separator, int* size){
 		if ((text[i]==separator && i!=0) || text[i] == '\0')
 		{
 			strings = malloc(sizeof(char*)*(cont+1));
-			for (int j = last_step, k = 0; j < i; ++j, ++k)
+			int k = 0;
+			for (int j = last_step; j < i; ++j, ++k)
 			{
 				if (k==0)
 				{
@@ -212,7 +211,7 @@ char** split(char* text, char separator, int* size){
 					strings[cont][k] = text[j];
 				}
 			}
-			strings[cont] = '\0';
+			strings[cont][k+1] = '\0';
 			last_step = i+1;
 			cont++;
 		}
@@ -225,8 +224,7 @@ int countColumns(char* columns_name_command){
 	// e formatar a srting para um formato divisivel por ','
 	int size=0;
 	split(columns_name_command,',', &size);
-	printf("%i\n", size);
-	return 1;
+	return size;
 }
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
@@ -241,13 +239,15 @@ char* getTableHeader(char* columns_name_command){
 		* TODO: termina esse fluxo.
 		*/
 		// remover o último ')'
-		removeChar(columns_name_command, ')');
+		columns_name_command = removeChar(columns_name_command, ')');
 		
 		int n_columns = 0;
 		n_columns = countColumns(columns_name_command);
 		for (int i = 1; i <= n_columns; ++i)
 		{
+			// falta remover os espaços e validar a sintaxe
 			char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
+			printf("%s\n", column_declaration);
 			// valida a declaração da coluna
 			// ex: int* id -> correto
 			// ex: sharr[10] nome -> errado pois sharr não é tipo primitivo 
