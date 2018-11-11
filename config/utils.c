@@ -64,6 +64,17 @@ char* getFirstWord(char* command){
 	return firstWord;
 }
 
+int valueIsInVector(char* word, char** array, int size){
+	for (int i = 0; i < size; ++i)
+	{
+		if (strcmp(word, array[i])==0)
+		{
+			return i+1;
+		}
+	}
+	return 0;
+}
+
 int getWordIndex(char* word, char** array){
 	for (int i = 0; i < RESERVED_WORDS_SIZE; ++i)
 	{
@@ -190,6 +201,27 @@ char* removeChar(char* old_string, char symbol){
 	new_string[k] = '\0';
 	return new_string;
 }
+/*
+* remove o char de uma posição
+*/
+char* removeCharFromPosition(char* old_string, int position){
+	char* new_string = malloc(sizeof(char));
+	int size = strlen(old_string), k=0;
+	for (int i = 0; i < size; ++i, ++k)
+	{
+		if (i==position)
+		{
+			k--;
+			continue;  		
+	 	}
+	 	new_string = realloc(new_string, sizeof(char)*(k+1));
+	 	new_string[k] = old_string[i];
+	}
+	new_string = realloc(new_string, sizeof(char)*(k+1));
+	new_string[k] = '\0';
+	return new_string;
+}
+
 char** split(char* text, char separator, int* size){
 	char** strings;
 	int last_step = 0; 
@@ -226,6 +258,68 @@ int countColumns(char* columns_name_command){
 	split(columns_name_command,',', &size);
 	return size;
 }
+/*
+* Corta a string até o index
+*/
+char* cropString(char* old_string, int index){
+	char* new_string = malloc(sizeof(char));
+	for (int i = 0; i <index; ++i)
+	{
+		new_string = realloc(new_string, sizeof(char)*(i+2));
+		new_string[i] = old_string[i];
+	}
+	new_string[index]= '\0';
+	return new_string;
+}
+int intVectorToInt(int* numbers, int size){
+	int number;
+	for (int i = 0, j=size-1; i < size; ++i, --j)
+	{
+		// utiliza a representação binária
+		// ex: 255 = 2*10^2 + 5*10^1 + 5*10^0
+		number += numbers[i]*pow(10, j);
+	}
+	return number;
+}
+int isInt(char* declaration_type){
+	if (strlen(declaration_type)==4)
+	{
+		return strcmp(removeCharFromPosition(declaration_type, 3), primitive_types[0])==0?1:0;
+	}else if(strlen(declaration_type)==3){
+		return strcmp(declaration_type, primitive_types[0])==0?1:0;
+	}
+	return 0;
+}
+
+int isChar(char* declaration_type){
+	if(strcmp(cropString(declaration_type, 4), primitive_types[2])==0){
+		if (declaration_type[4]=='[')
+		{
+			int* numbers;
+			int j, number;
+			for (int i = 5, j=1; declaration_type[i]!=']'; ++i, ++j)
+			{
+				numbers = malloc(sizeof(int)*j);
+				numbers[j-1] = (int)declaration_type[i]; 
+			}
+			number = intVectorToInt(numbers, j);
+		}else{
+			return 0;
+		}
+	}
+	return 0;
+}
+
+int validateColumnDeclaration(char* column_declaration){
+	char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
+	printf("type: %s\n", column_declaration_type);
+	//|| isFloat(column_declaration_type) || isDate(column_declaration_type)
+	if(isInt(column_declaration_type) || isChar(column_declaration_type)){
+		printf("válido\n");
+		return 1;
+	}
+	return 0;
+}
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
 	char* column_name = malloc(sizeof(char));
@@ -247,11 +341,15 @@ char* getTableHeader(char* columns_name_command){
 		{
 			// falta remover os espaços e validar a sintaxe
 			char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
+			if (column_declaration[0] == ' ')
+			{
+				column_declaration = removeCharFromPosition(column_declaration, 0);
+			}
 			printf("%s\n", column_declaration);
 			// valida a declaração da coluna
 			// ex: int* id -> correto
 			// ex: sharr[10] nome -> errado pois sharr não é tipo primitivo 
-			// validateColumnDeclaration(column_declaration)
+			validateColumnDeclaration(column_declaration);
 			// depois concatena com column_name 
 		}
 	
