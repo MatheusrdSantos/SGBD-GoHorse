@@ -192,10 +192,40 @@ char* removeChar(char* old_string, char symbol){
 	}
 	return new_string;
 }
-
+char** split(char* text, char separator, int* size){
+	char** strings;
+	int last_step = 0; 
+	int cont = 0;
+	for (int i = 0; i < strlen(text); ++i)
+	{
+		if ((text[i]==separator && i!=0) || text[i] == '\0')
+		{
+			strings = malloc(sizeof(char*)*(cont+1));
+			for (int j = last_step, k = 0; j < i; ++j, ++k)
+			{
+				if (k==0)
+				{
+					strings[cont] = malloc(sizeof(char)*(k+2));
+					strings[cont][k] = text[j];
+				}else{
+					strings[cont] = realloc(strings[cont], sizeof(char)*(k+2));
+					strings[cont][k] = text[j];
+				}
+			}
+			strings[cont] = '\0';
+			last_step = i+1;
+			cont++;
+		}
+	}
+	*size = cont+1;
+	return strings;
+}
 int countColumns(char* columns_name_command){
 	// validar a sintaxe
 	// e formatar a srting para um formato divisivel por ','
+	int size=0;
+	split(columns_name_command,',', &size);
+	printf("%i\n", size);
 	return 1;
 }
 char* getTableHeader(char* columns_name_command){
