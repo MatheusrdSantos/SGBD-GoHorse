@@ -271,13 +271,28 @@ char* cropString(char* old_string, int index){
 	new_string[index]= '\0';
 	return new_string;
 }
+
+// essa função existe na lib math.h
+// mas ocorreu um problema de dependência no meu gcc
+int pow(int base, int expoent){
+	if (expoent==0)
+	{
+		return 1;
+	}
+	int result = base;
+	for (int i = 1; i < expoent; ++i)
+	{
+		result = result*base;
+	}
+	return result;
+}
 int intVectorToInt(int* numbers, int size){
-	int number;
+	int number = 0;
 	for (int i = 0, j=size-1; i < size; ++i, --j)
 	{
 		// utiliza a representação binária
 		// ex: 255 = 2*10^2 + 5*10^1 + 5*10^0
-		number += numbers[i]*pow(10, j);
+		number += numbers[i] * pow(10, j);
 	}
 	return number;
 }
@@ -295,14 +310,24 @@ int isChar(char* declaration_type){
 	if(strcmp(cropString(declaration_type, 4), primitive_types[2])==0){
 		if (declaration_type[4]=='[')
 		{
-			int* numbers;
-			int j, number;
-			for (int i = 5, j=1; declaration_type[i]!=']'; ++i, ++j)
+			int* numbers = malloc(sizeof(int));
+			int j=0, number;
+			for (int i = 5; declaration_type[i]!=']'; ++i, ++j)
 			{
-				numbers = malloc(sizeof(int)*j);
-				numbers[j-1] = (int)declaration_type[i]; 
+				numbers = realloc(numbers, sizeof(int)*(j+1));
+				if (isdigit(declaration_type[i]))
+				{
+					numbers[j] = (int)declaration_type[i] - '0'; 
+				}else{
+					red();
+					printf("Sintaxe inválida no tamanho do char\n");
+					resetColor();
+					return 0;
+				}
 			}
 			number = intVectorToInt(numbers, j);
+			printf("numero de char: %i\n", number);
+			return 1;
 		}else{
 			return 0;
 		}

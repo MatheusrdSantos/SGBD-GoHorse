@@ -3,7 +3,7 @@
 #include <string.h>
 #include <locale.h>
 #include <dirent.h>
-#include <math.h>
+#include <ctype.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #define RESERVED_WORDS_SIZE 15
