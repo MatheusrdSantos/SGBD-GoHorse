@@ -274,7 +274,7 @@ char* cropString(char* old_string, int index){
 
 // essa função existe na lib math.h
 // mas ocorreu um problema de dependência no meu gcc
-int pow(int base, int expoent){
+int myPow(int base, int expoent){
 	if (expoent==0)
 	{
 		return 1;
@@ -292,14 +292,19 @@ int intVectorToInt(int* numbers, int size){
 	{
 		// utiliza a representação binária
 		// ex: 255 = 2*10^2 + 5*10^1 + 5*10^0
-		number += numbers[i] * pow(10, j);
+		number += numbers[i] * myPow(10, j);
 	}
 	return number;
 }
 int isInt(char* declaration_type){
 	if (strlen(declaration_type)==4)
 	{
-		return strcmp(removeCharFromPosition(declaration_type, 3), primitive_types[0])==0?1:0;
+		if (declaration_type[3]==reserved_symbols[3])
+		{
+			return strcmp(removeCharFromPosition(declaration_type, 3), primitive_types[0])==0?1:0;
+		}else{
+			return 0;
+		}
 	}else if(strlen(declaration_type)==3){
 		return strcmp(declaration_type, primitive_types[0])==0?1:0;
 	}
@@ -335,11 +340,40 @@ int isChar(char* declaration_type){
 	return 0;
 }
 
+int isFloat(char* declaration_type){
+	if (strlen(declaration_type)==6)
+	{
+		if (declaration_type[5]==reserved_symbols[3])
+		{
+			return strcmp(removeCharFromPosition(declaration_type, 5), primitive_types[1])==0?1:0;
+		}else{
+			return 0;
+		}
+
+	}else if(strlen(declaration_type)==5){
+		return strcmp(declaration_type, primitive_types[1])==0?1:0;
+	}
+	return 0;
+}
+int isDate(char* declaration_type){
+	if (strlen(declaration_type)==5)
+	{
+		if (declaration_type[4]==reserved_symbols[3])
+		{
+			return strcmp(removeCharFromPosition(declaration_type, 4), primitive_types[3])==0?1:0;
+		}else{
+			return 0;
+		}
+	}else if(strlen(declaration_type)==4){
+		return strcmp(declaration_type, primitive_types[3])==0?1:0;
+	}
+	return 0;
+}
 int validateColumnDeclaration(char* column_declaration){
 	char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
 	printf("type: %s\n", column_declaration_type);
-	//|| isFloat(column_declaration_type) || isDate(column_declaration_type)
-	if(isInt(column_declaration_type) || isChar(column_declaration_type)){
+	//
+	if(isInt(column_declaration_type) || isChar(column_declaration_type) || isFloat(column_declaration_type) || isDate(column_declaration_type)){
 		printf("válido\n");
 		return 1;
 	}
@@ -374,7 +408,11 @@ char* getTableHeader(char* columns_name_command){
 			// valida a declaração da coluna
 			// ex: int* id -> correto
 			// ex: sharr[10] nome -> errado pois sharr não é tipo primitivo 
-			validateColumnDeclaration(column_declaration);
+			if(!validateColumnDeclaration(column_declaration)){
+				red();
+				printf("Comando não reconhecido: \"%s\"\n", column_declaration);
+				return "error";
+			}
 			// depois concatena com column_name 
 		}
 	

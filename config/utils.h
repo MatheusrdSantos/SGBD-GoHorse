@@ -9,11 +9,15 @@ char** getDatabasesName();
 char* getDefaultDatabaseName();
 int validateColumnDeclaration(char* column_declaration);
 char** split(char* text, char separator, int* size);
-int pow(int base, int expoent);
+int myPow(int base, int expoent);
 char* removeChar(char* old_string, char symbol);
 int countColumns(char* columns_name_command);
 char* getTableHeader(char* columns_name_command);
 int valueIsInVector(char* word, char** array, int size);
 char* cropString(char* old_string, int index);
 int intVectorToInt(int* numbers, int size);
+int isInt(char* declaration_type);
+int isChar(char* declaration_type);
+int isFloat(char* declaration_type);
+int isDate(char* declaration_type);
 #include "utils.c"
