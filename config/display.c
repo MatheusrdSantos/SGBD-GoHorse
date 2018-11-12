@@ -26,3 +26,18 @@ void printHelp(){
 	printf("(0%%)  Select \"coluna1\", \"coluna2\", ..., \"colunaX\" from \"nome_da_tabela\" where cláusula: seleciona determinadas tuplas da tabela baseando-se na cláusula. \n");
 	resetColor();
 }
+void throwError(char* error_message){
+	red();
+	printf("%s\n", error_message);
+	resetColor();
+}
+void displayMessage(char* message){
+	yellow();
+	printf("%s\n", message);
+	resetColor();
+}
+void displayConfirmMessage(char* message){
+	green();
+	printf("%s\n", message);
+	resetColor();
+}

@@ -411,10 +411,12 @@ char* getTableHeader(char* columns_name_command){
 			if(!validateColumnDeclaration(column_declaration)){
 				red();
 				printf("Comando não reconhecido: \"%s\"\n", column_declaration);
+				resetColor();
 				return "error";
 			}
 			// depois concatena com column_name 
 		}
+		return columns_name_command;
 	
 	}
 }
