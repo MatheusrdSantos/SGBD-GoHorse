@@ -7,6 +7,7 @@ char* exec_create(char* command){
 		int result = mkdir(concat("storage/", db_name), 0777);
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
 		char* default_db = getDefaultDatabaseName();
+		printf("%s\n", default_db);
 		char* table_name = getWordFromIndex(command, ' ', 3);
 		if (getWordIndex(getWordFromIndex(command, ' ', 4), reserved_words)==11)
 		{
@@ -22,6 +23,7 @@ char* exec_create(char* command){
 				createTable(table_name, columns_name);
 			}
 		}else{
+			//modularizar!
 			red();
 			printf("Comando inesperado: \"%s\"\n",  getWordFromIndex(command, ' ', 4));
 			resetColor();
@@ -31,23 +33,25 @@ char* exec_create(char* command){
 }
 
 int createTable(char* table_name, char* columns_name_command){
+	//getDefaultDatabaseName()
 	//deve validar e retornar a string que será escrita como cabeçalho da tabela
-	char* tableHeade = getTableHeader(columns_name_command);
-	if (strcmp(tableHeade, "error")==0)
+	char* tableHeader = getTableHeader(columns_name_command);
+	if (strcmp(tableHeader, "error")==0)
 	{
 		throwError("Erro durante a criação da tabela!");
 	}else{
+		//createTableFromHeader(tableHeader)
 		displayConfirmMessage("Criando tabela...");
 	}
 }
 
-char* exec_list(char* command){
+char* exec_list(char* command, char* default_db){
 	if(strcmp(command, "list tables") == 0){
 		green();
 		printf("Você solicitou listar as tabelas.\n");
 		resetColor();
 
-		char** tables = getTablesName(getDefaultDatabaseName());
+		char** tables = getTablesName(default_db);
 
 		int i = 2;
 		while(tables[i] != NULL){
@@ -65,7 +69,7 @@ char* exec_list(char* command){
 		resetColor();
 
 		char** databases = getDatabasesName();
-
+		//não listar se for == default_bd.csv
 		int i = 3;
 		while(databases[i] != NULL){
 			printf("%s\n", databases[i]);
