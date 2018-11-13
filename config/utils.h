@@ -22,4 +22,6 @@ int isFloat(char* declaration_type);
 int isDate(char* declaration_type);
 char* putCharAfterSymbol(char* old_string, char new_char, char symbol);
 int countCharInString(char* string_1, char symbol);
+int hasPrimaryKey(char* columns_name_command);
+char* removeCharFromPosition(char* old_string, int position);
 #include "utils.c"
