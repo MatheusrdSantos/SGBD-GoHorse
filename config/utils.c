@@ -383,7 +383,7 @@ char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 	char* new_string = malloc(sizeof(char)*(strlen(old_string)+n_occurrency+1));
 	for (int i = 0; i < strlen(old_string); ++i, ++j)
 	{
-		if (old_string[i]==symbol)
+		if (old_string[i]==symbol && old_string[i+1]!=new_char)
 		{
 			new_string[j] = old_string[i];
 			new_string[j+1] = new_char;
