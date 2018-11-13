@@ -7,7 +7,6 @@ char* exec_create(char* command){
 		int result = mkdir(concat("storage/", db_name), 0777);
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
 		char* default_db = getDefaultDatabaseName();
-		printf("%s\n", default_db);
 		char* table_name = getWordFromIndex(command, ' ', 3);
 		if (getWordIndex(getWordFromIndex(command, ' ', 4), reserved_words)==11)
 		{
@@ -47,12 +46,11 @@ int createTableFromHeader(char* table_header, char* table_name){
 	table = fopen(table_full_path, "w+");
 	fprintf(table, "%s", table_header);
 	fclose(table);
-	printf("->>>>%s\n", table_full_path);
 	return 1;
 	
 }
 int createTable(char* table_name, char* columns_name_command){
-	// falta verificar se exixte primary key do tipo inteiro
+	
 	char* tableHeader = getTableHeader(columns_name_command);
 	if (strcmp(tableHeader, "error")==0)
 	{

@@ -319,7 +319,6 @@ int isChar(char* declaration_type){
 				}
 			}
 			number = intVectorToInt(numbers, j);
-			printf("numero de char: %i\n", number);
 			return 1;
 		}else{
 			return 0;
@@ -359,9 +358,7 @@ int isDate(char* declaration_type){
 }
 int validateColumnDeclaration(char* column_declaration){
 	char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
-	printf("type: %s\n", column_declaration_type);
 	if(isInt(column_declaration_type) || isChar(column_declaration_type) || isFloat(column_declaration_type) || isDate(column_declaration_type)){
-		printf("válido\n");
 		return 1;
 	}
 	return 0;
@@ -396,6 +393,35 @@ char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 	return new_string;
 
 }
+
+int hasPrimaryKey(char* columns_name_command){
+	int n_columns = 0, found_primary_key = 0, n_key = 0;
+	n_columns = countColumns(columns_name_command);
+	for (int i = 1; i <= n_columns; ++i)
+	{
+		// falta remover os espaços e validar a sintaxe
+		char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
+		if (column_declaration[0] == ' ')
+		{
+			column_declaration = removeCharFromPosition(column_declaration, 0);
+		}
+		char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
+		if (isInt(column_declaration_type))
+		{
+			if (column_declaration_type[3]==reserved_symbols[3])
+			{
+				found_primary_key = 1;
+				n_key++;
+			}
+		} 
+	}
+	if (found_primary_key && n_key==1)
+	{
+		return 1;
+	}
+	return 0;
+}
+// create table professores columns (int* id, char[60] nome, float salario)
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
 	char* column_name = malloc(sizeof(char));
@@ -421,7 +447,6 @@ char* getTableHeader(char* columns_name_command){
 			{
 				column_declaration = removeCharFromPosition(column_declaration, 0);
 			}
-			printf("%s\n", column_declaration);
 			// valida a declaração da coluna
 			// ex: int* id -> correto
 			// ex: sharr[10] nome -> errado pois sharr não é tipo primitivo 
@@ -436,8 +461,13 @@ char* getTableHeader(char* columns_name_command){
 		//create table sala columns (int* id,char[10] nome)
 		columns_name_command = removeChar(columns_name_command, '(');
 		columns_name_command = putCharAfterSymbol(columns_name_command, ' ', ',');
-		printf("final: %s\n", columns_name_command);
-		return columns_name_command;
+		if (hasPrimaryKey(columns_name_command))
+		{
+			printf("%s\n", columns_name_command);
+			return columns_name_command;
+		}
+		throwError("Foreign Key não encontrada");
+		return "error";
 	
 	}
 }
