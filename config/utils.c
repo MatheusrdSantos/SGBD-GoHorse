@@ -155,7 +155,7 @@ char** getDatabasesName(){
 
 char* getDefaultDatabaseName(){
 	FILE *default_db;
-	char* db_name;
+	char* db_name = malloc(sizeof(char)*100);
 	default_db = fopen("storage/default_db.csv", "r");
 	if (default_db == NULL)
 	{
@@ -168,7 +168,7 @@ char* getDefaultDatabaseName(){
 	fclose(default_db);
 	return db_name;
 }
-
+//create table cursos columns (int* id,char[10] nome, float media)
 /*
 * remove todos os caracteres encontrado na string
 */
@@ -360,12 +360,41 @@ int isDate(char* declaration_type){
 int validateColumnDeclaration(char* column_declaration){
 	char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
 	printf("type: %s\n", column_declaration_type);
-	//
 	if(isInt(column_declaration_type) || isChar(column_declaration_type) || isFloat(column_declaration_type) || isDate(column_declaration_type)){
 		printf("válido\n");
 		return 1;
 	}
 	return 0;
+}
+int countCharInString(char* string_1, char symbol){
+	int cont = 0;
+	for (int i = 0; i < strlen(string_1); ++i)
+	{
+		if (string_1[i] == symbol)
+		{
+			cont++;
+		}
+	}
+	return cont;
+}
+char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
+
+	int j = 0, n_occurrency = countCharInString(old_string, symbol);
+	char* new_string = malloc(sizeof(char)*(strlen(old_string)+n_occurrency+1));
+	for (int i = 0; i < strlen(old_string); ++i, ++j)
+	{
+		if (old_string[i]==symbol)
+		{
+			new_string[j] = old_string[i];
+			new_string[j+1] = new_char;
+			j++;
+		}else{
+			new_string[j] = old_string[i];
+		}
+	}
+	new_string[j] = '\0';
+	return new_string;
+
 }
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
@@ -404,6 +433,10 @@ char* getTableHeader(char* columns_name_command){
 			}
 			// depois concatena com column_name 
 		}
+		//create table sala columns (int* id,char[10] nome)
+		columns_name_command = removeChar(columns_name_command, '(');
+		columns_name_command = putCharAfterSymbol(columns_name_command, ' ', ',');
+		printf("final: %s\n", columns_name_command);
 		return columns_name_command;
 	
 	}

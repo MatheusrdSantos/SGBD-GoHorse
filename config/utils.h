@@ -20,4 +20,6 @@ int isInt(char* declaration_type);
 int isChar(char* declaration_type);
 int isFloat(char* declaration_type);
 int isDate(char* declaration_type);
+char* putCharAfterSymbol(char* old_string, char new_char, char symbol);
+int countCharInString(char* string_1, char symbol);
 #include "utils.c"

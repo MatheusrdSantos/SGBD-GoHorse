@@ -31,7 +31,26 @@ char* exec_create(char* command){
 	}
 	return "ok";
 }
-
+int createTableFromHeader(char* table_header, char* table_name){
+	FILE *table;
+	char* table_path = concat("storage/", getDefaultDatabaseName());
+	table_path = concat(table_path, "/");
+	char* table_full_path = concat(table_path, table_name);
+	table_full_path = concat(table_full_path, ".csv"); 
+	if (table == NULL)
+	{
+		red();
+	    printf("Error opening file!\n");
+	    resetColor();
+	    return 0;
+	}
+	table = fopen(table_full_path, "w+");
+	fprintf(table, "%s", table_header);
+	fclose(table);
+	printf("->>>>%s\n", table_full_path);
+	return 1;
+	
+}
 int createTable(char* table_name, char* columns_name_command){
 	//getDefaultDatabaseName()
 	//deve validar e retornar a string que será escrita como cabeçalho da tabela
@@ -40,18 +59,18 @@ int createTable(char* table_name, char* columns_name_command){
 	{
 		throwError("Erro durante a criação da tabela!");
 	}else{
-		//createTableFromHeader(tableHeader)
 		displayConfirmMessage("Criando tabela...");
+		return createTableFromHeader(tableHeader, table_name);
 	}
 }
 
-char* exec_list(char* command, char* default_db){
+char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
 		green();
 		printf("Você solicitou listar as tabelas.\n");
 		resetColor();
 
-		char** tables = getTablesName(default_db);
+		char** tables = getTablesName(getDefaultDatabaseName());
 
 		int i = 2;
 		while(tables[i] != NULL){
