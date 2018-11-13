@@ -52,8 +52,7 @@ int createTableFromHeader(char* table_header, char* table_name){
 	
 }
 int createTable(char* table_name, char* columns_name_command){
-	//getDefaultDatabaseName()
-	//deve validar e retornar a string que será escrita como cabeçalho da tabela
+	// falta verificar se exixte primary key do tipo inteiro
 	char* tableHeader = getTableHeader(columns_name_command);
 	if (strcmp(tableHeader, "error")==0)
 	{
