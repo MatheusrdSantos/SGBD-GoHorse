@@ -52,6 +52,10 @@ int countWords(char* command, char separator){
 
 	return cont;
 }
+
+/*
+* Retorna a primeir a palavra de uma string separada por espaço
+*/
 char* getFirstWord(char* command){
 	char* firstWord =(char*) malloc(sizeof(char));
 	int i = 0;
@@ -64,6 +68,11 @@ char* getFirstWord(char* command){
 	return firstWord;
 }
 
+/*
+* Retorna o index de ocorrencia de uma string em um vetor de strings
+* caso a string não exista no vetor retorna 0
+*/
+
 int valueIsInVector(char* word, char** array, int size){
 	for (int i = 0; i < size; ++i)
 	{
@@ -75,6 +84,12 @@ int valueIsInVector(char* word, char** array, int size){
 	return 0;
 }
 
+/*
+* Retorna o index de ocorrencia de uma string no vetor de palavras reservadas
+* caso a string não exista no vetor retorna -1.
+* Na prática essa função informa se uma palavra é reservada ou não
+*/
+
 int getWordIndex(char* word, char** array){
 	for (int i = 0; i < RESERVED_WORDS_SIZE; ++i)
 	{
@@ -85,7 +100,9 @@ int getWordIndex(char* word, char** array){
 	}
 	return -1;
 }
-
+/*
+* Recebe duas strings e retorna uma terceira concatenada
+*/
 char* concat(char *string1, char *string2){
     char *result = malloc(strlen(string1) + strlen(string2) + sizeof(char)); 
     strcpy(result, string1);
@@ -94,6 +111,7 @@ char* concat(char *string1, char *string2){
 }
 
 // verifica se o db_name é o nome de um banco existente
+// TODO: DAVIS
 int databaseExist(char* db_name){
 	//getDatabasesName()
 	// verifica se db_name está dentro do vetor de string
@@ -152,7 +170,9 @@ char** getDatabasesName(){
 	  	return 0;
 	}
 }
-
+/*
+* Retorna o nome do dabase padrão
+*/
 char* getDefaultDatabaseName(){
 	FILE *default_db;
 	char* db_name = malloc(sizeof(char)*100);
@@ -168,10 +188,11 @@ char* getDefaultDatabaseName(){
 	fclose(default_db);
 	return db_name;
 }
-//create table cursos columns (int* id,char[10] nome, float media)
+
 /*
 * remove todos os caracteres encontrado na string
 */
+
 char* removeChar(char* old_string, char symbol){
 	char* new_string = malloc(sizeof(char));
 	int size = strlen(old_string), k=0;
@@ -189,9 +210,11 @@ char* removeChar(char* old_string, char symbol){
 	new_string[k] = '\0';
 	return new_string;
 }
+
 /*
 * remove o char de uma posição
 */
+
 char* removeCharFromPosition(char* old_string, int position){
 	char* new_string = malloc(sizeof(char));
 	int size = strlen(old_string), k=0;
@@ -209,6 +232,11 @@ char* removeCharFromPosition(char* old_string, int position){
 	new_string[k] = '\0';
 	return new_string;
 }
+
+/*
+* Quebra a string onde existe o sepadator em várias strings e passa o tamanho do novo
+* vetor através de um ponteiro 
+*/
 
 char** split(char* text, char separator, int* size){
 	char** strings;
@@ -239,16 +267,24 @@ char** split(char* text, char separator, int* size){
 	*size = cont+1;
 	return strings;
 }
+
+/*
+* Essa funçaõ é utilizada para a validação do comando de criação de tabela.
+* Ela basicamente conta quantas colunas foram declaradas utilizando o separador ','.
+*/
+
 int countColumns(char* columns_name_command){
-	// validar a sintaxe
-	// e formatar a srting para um formato divisivel por ','
 	int size=0;
 	split(columns_name_command,',', &size);
 	return size;
 }
+
 /*
-* Corta a string até o index
+* Corta a string até o index especificado. Também pode ser interpertada como
+* uma funçaõ que retorna a string até o enésimo char.
+* Ex: cropString("matheus", 4) = "math"
 */
+
 char* cropString(char* old_string, int index){
 	char* new_string = malloc(sizeof(char));
 	for (int i = 0; i <index; ++i)
@@ -274,6 +310,11 @@ int myPow(int base, int expoent){
 	}
 	return result;
 }
+
+/*
+* Converte um vetor de inteiros para um inteiro
+* Ex: [2,5,5] = 255
+*/
 int intVectorToInt(int* numbers, int size){
 	int number = 0;
 	for (int i = 0, j=size-1; i < size; ++i, --j)
@@ -284,6 +325,11 @@ int intVectorToInt(int* numbers, int size){
 	}
 	return number;
 }
+
+/*
+* Verifica se a declaração da coluna está certa e é do tipo int
+*/
+
 int isInt(char* declaration_type){
 	if (strlen(declaration_type)==4)
 	{
@@ -298,6 +344,10 @@ int isInt(char* declaration_type){
 	}
 	return 0;
 }
+
+/*
+* Verifica se a declaração da coluna está certa e é do tipo char
+*/
 
 int isChar(char* declaration_type){
 	if(strcmp(cropString(declaration_type, 4), primitive_types[2])==0){
@@ -327,6 +377,10 @@ int isChar(char* declaration_type){
 	return 0;
 }
 
+/*
+* Verifica se a declaração da coluna está certa e é do tipo float
+*/
+
 int isFloat(char* declaration_type){
 	if (strlen(declaration_type)==6)
 	{
@@ -342,6 +396,11 @@ int isFloat(char* declaration_type){
 	}
 	return 0;
 }
+
+/*
+* Verifica se a declaração da coluna está certa e é do tipo date
+*/
+
 int isDate(char* declaration_type){
 	if (strlen(declaration_type)==5)
 	{
@@ -356,6 +415,10 @@ int isDate(char* declaration_type){
 	}
 	return 0;
 }
+
+/*
+* Valida uma declaração de tipo de coluna
+*/
 int validateColumnDeclaration(char* column_declaration){
 	char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
 	if(isInt(column_declaration_type) || isChar(column_declaration_type) || isFloat(column_declaration_type) || isDate(column_declaration_type)){
@@ -363,6 +426,11 @@ int validateColumnDeclaration(char* column_declaration){
 	}
 	return 0;
 }
+
+/*
+* Essa funçaõ retonar o número de vezes que um char ocorre em uma string
+*/
+
 int countCharInString(char* string_1, char symbol){
 	int cont = 0;
 	for (int i = 0; i < strlen(string_1); ++i)
@@ -374,6 +442,11 @@ int countCharInString(char* string_1, char symbol){
 	}
 	return cont;
 }
+
+/*
+* Adiciona um char na string após cada ocorrencia de um dado simbolo
+* Ex: putCharAfterSymbol("1,matheus,19,brasil", ' ', ',') = "1, matheus, 19, brasil" 
+*/
 char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 
 	int j = 0, n_occurrency = countCharInString(old_string, symbol);
@@ -393,13 +466,14 @@ char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 	return new_string;
 
 }
-
+/*
+* Verifica se em uma declaração de colunas existe alguma coluna como primaryKey
+*/
 int hasPrimaryKey(char* columns_name_command){
 	int n_columns = 0, found_primary_key = 0, n_key = 0;
 	n_columns = countColumns(columns_name_command);
 	for (int i = 1; i <= n_columns; ++i)
 	{
-		// falta remover os espaços e validar a sintaxe
 		char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
 		if (column_declaration[0] == ' ')
 		{
@@ -421,7 +495,11 @@ int hasPrimaryKey(char* columns_name_command){
 	}
 	return 0;
 }
-// create table professores columns (int* id, char[60] nome, float salario)
+
+/*
+* Valida e formata uma declaração de colunas para a criação de uma tabela
+*/
+
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
 	char* column_name = malloc(sizeof(char));
@@ -431,39 +509,31 @@ char* getTableHeader(char* columns_name_command){
 		return "error";
 	}else{
 
-		/*
-		* TODO: termina esse fluxo.
-		*/
-		// remover o último ')'
 		columns_name_command = removeChar(columns_name_command, ')');
 		
 		int n_columns = 0;
 		n_columns = countColumns(columns_name_command);
 		for (int i = 1; i <= n_columns; ++i)
 		{
-			// falta remover os espaços e validar a sintaxe
+			
 			char* column_declaration = getWordFromIndex(columns_name_command, ',', i);
 			if (column_declaration[0] == ' ')
 			{
 				column_declaration = removeCharFromPosition(column_declaration, 0);
 			}
-			// valida a declaração da coluna
-			// ex: int* id -> correto
-			// ex: sharr[10] nome -> errado pois sharr não é tipo primitivo 
+			
 			if(!validateColumnDeclaration(column_declaration)){
 				red();
 				printf("Comando não reconhecido: \"%s\"\n", column_declaration);
 				resetColor();
 				return "error";
 			}
-			// depois concatena com column_name 
 		}
-		//create table sala columns (int* id,char[10] nome)
+		
 		columns_name_command = removeChar(columns_name_command, '(');
 		columns_name_command = putCharAfterSymbol(columns_name_command, ' ', ',');
 		if (hasPrimaryKey(columns_name_command))
 		{
-			printf("%s\n", columns_name_command);
 			return columns_name_command;
 		}
 		throwError("Foreign Key não encontrada");
