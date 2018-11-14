@@ -118,6 +118,7 @@ int databaseExist(char* db_name){
 	// retorna 1 em caso positivo e 0 em caso negativo
 }
 
+//create table itens columns (int id, char[100] nome, float preco)
 char** getTablesName(char* db_name){
 	char** tables = malloc(sizeof(char*));
 	int i = 0;
@@ -129,6 +130,10 @@ char** getTablesName(char* db_name){
 	struct dirent *ent;
 	if ((dir = opendir(finalurl)) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
+			if (strcmp(ent->d_name, ".")==0 || strcmp(ent->d_name, "..")==0)
+			{
+				continue;
+			}
 			tables[i] = malloc((strlen(ent->d_name)+1) * sizeof(char));
 			//printf("strlen d_name: %i\n", strlen(ent->d_name));
 			tables[i] = ent->d_name;
@@ -143,7 +148,6 @@ char** getTablesName(char* db_name){
 		return tables;
 	} else {
 	  	printf("Banco não encontrado ou não há tabelas.\n");
-	  	return 0;
 	}
 }
 
@@ -155,6 +159,10 @@ char** getDatabasesName(){
 	struct dirent *ent;
 	if ((dir = opendir ("storage/")) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
+			if (strcmp(ent->d_name, reserved_files_name[0])==0)
+			{
+				continue;
+			}
 			databases[i] = malloc(strlen(ent->d_name) * sizeof(char)); 
 			databases[i] = ent->d_name;
 			i++;

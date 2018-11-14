@@ -69,7 +69,12 @@ char* exec_list(char* command){
 
 		char** tables = getTablesName(getDefaultDatabaseName());
 
-		int i = 2;
+		int i = 0;
+
+		// printa de forma bonita os nomes das tabelas
+		// dispayTablesName(tables);
+
+		// isso aqui vai para a função acima
 		while(tables[i] != NULL){
 			for (int j = 0; j < strlen(tables[i])-4; j++)
 			{
@@ -87,16 +92,18 @@ char* exec_list(char* command){
 		char** databases = getDatabasesName();
 		//não listar se for == default_bd.csv
 		int i = 3;
+
+		// printa de forma bonita os nomes dos bancos
+		// dispayDatabasesName(databases);
+
+		// isso aqui vai para a função acima
 		while(databases[i] != NULL){
 			printf("%s\n", databases[i]);
 			i++;
 		}
 
 	}else{
-		red();
-		printf("Esse comando não existe, tente 'list tables' ou 'list databases'.\n");
-		resetColor();
-
+		throwError("Esse comando não existe, tente 'list tables' ou 'list databases'.\n");
 	}
 }
 
@@ -153,14 +160,12 @@ int exec_select(char* command){
 		
 		char *string = malloc(fsize + 1);
 		fread(string, fsize, 1, selected_table);
-		fclose(selected_table);
 
-		string[fsize] = '0';
+		string[fsize] = '\0';
 
 		green();
-		printf("Table content: %s\n", string);
+		printf("%s\n", string);
 		resetColor();
-
 		fclose(selected_table);
 	}
 
