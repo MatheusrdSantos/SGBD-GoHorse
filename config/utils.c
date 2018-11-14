@@ -110,12 +110,17 @@ char* concat(char *string1, char *string2){
     return result;
 }
 
-// verifica se o db_name é o nome de um banco existente
-// TODO: DAVIS
 int databaseExist(char* db_name){
-	//getDatabasesName()
-	// verifica se db_name está dentro do vetor de string
-	// retorna 1 em caso positivo e 0 em caso negativo
+	char** dbs_name = getDatabasesName();
+	int i = 0;
+	while(dbs_name[i]!=NULL){
+		if (strcmp(dbs_name[i], db_name)==0)
+		{
+			return i;
+		}
+		i++;
+	}
+	return -1;
 }
 
 //create table itens columns (int id, char[100] nome, float preco)

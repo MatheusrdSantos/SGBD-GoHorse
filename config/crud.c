@@ -4,7 +4,11 @@ char* exec_create(char* command){
 	//checar se banco já existe
 	if (countWords(command, ' ')==2){
 		char* db_name = getWordFromIndex(command, ' ', 2);
-		int result = mkdir(concat("storage/", db_name), 0777);
+		if(databaseExist(db_name)!=-1){
+			int result = mkdir(concat("storage/", db_name), 0777);
+		}else{
+			displayAlertMessage("O banco de dados já existe!");
+		}
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
 		char* default_db = getDefaultDatabaseName();
 		char* table_name = getWordFromIndex(command, ' ', 3);
@@ -28,6 +32,8 @@ char* exec_create(char* command){
 			resetColor();
 		}
 	}
+	// existe a possibilidade de não entrar em nenhum dos ifs acima
+	// TODO: criar uma terceira condição para erro
 	return "ok";
 }
 int createTableFromHeader(char* table_header, char* table_name){
@@ -61,6 +67,7 @@ int createTable(char* table_name, char* columns_name_command){
 	}
 }
 
+// mudar o tipo de retorno para inteiro
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
 		green();

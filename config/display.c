@@ -31,11 +31,19 @@ void throwError(char* error_message){
 	printf("%s\n", error_message);
 	resetColor();
 }
+
 void displayMessage(char* message){
 	yellow();
 	printf("%s\n", message);
 	resetColor();
 }
+
+void displayAlertMessage(char* message){
+	b_yellow();
+	printf("%s\n", message);
+	resetColor();
+}
+
 void displayConfirmMessage(char* message){
 	green();
 	printf("%s\n", message);
