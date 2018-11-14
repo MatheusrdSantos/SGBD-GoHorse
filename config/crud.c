@@ -5,9 +5,9 @@ char* exec_create(char* command){
 	if (countWords(command, ' ')==2){
 		char* db_name = getWordFromIndex(command, ' ', 2);
 		if(databaseExist(db_name)!=-1){
-			int result = mkdir(concat("storage/", db_name), 0777);
-		}else{
 			displayAlertMessage("O banco de dados já existe!");
+		}else{
+			int result = mkdir(concat("storage/", db_name), 0777);
 		}
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
 		char* default_db = getDefaultDatabaseName();

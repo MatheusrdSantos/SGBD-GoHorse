@@ -44,7 +44,7 @@ void execute(char* command){
 		}else if(command_index == 7){
 			//exec_add(command);
 		}
-		printf("Executando operação \"%s\"\n", reserved_words[command_index]);
+		printf("Executada a operação \"%s\"\n", reserved_words[command_index]);
 	}
 }
 void run(){
