@@ -26,4 +26,7 @@ int countCharInString(char* string_1, char symbol);
 int hasPrimaryKey(char* columns_name_command);
 char* removeCharFromPosition(char* old_string, int position);
 char* getValuesFromDeclaration(char* command);
+int getLastOcurrencyIndex(char* string_1, char symbol);
+int getFirstOcurrencyIndex(char* string_1, char symbol);
+char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol_final);
 #include "utils.c"

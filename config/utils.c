@@ -561,7 +561,7 @@ char* getTableHeader(char* columns_name_command){
 	
 	}
 }
-//falta importar no .h
+
 int getFirstOcurrencyIndex(char* string_1, char symbol){
 	for (int i = 0; i < strlen(string_1); ++i)
 	{
@@ -573,7 +573,6 @@ int getFirstOcurrencyIndex(char* string_1, char symbol){
 	return -1;
 }
 
-//falta importar no .h
 int getLastOcurrencyIndex(char* string_1, char symbol){
 	for (int i = strlen(string_1)-1; i>=0; --i)
 	{
