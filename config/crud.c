@@ -120,3 +120,49 @@ int exec_set(char* command){
 	return 1;
 
 }
+
+int exec_select(char* command){
+	//Select table “table_name”
+	FILE *selected_table;
+
+	char* default_db = getDefaultDatabaseName();
+	char* second_word = getWordFromIndex(command, ' ', 2);
+	char* table_content = malloc(sizeof(char)*100);
+
+	char* url_1 = concat("storage/", default_db);
+	char* url_2 = concat(url_1, "/");
+
+	if(strcmp(second_word, reserved_words[9]) == 0){
+		char* table_name = getWordFromIndex(command, ' ', 3);
+		char* url_3 = concat(url_2, table_name);
+		char* url_final = concat(url_3, ".csv");
+		
+		selected_table = fopen(url_final, "rb");
+
+		if (selected_table == NULL)
+		{
+			red();
+		    printf("Error opening file!\n");
+		    resetColor();
+		    return 0;
+		}
+
+		fseek(selected_table, 0, SEEK_END);
+		int fsize = ftell(selected_table);
+		fseek(selected_table, 0, SEEK_SET);  //same as rewind(f);
+		
+		char *string = malloc(fsize + 1);
+		fread(string, fsize, 1, selected_table);
+		fclose(selected_table);
+
+		string[fsize] = '0';
+
+		green();
+		printf("Table content: %s\n", string);
+		resetColor();
+
+		fclose(selected_table);
+	}
+
+	return 1;
+}
