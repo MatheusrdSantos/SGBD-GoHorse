@@ -282,10 +282,11 @@ int countColumns(char* columns_name_command){
 /*
 * Corta a string até o index especificado. Também pode ser interpertada como
 * uma funçaõ que retorna a string até o enésimo char.
-* Ex: cropString("matheus", 4) = "math"
+* Ex: cropStringRight("matheus", 4) = "math"
+* right significa que ele vai ignorar o que tem à direita
 */
 
-char* cropString(char* old_string, int index){
+char* cropStringRight(char* old_string, int index){
 	char* new_string = malloc(sizeof(char));
 	for (int i = 0; i <index; ++i)
 	{
@@ -293,6 +294,25 @@ char* cropString(char* old_string, int index){
 		new_string[i] = old_string[i];
 	}
 	new_string[index]= '\0';
+	return new_string;
+}
+
+/*
+* Corta a string até o index especificado. Também pode ser interpertada como
+* uma funçaõ que retorna a string até o enésimo char.
+* Ex: cropStringLeft("matheus", 4) = "eus"
+* left significa que ele vai ignorar o que tem à esquerda
+*/
+
+char* cropStringLeft(char* old_string, int index){
+	char* new_string = malloc(sizeof(char));
+	int j = 0;
+	for (int i = index+1; i <strlen(old_string); ++i, ++j)
+	{
+		new_string = realloc(new_string, sizeof(char)*(j+2));
+		new_string[j] = old_string[i];
+	}
+	new_string[j]= '\0';
 	return new_string;
 }
 
@@ -350,7 +370,7 @@ int isInt(char* declaration_type){
 */
 
 int isChar(char* declaration_type){
-	if(strcmp(cropString(declaration_type, 4), primitive_types[2])==0){
+	if(strcmp(cropStringRight(declaration_type, 4), primitive_types[2])==0){
 		if (declaration_type[4]=='[')
 		{
 			int* numbers = malloc(sizeof(int));
@@ -539,5 +559,55 @@ char* getTableHeader(char* columns_name_command){
 		throwError("Foreign Key não encontrada");
 		return "error";
 	
+	}
+}
+//falta importar no .h
+int getFirstOcurrencyIndex(char* string_1, char symbol){
+	for (int i = 0; i < strlen(string_1); ++i)
+	{
+		if (string_1[i]==symbol)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+//falta importar no .h
+int getLastOcurrencyIndex(char* string_1, char symbol){
+	for (int i = strlen(string_1)-1; i>=0; --i)
+	{
+		if (string_1[i]==symbol)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+/*
+* Corta a string entre dois caracteres especificados
+* Ex: getStringBetweenSymbols("insert into alunos values (1, “matheus”, 1.70, “09/07/1999”)", '(', ')')
+* = "1, “matheus”, 1.70, “09/07/1999”"
+*/
+char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol_final){
+	int size = strlen(old_string);
+	int firstOcurrency = getFirstOcurrencyIndex(old_string, symbol_initial);
+	int lastOcurrency = getLastOcurrencyIndex(old_string, symbol_final);
+	if (firstOcurrency == -1 || lastOcurrency== -1)
+	{
+		return "error";
+	}
+	char* cropped_left = cropStringLeft(old_string, firstOcurrency);
+	int chars_removed = size - strlen(cropped_left);
+	char* cropped_right = cropStringRight(old_string, lastOcurrency);
+	return removeCharFromPosition(cropped_left, lastOcurrency - chars_removed);
+}
+char* getValuesFromDeclaration(char* command){
+	if (command[strlen(command)-1]!=')')
+	{
+		printf("sintaxe error\n");
+		return "error";
+	}else{
+		printf("->>> %s\n", getStringBetweenSymbols(command, '(', ')'));
 	}
 }

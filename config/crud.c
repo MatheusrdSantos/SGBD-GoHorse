@@ -120,3 +120,19 @@ int exec_set(char* command){
 	return 1;
 
 }
+
+int exec_insert(char* command){
+	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
+		char* table_name = getWordFromIndex(command, ' ', 3);
+		if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[15])==0)
+		{
+			char* values = getValuesFromDeclaration(command);
+			//Row row = valuesToRow(values)
+			//reult =  insertRow(row) -> insere no default database
+		}
+	}else{
+		// melhorar a função para receber strings por parametro
+		throwError("Comando into não encontrado");
+		return 0;
+	}
+}

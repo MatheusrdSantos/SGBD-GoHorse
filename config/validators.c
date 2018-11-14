@@ -40,7 +40,7 @@ void execute(char* command){
 		}else if(command_index == 5){
 			exec_list(command);
 		}else if(command_index == 6){
-			//exec_insert(command);
+			exec_insert(command);
 		}else if(command_index == 7){
 			//exec_add(command);
 		}

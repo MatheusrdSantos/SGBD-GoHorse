@@ -14,7 +14,8 @@ char* removeChar(char* old_string, char symbol);
 int countColumns(char* columns_name_command);
 char* getTableHeader(char* columns_name_command);
 int valueIsInVector(char* word, char** array, int size);
-char* cropString(char* old_string, int index);
+char* cropStringRight(char* old_string, int index);
+char* cropStringLeft(char* old_string, int index);
 int intVectorToInt(int* numbers, int size);
 int isInt(char* declaration_type);
 int isChar(char* declaration_type);
@@ -24,4 +25,5 @@ char* putCharAfterSymbol(char* old_string, char new_char, char symbol);
 int countCharInString(char* string_1, char symbol);
 int hasPrimaryKey(char* columns_name_command);
 char* removeCharFromPosition(char* old_string, int position);
+char* getValuesFromDeclaration(char* command);
 #include "utils.c"
