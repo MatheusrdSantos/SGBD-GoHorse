@@ -669,6 +669,7 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	printf("header: %s\n", header);
 	return header;
 }
+
 int validateInt(char* data){
 	
 	for(int i = 0; i < strlen(data); i++)
@@ -680,6 +681,7 @@ int validateInt(char* data){
 
 	return 1;
 }
+
 int stringToInt(char* data){
 	int* numbers = (int*) malloc(sizeof(int));
 	for(int i = 0; i < strlen(data); i++)
@@ -691,6 +693,24 @@ int stringToInt(char* data){
 	}
 	return intVectorToInt(numbers, strlen(data));
 	
+}
+
+int validateFloat(char* data){
+	int size = strlen(data);
+	
+	if (!isdigit(data[0])) {
+		return 0;
+	}
+	
+	for(int i = 0; i < size; i++)
+	{
+		if(!(isdigit(data[i])) && data[i]!='.'){
+			return 0;
+		}else if(data[i]=='.' && !(isdigit(data[i+1]))){
+			return 0;
+		}
+	}
+	return 1;
 }
 
 int validateChar(char* data, char* type){
@@ -734,8 +754,12 @@ int valueMatchWithType(char* data, char* type_declaration){
 		}
 		
 	}else if (isFloat(type)) {
-		printf("É float\n");
-		//validateFloat()
+		if(validateFloat(data)){
+			displayConfirmMessage("Valor float válido");
+		}else{
+			throwError("Valor float inválido");
+		}
+		
 	}else if (isDate(type)){
 		printf("É data\n");
 		//validateDate()
