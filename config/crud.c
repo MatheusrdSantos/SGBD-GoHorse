@@ -181,7 +181,7 @@ int exec_select(char* command){
 	return 1;
 }
 int insertRow(Row row){
-	
+
 }
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
@@ -191,6 +191,7 @@ int exec_insert(char* command){
 			char* values = getValuesFromDeclaration(command);
 			int size = 0, result;
 			char** data = split(values, ',', &size);
+			// teste
 			Row row;
 			row.data = data;
 			result =  insertRow(row);
