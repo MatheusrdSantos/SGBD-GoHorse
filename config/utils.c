@@ -29,7 +29,6 @@ char* getWordFromIndex(char* command, char separator, int index){
 			cont++;
 		}
 	}
-
 	return command;
 }
 
@@ -634,11 +633,11 @@ char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol
 char* getValuesFromDeclaration(char* command){
 	if (command[strlen(command)-1]!=')')
 	{
-		printf("sintaxe error\n");
+		//printf("sintaxe error\n");
 		return "error";
 	}else{
 		char* data = getStringBetweenSymbols(command, '(', ')');
-		printf("->>> %s\n", data);
+		//printf("->>> %s\n", data);
 		return data;
 	}
 }
@@ -671,11 +670,47 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	return header;
 }
 
+// a primayKey será checada nessa função, mas será implementada
+// em outro momento
+int valueMatchWithType(char* data, char* type_declaration){
+	// remove os espaçoes iniciais
+	// é um loop porque o comando pode vim com mais de um espaço
+	// Ex: int* id,  char[50] nome
+	while(type_declaration[0]==' '){
+		type_declaration = removeCharFromPosition(type_declaration, 0);
+	}
+	char* type =  getWordFromIndex(type_declaration, ' ', 1);
+	if(isInt(type)){
+		printf("É inteiro\n");
+		//validateInt();
+	}else if(isChar(type)){
+		printf("É char\n");
+		//validateChar()
+	}else if (isFloat(type)) {
+		printf("É float\n");
+		//validateFloat()
+	}else if (isDate(type)){
+		printf("É data\n");
+		//validateDate()
+	}else{
+		throwError("Erro não identificado!");
+		return 0;
+	}
+	
+	
+	
+	
+}
+
 int validateValues(char* table_name, char** data){
 	char* db_name = getDefaultDatabaseName();
 	char* table_header = getTableHeaderFromDatabase(db_name, table_name);
 	int size;
 	char** columns_declaration = split(table_header, ',', &size);
-	// valueMatchWithType(data[i], columns_declaration[i])
+	
+	for(int i = 0; i < size; i++)
+	{
+		valueMatchWithType(data[i], columns_declaration[i]);
+	}
 	// se todos os valores forem válidos escreve-os na tabela
 }

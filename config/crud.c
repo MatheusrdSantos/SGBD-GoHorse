@@ -185,7 +185,7 @@ int insertRow(Row row){
 	
 	for(int i = 0; i < row.n_data; i++)
 	{
-		printf("%s\n", row.data[i]);
+		//printf("%s\n", row.data[i]);
 	}
 }
 
