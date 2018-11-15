@@ -197,7 +197,7 @@ int insertRow(Row row, char* table_name){
 	fclose(table);
 	return 1;
 }
-
+// TODO: Falta verificar a foreignKey
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
 		char* table_name = getWordFromIndex(command, ' ', 3);
