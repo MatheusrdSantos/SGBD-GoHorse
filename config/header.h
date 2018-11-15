@@ -15,6 +15,7 @@ char* reserved_words[RESERVED_WORDS_SIZE] = {"help","create", "delete", "select"
 char reserved_symbols[RESERVED_SYMBOLS_SIZE] = {'=', '>', '<', '*'};
 char* primitive_types[RESERVED_PRIMITIVE_TYPES_SIZE] = {"int", "float", "char", "date"};
 char* reserved_files_name[RESERVED_FILES_NAME_SIZE] = {"default_db.csv"};
+#include "types.h"
 #include "colors.h"
 #include "display.h"
 #include "utils.h"

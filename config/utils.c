@@ -15,7 +15,7 @@ char* getWordFromIndex(char* command, char separator, int index){
 			while(command[i]!=separator && command[i]!='\0'){
 				word[cont_word] = command[i];
 				i++;
-				word = realloc(word, sizeof(char)*(cont_word+2));
+				word = (char*) realloc(word, sizeof(char)*(cont_word+2));
 				cont_word++;
 			}
 			word[cont_word] = '\0';
@@ -62,7 +62,7 @@ char* getFirstWord(char* command){
 	while(command[i]!=' ' && command[i]!='\0'){
 		firstWord[i] = command[i];
 		i++;
-		firstWord = realloc(firstWord, sizeof(char)*(i+1));
+		firstWord = (char*) realloc(firstWord, sizeof(char)*(i+1));
 	}
 	firstWord[i] = '\0';
 	return firstWord;
@@ -104,7 +104,7 @@ int getWordIndex(char* word, char** array){
 * Recebe duas strings e retorna uma terceira concatenada
 */
 char* concat(char *string1, char *string2){
-    char *result = malloc(strlen(string1) + strlen(string2) + sizeof(char)); 
+    char *result = (char*) malloc(strlen(string1) + strlen(string2) + sizeof(char)); 
     strcpy(result, string1);
     strcat(result, string2);
     return result;
@@ -125,7 +125,7 @@ int databaseExist(char* db_name){
 
 //create table itens columns (int id, char[100] nome, float preco)
 char** getTablesName(char* db_name){
-	char** tables = malloc(sizeof(char*));
+	char** tables = (char**) malloc(sizeof(char*));
 	int i = 0;
 
 	char* firstparturl = concat("storage/", db_name);
@@ -139,7 +139,7 @@ char** getTablesName(char* db_name){
 			{
 				continue;
 			}
-			tables[i] = malloc((strlen(ent->d_name)+1) * sizeof(char));
+			tables[i] = (char*) malloc((strlen(ent->d_name)+1) * sizeof(char));
 			//printf("strlen d_name: %i\n", strlen(ent->d_name));
 			tables[i] = ent->d_name;
 			i++;
@@ -157,7 +157,7 @@ char** getTablesName(char* db_name){
 }
 
 char** getDatabasesName(){
-	char** databases = malloc(sizeof(char*));
+	char** databases = (char**) malloc(sizeof(char*));
 	int i = 0;
 
 	DIR *dir;
@@ -168,10 +168,10 @@ char** getDatabasesName(){
 			{
 				continue;
 			}
-			databases[i] = malloc(strlen(ent->d_name) * sizeof(char)); 
+			databases[i] = (char*) malloc(strlen(ent->d_name) * sizeof(char)); 
 			databases[i] = ent->d_name;
 			i++;
-			databases = realloc(databases, sizeof(char*)*(i+1));
+			databases = (char**) realloc(databases, sizeof(char*)*(i+1));
 		}
 
 		databases[i] = NULL;
@@ -188,7 +188,7 @@ char** getDatabasesName(){
 */
 char* getDefaultDatabaseName(){
 	FILE *default_db;
-	char* db_name = malloc(sizeof(char)*100);
+	char* db_name = (char*) malloc(sizeof(char)*100);
 	default_db = fopen("storage/default_db.csv", "r");
 	if (default_db == NULL)
 	{
@@ -207,7 +207,7 @@ char* getDefaultDatabaseName(){
 */
 
 char* removeChar(char* old_string, char symbol){
-	char* new_string = malloc(sizeof(char));
+	char* new_string = (char*) malloc(sizeof(char));
 	int size = strlen(old_string), k=0;
 	for (int i = 0; i < size; ++i, ++k)
 	{
@@ -216,10 +216,10 @@ char* removeChar(char* old_string, char symbol){
 			k--;
 			continue;  		
 	 	}
-	 	new_string = realloc(new_string, sizeof(char)*(k+1));
+	 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	 	new_string[k] = old_string[i];
 	}
-	new_string = realloc(new_string, sizeof(char)*(k+1));
+	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	new_string[k] = '\0';
 	return new_string;
 }
@@ -229,7 +229,7 @@ char* removeChar(char* old_string, char symbol){
 */
 
 char* removeCharFromPosition(char* old_string, int position){
-	char* new_string = malloc(sizeof(char));
+	char* new_string = (char*) malloc(sizeof(char));
 	int size = strlen(old_string), k=0;
 	for (int i = 0; i < size; ++i, ++k)
 	{
@@ -238,10 +238,10 @@ char* removeCharFromPosition(char* old_string, int position){
 			k--;
 			continue;  		
 	 	}
-	 	new_string = realloc(new_string, sizeof(char)*(k+1));
+	 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	 	new_string[k] = old_string[i];
 	}
-	new_string = realloc(new_string, sizeof(char)*(k+1));
+	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	new_string[k] = '\0';
 	return new_string;
 }
@@ -259,16 +259,16 @@ char** split(char* text, char separator, int* size){
 	{
 		if ((text[i]==separator && i!=0) || text[i] == '\0')
 		{
-			strings = malloc(sizeof(char*)*(cont+1));
+			strings = (char**) malloc(sizeof(char*)*(cont+1));
 			int k = 0;
 			for (int j = last_step; j < i; ++j, ++k)
 			{
 				if (k==0)
 				{
-					strings[cont] = malloc(sizeof(char)*(k+2));
+					strings[cont] = (char*) malloc(sizeof(char)*(k+2));
 					strings[cont][k] = text[j];
 				}else{
-					strings[cont] = realloc(strings[cont], sizeof(char)*(k+2));
+					strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+2));
 					strings[cont][k] = text[j];
 				}
 			}
@@ -300,10 +300,10 @@ int countColumns(char* columns_name_command){
 */
 
 char* cropStringRight(char* old_string, int index){
-	char* new_string = malloc(sizeof(char));
+	char* new_string = (char*) malloc(sizeof(char));
 	for (int i = 0; i <index; ++i)
 	{
-		new_string = realloc(new_string, sizeof(char)*(i+2));
+		new_string = (char*) realloc(new_string, sizeof(char)*(i+2));
 		new_string[i] = old_string[i];
 	}
 	new_string[index]= '\0';
@@ -318,11 +318,11 @@ char* cropStringRight(char* old_string, int index){
 */
 
 char* cropStringLeft(char* old_string, int index){
-	char* new_string = malloc(sizeof(char));
+	char* new_string = (char*) malloc(sizeof(char));
 	int j = 0;
 	for (int i = index+1; i <strlen(old_string); ++i, ++j)
 	{
-		new_string = realloc(new_string, sizeof(char)*(j+2));
+		new_string = (char*) realloc(new_string, sizeof(char)*(j+2));
 		new_string[j] = old_string[i];
 	}
 	new_string[j]= '\0';
@@ -386,11 +386,11 @@ int isChar(char* declaration_type){
 	if(strcmp(cropStringRight(declaration_type, 4), primitive_types[2])==0){
 		if (declaration_type[4]=='[')
 		{
-			int* numbers = malloc(sizeof(int));
+			int* numbers = (int*) malloc(sizeof(int));
 			int j=0, number;
 			for (int i = 5; declaration_type[i]!=']'; ++i, ++j)
 			{
-				numbers = realloc(numbers, sizeof(int)*(j+1));
+				numbers = (int*) realloc(numbers, sizeof(int)*(j+1));
 				if (isdigit(declaration_type[i]))
 				{
 					numbers[j] = (int)declaration_type[i] - '0'; 
@@ -483,7 +483,7 @@ int countCharInString(char* string_1, char symbol){
 char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 
 	int j = 0, n_occurrency = countCharInString(old_string, symbol);
-	char* new_string = malloc(sizeof(char)*(strlen(old_string)+n_occurrency+1));
+	char* new_string = (char*) malloc(sizeof(char)*(strlen(old_string)+n_occurrency+1));
 	for (int i = 0; i < strlen(old_string); ++i, ++j)
 	{
 		if (old_string[i]==symbol && old_string[i+1]!=new_char)
@@ -535,7 +535,7 @@ int hasPrimaryKey(char* columns_name_command){
 
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
-	char* column_name = malloc(sizeof(char));
+	char* column_name = (char*) malloc(sizeof(char));
 	if (columns_name_command[strlen(columns_name_command)-1]!=')')
 	{
 		printf("sintaxe error\n");

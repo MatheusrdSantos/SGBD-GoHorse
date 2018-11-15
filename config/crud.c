@@ -1,15 +1,17 @@
 char* exec_create(char* command){
 	// se o comando tem apenas duas palavras
 	// executa a criação de um novo banco
-	//checar se banco já existe
+	//checa se banco já existe
 	if (countWords(command, ' ')==2){
 		char* db_name = getWordFromIndex(command, ' ', 2);
 		if(databaseExist(db_name)!=-1){
 			displayAlertMessage("O banco de dados já existe!");
 		}else{
 			int result = mkdir(concat("storage/", db_name), 0777);
+			//int result = mkdir(concat("storage/", db_name));
 		}
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
+		// create table
 		char* default_db = getDefaultDatabaseName();
 		char* table_name = getWordFromIndex(command, ' ', 3);
 		if (getWordIndex(getWordFromIndex(command, ' ', 4), reserved_words)==11)
@@ -141,7 +143,7 @@ int exec_select(char* command){
 
 	char* default_db = getDefaultDatabaseName();
 	char* second_word = getWordFromIndex(command, ' ', 2);
-	char* table_content = malloc(sizeof(char)*100);
+	char* table_content = (char*) malloc(sizeof(char)*100);
 
 	char* url_1 = concat("storage/", default_db);
 	char* url_2 = concat(url_1, "/");
@@ -165,7 +167,7 @@ int exec_select(char* command){
 		int fsize = ftell(selected_table);
 		fseek(selected_table, 0, SEEK_SET);  //same as rewind(f);
 		
-		char *string = malloc(fsize + 1);
+		char *string = (char*) malloc(fsize + 1);
 		fread(string, fsize, 1, selected_table);
 
 		string[fsize] = '\0';
@@ -185,6 +187,7 @@ int exec_insert(char* command){
 		if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[15])==0)
 		{
 			char* values = getValuesFromDeclaration(command);
+			Row m; 
 			//Row row = valuesToRow(values)
 			//reult =  insertRow(row) -> insere no default database
 		}
