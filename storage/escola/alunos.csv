@@ -1,2 +1,4 @@
 int* id, char[50] nome, float media, date nasc
 1, "davis", 9.0, 10/10/1999
+1, "matheus", 9.0, 09/07/1999
+1, "matheus", 9.0, 09/07/1999

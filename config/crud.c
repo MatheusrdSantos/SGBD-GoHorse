@@ -181,12 +181,19 @@ int exec_select(char* command){
 	return 1;
 }
 //insere os dados na tabela
-int insertRow(Row row){
+// insert into alunos values (1, "matheus", 9.0, 09/07/1999)
+// int* id, char[50] nome, float media, date nasc
+int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
-	for(int i = 0; i < row.n_data; i++)
-	{
-		//printf("%s\n", row.data[i]);
+	FILE* table = getTableFileAppend(getDefaultDatabaseName(), table_name);
+	if(table == NULL){
+		throwError("Problema na leitura do arquivo");
+		return 0;
 	}
+	char* literal_data = concatVectorWithSeparator(row.data, ',', row.n_data);
+	fprintf(table, "\n%s", literal_data);
+	fclose(table);
+	return 1;
 }
 
 int exec_insert(char* command){
@@ -201,7 +208,7 @@ int exec_insert(char* command){
 				Row row;
 				row.data = data;
 				row.n_data = size;
-				result = insertRow(row);
+				result = insertRow(row, table_name);
 			}
 			
 		}

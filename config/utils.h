@@ -39,4 +39,7 @@ int validateDate(char* data);
 int isValidYear(int year);
 int isValidMonth(int month);
 int isValidDay(int day);
+FILE* getTableFileRead(char* db_name, char* table_name);
+FILE* getTableFileWrite(char* db_name, char* table_name);
+char* concatVectorWithSeparator(char** vector, char separator, int size);
 #include "utils.c"

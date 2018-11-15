@@ -642,19 +642,47 @@ char* getValuesFromDeclaration(char* command){
 	}
 }
 
-/*
-* Recupera o header da tabela especificada
-*/
-
-char* getTableHeaderFromDatabase(char* db_name, char* table_name){
+FILE* getTableFileRead(char* db_name, char* table_name){
 	char* path = concat("storage/", db_name);
-	char* header = (char*) malloc(sizeof(char));
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
 	printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "r");
+	return table;
+}
+
+FILE* getTableFileWrite(char* db_name, char* table_name){
+	char* path = concat("storage/", db_name);
+	path = concat(path, "/\0");
+	path = concat(path, table_name);
+	path = concat(path, ".csv\0");
+	printf("path: %s\n", path);
+	FILE* table = NULL;
+	table = fopen(path, "w");
+	return table;
+}
+
+FILE* getTableFileAppend(char* db_name, char* table_name){
+	char* path = concat("storage/", db_name);
+	path = concat(path, "/\0");
+	path = concat(path, table_name);
+	path = concat(path, ".csv\0");
+	printf("path: %s\n", path);
+	FILE* table = NULL;
+	table = fopen(path, "a");
+	return table;
+}
+
+/*
+* Recupera o header da tabela especificada
+*/
+
+char* getTableHeaderFromDatabase(char* db_name, char* table_name){
+	char* header = (char*) malloc(sizeof(char));
+	FILE* table;
+	table = getTableFileRead(db_name, table_name);
 	char c;
 	int cont = 0;
 	// colocar isso aqui como função
@@ -665,6 +693,7 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 		header[cont] = c;
 		cont++;
 	}
+	fclose(table);
 	header[cont] = '\0';
 	printf("header: %s\n", header);
 	return header;
@@ -827,4 +856,19 @@ int validateValues(char* table_name, char** data){
 		valueMatchWithType(data[i], columns_declaration[i]);
 	}
 	// se todos os valores forem válidos escreve-os na tabela
+}
+
+char* concatVectorWithSeparator(char** vector, char separator, int size){
+	char* result;
+	for(int i = 0; i < size; i++)
+	{
+		if(i==0){
+			result = concat("", concat(vector[i], ","));
+		}else if(i+1 == size){
+			result = concat(result, vector[i]);
+		}else{
+			result = concat(result, concat(vector[i], ","));
+		}
+	}
+	return result;
 }
