@@ -1,1 +1,3 @@
 int* id, char[60] nome, float salario
+1, "jose joao", 2000.0
+1, "jose joao", 2000.0

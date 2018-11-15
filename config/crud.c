@@ -52,7 +52,7 @@ int createTableFromHeader(char* table_header, char* table_name){
 	    return 0;
 	}
 	table = fopen(table_full_path, "w+");
-	fprintf(table, "%s", table_header);
+	fprintf(table, "%s\n", table_header);
 	fclose(table);
 	return 1;
 	
@@ -182,7 +182,9 @@ int exec_select(char* command){
 }
 //insere os dados na tabela
 // insert into alunos values (1, "matheus", 9.0, 09/07/1999)
+// insert into professores values (1, "jose joao", 2000.0)
 // int* id, char[50] nome, float media, date nasc
+// int* id, char[60] nome, float salario
 int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
 	FILE* table = getTableFileAppend(getDefaultDatabaseName(), table_name);
@@ -191,7 +193,7 @@ int insertRow(Row row, char* table_name){
 		return 0;
 	}
 	char* literal_data = concatVectorWithSeparator(row.data, ',', row.n_data);
-	fprintf(table, "\n%s", literal_data);
+	fprintf(table, "%s\n", literal_data);
 	fclose(table);
 	return 1;
 }
