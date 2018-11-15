@@ -180,9 +180,15 @@ int exec_select(char* command){
 
 	return 1;
 }
+//insere os dados na tabela
 int insertRow(Row row){
-
+	
+	for(int i = 0; i < row.n_data; i++)
+	{
+		printf("%s\n", row.data[i]);
+	}
 }
+
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
 		char* table_name = getWordFromIndex(command, ' ', 3);
@@ -191,9 +197,16 @@ int exec_insert(char* command){
 			char* values = getValuesFromDeclaration(command);
 			int size = 0, result;
 			char** data = split(values, ',', &size);
+			
+			for(int i = 0; i < size; i++)
+			{
+				printf("%i -> %s\n" , i, data[i]);
+			}
+			/*
 			Row row;
 			row.data = data;
-			result =  insertRow(row);
+			row.n_data = size;
+			result =  insertRow(row);*/
 		}
 	}else{
 		// melhorar a função para receber strings por parametro

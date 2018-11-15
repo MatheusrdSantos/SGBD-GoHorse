@@ -1,5 +1,6 @@
 typedef struct{
 	char** data;
+	int n_data;
 }Row;
 
 typedef struct{

@@ -252,14 +252,15 @@ char* removeCharFromPosition(char* old_string, int position){
 */
 
 char** split(char* text, char separator, int* size){
-	char** strings;
+	//printf("initial text: %s\n", text);
+	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
-	int cont = 0;
-	for (int i = 0; i < strlen(text); ++i)
+	int cont = 0, text_size = strlen(text);
+	for (int i = 0; i < text_size; ++i)
 	{
-		if ((text[i]==separator && i!=0) || text[i] == '\0')
+		if ((text[i]==separator && i!=0) || i==text_size-1)
 		{
-			strings = (char**) malloc(sizeof(char*)*(cont+1));
+			strings = (char**) realloc(strings, sizeof(char*)*(cont+1));
 			int k = 0;
 			for (int j = last_step; j < i; ++j, ++k)
 			{
@@ -270,14 +271,24 @@ char** split(char* text, char separator, int* size){
 				}else{
 					strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+2));
 					strings[cont][k] = text[j];
+					// se ele entrar no if pela condição i==text_size
+					// o erro que ocorria é que o ultimo caractere não era recuperado
+
+					if(j+1==i && text[i]!=separator){
+						strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+3));
+						k++;
+						strings[cont][k] = text[i];
+					}
 				}
 			}
-			strings[cont][k+1] = '\0';
+			strings[cont][k] = '\0';
+			//printf("splited: %s - size: %i\n", strings[cont], (int)strlen(strings[cont]));
 			last_step = i+1;
 			cont++;
 		}
 	}
-	*size = cont+1;
+	*size = cont;
+	//printf("size: %i\n", *size);
 	return strings;
 }
 
@@ -612,7 +623,10 @@ char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol
 	char* cropped_left = cropStringLeft(old_string, firstOcurrency);
 	int chars_removed = size - strlen(cropped_left);
 	char* cropped_right = cropStringRight(old_string, lastOcurrency);
-	return removeCharFromPosition(cropped_left, lastOcurrency - chars_removed);
+	char* result = removeCharFromPosition(cropped_left, lastOcurrency - chars_removed);
+	result = (char*) realloc(result, sizeof(char)*(strlen(result)+1));
+	result[strlen(result)] = '\0';
+	return result;
 }
 char* getValuesFromDeclaration(char* command){
 	if (command[strlen(command)-1]!=')')
@@ -621,5 +635,6 @@ char* getValuesFromDeclaration(char* command){
 		return "error";
 	}else{
 		printf("->>> %s\n", getStringBetweenSymbols(command, '(', ')'));
+		return getStringBetweenSymbols(command, '(', ')');
 	}
 }
