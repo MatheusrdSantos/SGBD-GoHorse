@@ -723,7 +723,46 @@ int validateChar(char* data, char* type){
 	}
 	return 0;
 }
-// insert into alunos values (1, "matheus", 9.0)
+
+int isValidDay(int day){
+	if(day>0 && day<32){
+		return 1;
+	}
+	return 0;
+}
+
+int isValidMonth(int month){
+	if(month>0 && month<13){
+		return 1;
+	}
+	return 0;
+}
+
+int isValidYear(int year){
+	if(year>-1){
+		return 1;
+	}
+	return 0;
+}
+
+int validateDate(char* data){
+	int size;
+	char** date = split(data, '/', &size);
+	if(size!=3){
+		return 0;	
+	}
+	int day, month, year;
+	day = stringToInt(date[0]);
+	month = stringToInt(date[1]);
+	year = stringToInt(date[2]);
+
+	if(isValidDay(day) && isValidMonth(month) && isValidYear(year)){
+		return 1;
+	}
+
+	return 0;
+}
+
 // a primayKey será checada nessa função, mas será implementada
 // em outro momento
 int valueMatchWithType(char* data, char* type_declaration){
@@ -744,6 +783,7 @@ int valueMatchWithType(char* data, char* type_declaration){
 			displayConfirmMessage("Valor inteiro válido");
 		}else{
 			throwError("Valor inteiro inválido");
+			return 0;
 		}
 	}else if(isChar(type)){
 		
@@ -751,6 +791,7 @@ int valueMatchWithType(char* data, char* type_declaration){
 			displayConfirmMessage("Valor char válido");
 		}else{
 			throwError("Valor char inválido");
+			return 0;
 		}
 		
 	}else if (isFloat(type)) {
@@ -758,19 +799,21 @@ int valueMatchWithType(char* data, char* type_declaration){
 			displayConfirmMessage("Valor float válido");
 		}else{
 			throwError("Valor float inválido");
+			return 0;
 		}
 		
 	}else if (isDate(type)){
-		printf("É data\n");
-		//validateDate()
+		if(validateDate(data)){
+			displayConfirmMessage("Valor date válido");
+		}else{
+			throwError("Valor date inválido");
+			return 0;
+		}
 	}else{
 		throwError("Erro não identificado!");
 		return 0;
 	}
-	
-	
-	
-	
+	return 1;
 }
 
 int validateValues(char* table_name, char** data){

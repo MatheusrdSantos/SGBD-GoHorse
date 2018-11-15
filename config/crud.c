@@ -182,7 +182,7 @@ int exec_select(char* command){
 }
 //insere os dados na tabela
 int insertRow(Row row){
-	
+	displayMessage("Escrevendo dados em disco");
 	for(int i = 0; i < row.n_data; i++)
 	{
 		//printf("%s\n", row.data[i]);
@@ -201,7 +201,7 @@ int exec_insert(char* command){
 				Row row;
 				row.data = data;
 				row.n_data = size;
-				result =  insertRow(row);
+				result = insertRow(row);
 			}
 			
 		}

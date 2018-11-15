@@ -1,2 +1,2 @@
-int* id, char[50] nome, float media
-1, "davis", 9.0
+int* id, char[50] nome, float media, date nasc
+1, "davis", 9.0, 10/10/1999

@@ -35,4 +35,8 @@ int valueMatchWithType(char* data, char* type_declaration);
 int validateInt(char* data);
 int validateChar(char* data, char* type);
 int stringToInt(char* data);
+int validateDate(char* data);
+int isValidYear(int year);
+int isValidMonth(int month);
+int isValidDay(int day);
 #include "utils.c"
