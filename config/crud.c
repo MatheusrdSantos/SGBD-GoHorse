@@ -197,16 +197,13 @@ int exec_insert(char* command){
 			char* values = getValuesFromDeclaration(command);
 			int size = 0, result;
 			char** data = split(values, ',', &size);
-			
-			for(int i = 0; i < size; i++)
-			{
-				printf("%i -> %s\n" , i, data[i]);
+			if(validateValues(table_name, data)){	
+				Row row;
+				row.data = data;
+				row.n_data = size;
+				result =  insertRow(row);
 			}
-			/*
-			Row row;
-			row.data = data;
-			row.n_data = size;
-			result =  insertRow(row);*/
+			
 		}
 	}else{
 		// melhorar a função para receber strings por parametro

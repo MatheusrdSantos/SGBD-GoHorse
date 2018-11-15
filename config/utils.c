@@ -628,13 +628,48 @@ char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol
 	result[strlen(result)] = '\0';
 	return result;
 }
+/*
+* recupera os dados
+*/
 char* getValuesFromDeclaration(char* command){
 	if (command[strlen(command)-1]!=')')
 	{
 		printf("sintaxe error\n");
 		return "error";
 	}else{
-		printf("->>> %s\n", getStringBetweenSymbols(command, '(', ')'));
-		return getStringBetweenSymbols(command, '(', ')');
+		char* data = getStringBetweenSymbols(command, '(', ')');
+		printf("->>> %s\n", data);
+		return data;
 	}
+}
+
+/*
+* Recupera o header da tabela especificada
+*/
+
+char* getTableHeaderFromDatabase(char* db_name, char* table_name){
+	char* path = concat("storage/", db_name);
+	char* header = (char*) malloc(sizeof(char));
+	path = concat(path, "/\0");
+	path = concat(path, table_name);
+	path = concat(path, ".csv\0");
+	printf("path: %s\n", path);
+	FILE* table = NULL;
+	table = fopen(path, "r");
+	char c;
+	int cont = 0;
+	while(c!='\n'){
+		c = fgetc(table);
+		header = (char*) realloc(header, sizeof(char)*(cont+1));
+		header[cont] = c;
+		cont++;
+	}
+	header[cont] = '\0';
+	printf("header: %s\n", header);
+}
+
+int validateValues(char* table_name, char** data){
+	char* db_name = getDefaultDatabaseName();
+	getTableHeaderFromDatabase(db_name, table_name);
+	//char* table_header = getTableHeaderFromDatabase(db_name, table_name);
 }

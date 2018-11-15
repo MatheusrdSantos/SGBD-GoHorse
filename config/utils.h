@@ -28,5 +28,7 @@ char* removeCharFromPosition(char* old_string, int position);
 char* getValuesFromDeclaration(char* command);
 int getLastOcurrencyIndex(char* string_1, char symbol);
 int getFirstOcurrencyIndex(char* string_1, char symbol);
+int validateValues(char* table_name, char** data);
 char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol_final);
+char* getTableHeaderFromDatabase(char* db_name, char* table_name);
 #include "utils.c"
