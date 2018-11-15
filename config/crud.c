@@ -191,7 +191,6 @@ int exec_insert(char* command){
 			char* values = getValuesFromDeclaration(command);
 			int size = 0, result;
 			char** data = split(values, ',', &size);
-			// teste
 			Row row;
 			row.data = data;
 			result =  insertRow(row);
