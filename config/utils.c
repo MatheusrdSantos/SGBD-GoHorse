@@ -669,7 +669,42 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	printf("header: %s\n", header);
 	return header;
 }
+int validateInt(char* data){
+	
+	for(int i = 0; i < strlen(data); i++)
+	{
+		if(!isdigit(data[i])){
+			return 0;
+		}
+	}
 
+	return 1;
+}
+int stringToInt(char* data){
+	int* numbers = (int*) malloc(sizeof(int));
+	for(int i = 0; i < strlen(data); i++)
+	{
+		numbers = (int*) realloc(numbers, sizeof(int)*(i+1));
+		if (isdigit(data[i])) {
+			numbers[i] = (int) data[i] - '0';
+		}
+	}
+	return intVectorToInt(numbers, strlen(data));
+	
+}
+
+int validateChar(char* data, char* type){
+	if(!data[0]=='"' || !data[strlen(data)]=='"'){
+		return 0;
+	}
+	int max_size =stringToInt(getStringBetweenSymbols(type, '[', ']'));
+	if(strlen(data)-2<= max_size){
+		printf("n char: %i\n", max_size);
+		return 1;
+	}
+	return 0;
+}
+// insert into alunos values (1, "matheus", 9.0)
 // a primayKey será checada nessa função, mas será implementada
 // em outro momento
 int valueMatchWithType(char* data, char* type_declaration){
@@ -682,10 +717,14 @@ int valueMatchWithType(char* data, char* type_declaration){
 	char* type =  getWordFromIndex(type_declaration, ' ', 1);
 	if(isInt(type)){
 		printf("É inteiro\n");
-		//validateInt();
+		if(validateInt(data)){
+			printf("valor válido\n");
+		}else{
+			printf("valor inválido\n");
+		}
 	}else if(isChar(type)){
 		printf("É char\n");
-		//validateChar()
+		validateChar(data, type);
 	}else if (isFloat(type)) {
 		printf("É float\n");
 		//validateFloat()

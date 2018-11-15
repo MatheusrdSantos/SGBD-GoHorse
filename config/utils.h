@@ -32,4 +32,7 @@ int validateValues(char* table_name, char** data);
 char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol_final);
 char* getTableHeaderFromDatabase(char* db_name, char* table_name);
 int valueMatchWithType(char* data, char* type_declaration);
+int validateInt(char* data);
+int validateChar(char* data, char* type);
+int stringToInt(char* data);
 #include "utils.c"
