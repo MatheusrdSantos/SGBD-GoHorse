@@ -27,7 +27,7 @@ void printHelp(){
 	resetColor();
 }
 void throwError(char* error_message){
-	b_red();
+	red();
 	printf("%s\n", error_message);
 	resetColor();
 }
@@ -45,7 +45,7 @@ void displayAlertMessage(char* message){
 }
 
 void displayConfirmMessage(char* message){
-	green();
+	b_green();
 	printf("%s\n", message);
 	resetColor();
 }

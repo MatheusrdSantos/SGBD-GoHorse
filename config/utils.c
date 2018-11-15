@@ -694,12 +694,11 @@ int stringToInt(char* data){
 }
 
 int validateChar(char* data, char* type){
-	if(!data[0]=='"' || !data[strlen(data)]=='"'){
+	if(!(data[0]=='"') || !(data[strlen(data)-1]=='"')){
 		return 0;
 	}
 	int max_size =stringToInt(getStringBetweenSymbols(type, '[', ']'));
 	if(strlen(data)-2<= max_size){
-		printf("n char: %i\n", max_size);
 		return 1;
 	}
 	return 0;
@@ -714,17 +713,26 @@ int valueMatchWithType(char* data, char* type_declaration){
 	while(type_declaration[0]==' '){
 		type_declaration = removeCharFromPosition(type_declaration, 0);
 	}
+	// faz a mesma coisa que o loop de cima porém com os dados
+	while(data[0]==' '){
+		data = removeCharFromPosition(data, 0);
+	}
 	char* type =  getWordFromIndex(type_declaration, ' ', 1);
 	if(isInt(type)){
-		printf("É inteiro\n");
+		
 		if(validateInt(data)){
-			printf("valor válido\n");
+			displayConfirmMessage("Valor inteiro válido");
 		}else{
-			printf("valor inválido\n");
+			throwError("Valor inteiro inválido");
 		}
 	}else if(isChar(type)){
-		printf("É char\n");
-		validateChar(data, type);
+		
+		if (validateChar(data, type)) {
+			displayConfirmMessage("Valor char válido");
+		}else{
+			throwError("Valor char inválido");
+		}
+		
 	}else if (isFloat(type)) {
 		printf("É float\n");
 		//validateFloat()
