@@ -658,6 +658,8 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	table = fopen(path, "r");
 	char c;
 	int cont = 0;
+	// colocar isso aqui como função
+	// readLineFromFile(table)
 	while(c!='\n'){
 		c = fgetc(table);
 		header = (char*) realloc(header, sizeof(char)*(cont+1));
@@ -666,10 +668,14 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	}
 	header[cont] = '\0';
 	printf("header: %s\n", header);
+	return header;
 }
 
 int validateValues(char* table_name, char** data){
 	char* db_name = getDefaultDatabaseName();
-	getTableHeaderFromDatabase(db_name, table_name);
-	//char* table_header = getTableHeaderFromDatabase(db_name, table_name);
+	char* table_header = getTableHeaderFromDatabase(db_name, table_name);
+	int size;
+	char** columns_declaration = split(table_header, ',', &size);
+	// valueMatchWithType(data[i], columns_declaration[i])
+	// se todos os valores forem válidos escreve-os na tabela
 }
