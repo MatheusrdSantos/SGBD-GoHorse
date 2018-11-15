@@ -180,16 +180,20 @@ int exec_select(char* command){
 
 	return 1;
 }
-
+int insertRow(Row row){
+	
+}
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
 		char* table_name = getWordFromIndex(command, ' ', 3);
 		if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[15])==0)
 		{
 			char* values = getValuesFromDeclaration(command);
-			Row m; 
-			//Row row = valuesToRow(values)
-			//reult =  insertRow(row) -> insere no default database
+			int size = 0, result;
+			char** data = split(values, ',', &size);
+			Row row;
+			row.data = data;
+			result =  insertRow(row);
 		}
 	}else{
 		// melhorar a função para receber strings por parametro
