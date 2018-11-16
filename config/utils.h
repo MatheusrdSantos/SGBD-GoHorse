@@ -31,7 +31,7 @@ int getFirstOcurrencyIndex(char* string_1, char symbol);
 int validateValues(char* table_name, char** data);
 char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol_final);
 char* getTableHeaderFromDatabase(char* db_name, char* table_name);
-int valueMatchWithType(char* data, char* type_declaration);
+int valueMatchWithType(char* data, char* type_declaration, char* table_name);
 int validateInt(char* data);
 int validateChar(char* data, char* type);
 int stringToInt(char* data);
@@ -42,4 +42,8 @@ int isValidDay(int day);
 FILE* getTableFileRead(char* db_name, char* table_name);
 FILE* getTableFileWrite(char* db_name, char* table_name);
 char* concatVectorWithSeparator(char** vector, char separator, int size);
+int isPrimary(char* declaration_type);
+int validateIntPrimary(char* data, char* table_name);
+int* getAllIdsFromTable(char* table_name);
+char* readLineFromFile(FILE* table, int index);
 #include "utils.c"

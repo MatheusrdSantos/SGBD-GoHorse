@@ -185,6 +185,7 @@ int exec_select(char* command){
 // insert into professores values (1, "jose joao", 2000.0)
 // int* id, char[50] nome, float media, date nasc
 // int* id, char[60] nome, float salario
+// insert into itens values (3, "teste", 9.9, 09/10/2018)
 int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
 	FILE* table = getTableFileAppend(getDefaultDatabaseName(), table_name);
@@ -197,7 +198,7 @@ int insertRow(Row row, char* table_name){
 	fclose(table);
 	return 1;
 }
-// TODO: Falta verificar a foreignKey
+// TODO: Falta verificar a primaryKey
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
 		char* table_name = getWordFromIndex(command, ' ', 3);
@@ -219,4 +220,37 @@ int exec_insert(char* command){
 		throwError("Comando into não encontrado");
 		return 0;
 	}
+}
+
+int* getAllIdsFromTable(char* table_name){
+	FILE* table = NULL;
+	/* FILE* table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 1));
+	fclose(table);
+	table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 2));
+	fclose(table);
+	table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 3));
+	fclose(table); */
+	char** rows = (char**) malloc(sizeof(char**));
+	char* row;
+	
+	for(int i = 1; row!=NULL; i++)
+	{
+		table = getTableFileRead(getDefaultDatabaseName(), table_name);
+		row = readLineFromFile(table, i);
+		fclose(table);
+		if(row != NULL){
+			rows = (char**) realloc(rows, sizeof(char*)*i);
+			rows[i-1] = row;
+		}
+	}
+	printf("-> %s\n", rows[0]);
+
+	
+
+	/* table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 4));
+	fclose(table); */
 }

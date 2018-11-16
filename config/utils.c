@@ -387,7 +387,19 @@ int isInt(char* declaration_type){
 	}
 	return 0;
 }
-
+// essa função já espera receber uma declaração de inteiro validada
+int isPrimary(char* declaration_type){
+	if (strlen(declaration_type)==4)
+	{
+		if (declaration_type[3]==reserved_symbols[3])
+		{
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+	return 0;
+}
 /*
 * Verifica se a declaração da coluna está certa e é do tipo char
 */
@@ -579,7 +591,7 @@ char* getTableHeader(char* columns_name_command){
 		{
 			return columns_name_command;
 		}
-		throwError("Foreign Key não encontrada");
+		throwError("Primary Key não encontrada");
 		return "error";
 	
 	}
@@ -647,7 +659,7 @@ FILE* getTableFileRead(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	printf("path: %s\n", path);
+	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "r");
 	return table;
@@ -658,7 +670,7 @@ FILE* getTableFileWrite(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	printf("path: %s\n", path);
+	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "w");
 	return table;
@@ -669,10 +681,47 @@ FILE* getTableFileAppend(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	printf("path: %s\n", path);
+	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "a");
 	return table;
+}
+
+char* readLineFromFile(FILE* table, int index){
+	char* line = (char*) malloc(sizeof(char));
+	char c;
+	int cont = 0, n_linebreaker = 0;
+	int d;
+
+	while(n_linebreaker!=index){
+		if((d = fgetc(table))!=EOF){
+			if(d=='\n'){
+				n_linebreaker++;
+				if(n_linebreaker == index){
+					if((d = fgetc(table))==EOF){
+						return NULL;
+					}else{
+						ungetc(d, table);
+					}
+				}
+			}
+		}else{
+			//printf("erro\n");
+			return NULL;
+		}
+		//printf("%i\n", cont2);
+	}
+
+	while(c!='\n'){
+		//printf("%i\n", cont);
+		c = fgetc(table);
+		line = (char*) realloc(line, sizeof(char)*(cont+1));
+		line[cont] = c;
+		cont++;
+	}
+	line[cont] = '\0';
+	//printf("line: %s\n", line);
+	return line;
 }
 
 /*
@@ -680,22 +729,11 @@ FILE* getTableFileAppend(char* db_name, char* table_name){
 */
 
 char* getTableHeaderFromDatabase(char* db_name, char* table_name){
-	char* header = (char*) malloc(sizeof(char));
+	char* header;
 	FILE* table;
 	table = getTableFileRead(db_name, table_name);
-	char c;
-	int cont = 0;
-	// colocar isso aqui como função
-	// readLineFromFile(table)
-	while(c!='\n'){
-		c = fgetc(table);
-		header = (char*) realloc(header, sizeof(char)*(cont+1));
-		header[cont] = c;
-		cont++;
-	}
+	header = readLineFromFile(table, 0);
 	fclose(table);
-	header[cont] = '\0';
-	printf("header: %s\n", header);
 	return header;
 }
 
@@ -709,6 +747,15 @@ int validateInt(char* data){
 	}
 
 	return 1;
+}
+
+int validateIntPrimary(char* data, char* table_name){
+	
+	if(!validateInt(data)){
+		return 0;
+	}
+	getAllIdsFromTable(table_name);
+	return 0;
 }
 
 int stringToInt(char* data){
@@ -747,6 +794,7 @@ int validateChar(char* data, char* type){
 		return 0;
 	}
 	int max_size =stringToInt(getStringBetweenSymbols(type, '[', ']'));
+
 	if(strlen(data)-2<= max_size){
 		return 1;
 	}
@@ -794,7 +842,7 @@ int validateDate(char* data){
 
 // a primayKey será checada nessa função, mas será implementada
 // em outro momento
-int valueMatchWithType(char* data, char* type_declaration){
+int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	// remove os espaçoes iniciais
 	// é um loop porque o comando pode vim com mais de um espaço
 	// Ex: int* id,  char[50] nome
@@ -807,13 +855,22 @@ int valueMatchWithType(char* data, char* type_declaration){
 	}
 	char* type =  getWordFromIndex(type_declaration, ' ', 1);
 	if(isInt(type)){
-		
-		if(validateInt(data)){
-			displayConfirmMessage("Valor inteiro válido");
+		if(isPrimary(type)){
+			if(validateIntPrimary(data, table_name)){
+				displayConfirmMessage("Valor inteiro para primeryKey válido");
+			}else{
+				throwError("Valor inteiro para primeryKey inválido");
+				return 0;
+			}
 		}else{
-			throwError("Valor inteiro inválido");
-			return 0;
+			if(validateInt(data)){
+				displayConfirmMessage("Valor inteiro válido");
+			}else{
+				throwError("Valor inteiro inválido");
+				return 0;
+			}
 		}
+		
 	}else if(isChar(type)){
 		
 		if (validateChar(data, type)) {
@@ -853,9 +910,11 @@ int validateValues(char* table_name, char** data){
 	
 	for(int i = 0; i < size; i++)
 	{
-		valueMatchWithType(data[i], columns_declaration[i]);
+		if(!valueMatchWithType(data[i], columns_declaration[i], table_name)){
+			return 0;
+		}
 	}
-	// se todos os valores forem válidos escreve-os na tabela
+	return 1;
 }
 
 char* concatVectorWithSeparator(char** vector, char separator, int size){
