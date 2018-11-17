@@ -1,4 +1,4 @@
 exec.exe
 exec
 .vscode
-storage/
+storage/*
