@@ -183,10 +183,26 @@ int exec_select(char* command){
 			resetColor();
 			fclose(selected_table);
 		}else{
-			//modularizar!
-		red();
-		printf("Comando inesperado: \"%s\"\n",  getWordFromIndex(command, ' ', 4));
-		resetColor();
+			// verifica se tem * após o nome da tabela
+			if(strlen(getWordFromIndex(command, ' ', 4)) == 1 && getWordFromIndex(command, ' ', 4)[0] == reserved_symbols[3]){
+				printf("tem o *\n");
+				if (strcmp(getWordFromIndex(command, ' ', 5), reserved_words[13])==0) {
+					// getClonsure
+					printf("tem where\n");
+				}else{
+					printf("falta o where\n");
+				}
+				
+			}else if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[11])==0) {
+				//tem especificação de colunas
+				// getColumsName
+				printf("tem declaração de colunas\n");
+				
+			}else{
+				// filtro de colunas está faltando
+				printf("falta a declaração de colunas\n");
+			}
+
 		}
 		
 		
