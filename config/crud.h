@@ -6,5 +6,5 @@ int exec_insert(char* command);
 int createTable(char* table_name, char* columns_name);
 int createTableFromHeader(char* table_header, char* table_name);
 int insertRow(Row row, char* table_name);
-int* getAllIdsFromTable(char* table_name);
+int* getAllIdsFromTable(char* table_name, int* n_numbers);
 #include "crud.c"

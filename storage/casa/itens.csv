@@ -2,3 +2,6 @@ int* id, char[10] descricao, float preco, date datacompra
 1, "pão", 2.0, 15/11/2018
 2, "asdelfuem", 2.1, 10/11/2018
 3, "teste", 9.9, 09/10/2018
+4, "teste", 9.9, 09/10/2018
+5, "teste", 9.9, 09/10/2018
+6, "teste", 9.9, 09/10/2018

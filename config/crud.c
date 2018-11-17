@@ -185,6 +185,7 @@ int exec_select(char* command){
 // insert into professores values (1, "jose joao", 2000.0)
 // int* id, char[50] nome, float media, date nasc
 // int* id, char[60] nome, float salario
+// insert into itens values (5, "teste", 9.9, 09/10/2018)
 // insert into itens values (3, "teste", 9.9, 09/10/2018)
 int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
@@ -222,7 +223,7 @@ int exec_insert(char* command){
 	}
 }
 
-int* getAllIdsFromTable(char* table_name){
+int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	FILE* table = NULL;
 	/* FILE* table = getTableFileRead(getDefaultDatabaseName(), table_name);
 	printf("-> %s\n", readLineFromFile(table, 1));
@@ -235,20 +236,37 @@ int* getAllIdsFromTable(char* table_name){
 	fclose(table); */
 	char** rows = (char**) malloc(sizeof(char**));
 	char* row;
-	
-	for(int i = 1; row!=NULL; i++)
+	int i;
+	int* numbers = (int*) malloc(sizeof(int*));
+	for(i = 0; row!=NULL; i++)
 	{
+		
 		table = getTableFileRead(getDefaultDatabaseName(), table_name);
 		row = readLineFromFile(table, i);
 		fclose(table);
 		if(row != NULL){
-			rows = (char**) realloc(rows, sizeof(char*)*i);
-			rows[i-1] = row;
+			rows = (char**) realloc(rows, sizeof(char*)*(i+1));
+			//printf("%s\n", row);
+			rows[i] = row;
 		}
 	}
-	printf("-> %s\n", rows[0]);
-
+	i--;
+	int pk_index = findPrimaryKeyIndex(rows[0]);
+	//printf("pk: %i - i: %i\n", pk_index, i);
+	int size;
+	for(int j = 1; j < i; j++)
+	{
+		char* pk_data = splitData(rows[j], ',', &size)[pk_index];
+		numbers = (int*) realloc(numbers, sizeof(int*)*(j));
+		numbers[j-1] = stringToInt(pk_data);
+	}
 	
+	/*for(int k = 0; k < i-1; k++)
+	{
+		printf("%i\n", numbers[k]);
+	}*/
+	*n_numbers = i-1;
+	return numbers;
 
 	/* table = getTableFileRead(getDefaultDatabaseName(), table_name);
 	printf("-> %s\n", readLineFromFile(table, 4));

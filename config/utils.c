@@ -290,6 +290,57 @@ char** split(char* text, char separator, int* size){
 	//printf("size: %i\n", *size);
 	return strings;
 }
+/*
+* Separa os dados de uma linha.
+* A diferença da função acima é que em splitData() ele não quebra string na virgula
+* "mathes, ricardo" não vai bugar, pois ele ignora o que está entre as aspas
+*/
+char** splitData(char* row_data, char separator, int* size){
+	//printf("aqui\n");
+	char** strings = (char**) malloc(sizeof(char*));
+	int last_step = 0; 
+	int cont = 0, text_size = strlen(row_data);
+	for (int i = 0; i < text_size; ++i)
+	{
+		if(row_data[i]=='"'){
+			i++;
+			while(i<text_size && row_data[i]!='"'){
+				i++;
+			}
+		}
+		if ((row_data[i]==separator && i!=0) || i==text_size-1)
+		{
+			strings = (char**) realloc(strings, sizeof(char*)*(cont+1));
+			int k = 0;
+			for (int j = last_step; j < i; ++j, ++k)
+			{
+				if (k==0)
+				{
+					strings[cont] = (char*) malloc(sizeof(char)*(k+2));
+					strings[cont][k] = row_data[j];
+				}else{
+					strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+2));
+					strings[cont][k] = row_data[j];
+					// se ele entrar no if pela condição i==text_size
+					// o erro que ocorria é que o ultimo caractere não era recuperado
+
+					if(j+1==i && row_data[i]!=separator){
+						strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+3));
+						k++;
+						strings[cont][k] = row_data[i];
+					}
+				}
+			}
+			strings[cont][k] = '\0';
+			//printf("splited: %s - size: %i\n", strings[cont], (int)strlen(strings[cont]));
+			last_step = i+1;
+			cont++;
+		}
+	}
+	*size = cont;
+	//printf("size: %i\n", *size);
+	return strings;
+}
 
 /*
 * Essa funçaõ é utilizada para a validação do comando de criação de tabela.
@@ -689,7 +740,7 @@ FILE* getTableFileAppend(char* db_name, char* table_name){
 
 char* readLineFromFile(FILE* table, int index){
 	char* line = (char*) malloc(sizeof(char));
-	char c;
+	char c = '*';
 	int cont = 0, n_linebreaker = 0;
 	int d;
 
@@ -748,14 +799,26 @@ int validateInt(char* data){
 
 	return 1;
 }
-
+int valueIsInIntVector(int* vecto, int size, int value){
+	for(int i = 0; i<size; i++){
+		if(vecto[i]==value){
+			return 1;
+		}
+	}
+	return 0;
+}
 int validateIntPrimary(char* data, char* table_name){
 	
 	if(!validateInt(data)){
 		return 0;
 	}
-	getAllIdsFromTable(table_name);
-	return 0;
+	int n_numbers;
+	int* pks = getAllIdsFromTable(table_name, &n_numbers);
+	if(valueIsInIntVector(pks, n_numbers, stringToInt(data))){
+		throwError("Violação de primaryKey! A chave especificada já existe!");
+		return 0;
+	}
+	return 1;
 }
 
 int stringToInt(char* data){
@@ -857,14 +920,14 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	if(isInt(type)){
 		if(isPrimary(type)){
 			if(validateIntPrimary(data, table_name)){
-				displayConfirmMessage("Valor inteiro para primeryKey válido");
+				//displayConfirmMessage("Valor inteiro para primeryKey válido");
 			}else{
 				throwError("Valor inteiro para primeryKey inválido");
 				return 0;
 			}
 		}else{
 			if(validateInt(data)){
-				displayConfirmMessage("Valor inteiro válido");
+				//displayConfirmMessage("Valor inteiro válido");
 			}else{
 				throwError("Valor inteiro inválido");
 				return 0;
@@ -874,7 +937,7 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	}else if(isChar(type)){
 		
 		if (validateChar(data, type)) {
-			displayConfirmMessage("Valor char válido");
+			//displayConfirmMessage("Valor char válido");
 		}else{
 			throwError("Valor char inválido");
 			return 0;
@@ -882,7 +945,7 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 		
 	}else if (isFloat(type)) {
 		if(validateFloat(data)){
-			displayConfirmMessage("Valor float válido");
+			//displayConfirmMessage("Valor float válido");
 		}else{
 			throwError("Valor float inválido");
 			return 0;
@@ -890,7 +953,7 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 		
 	}else if (isDate(type)){
 		if(validateDate(data)){
-			displayConfirmMessage("Valor date válido");
+			//displayConfirmMessage("Valor date válido");
 		}else{
 			throwError("Valor date inválido");
 			return 0;
@@ -930,4 +993,16 @@ char* concatVectorWithSeparator(char** vector, char separator, int size){
 		}
 	}
 	return result;
+}
+
+int findPrimaryKeyIndex(char* header){
+	int size; 
+ 	char** declarations = split(header, ',', &size);
+	for(int i = 0; i<size; ++i){
+		char* type = getWordFromIndex(declarations[i], ' ', 1);
+		if(isPrimary(type)){
+			return i;
+		}
+	}
+	return -1;
 }
