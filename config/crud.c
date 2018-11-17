@@ -146,44 +146,57 @@ int exec_set(char* command){
 
 int exec_select(char* command){
 	//Select table “table_name”
-	FILE *selected_table;
+	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9])==0){
+		// executa um select simples, sem filtros
+		if(countWords(command, ' ')==3){
+			FILE *selected_table;
 
-	char* default_db = getDefaultDatabaseName();
-	char* second_word = getWordFromIndex(command, ' ', 2);
-	char* table_content = (char*) malloc(sizeof(char)*100);
+			char* default_db = getDefaultDatabaseName();
+			char* table_content = (char*) malloc(sizeof(char)*100);
 
-	char* url_1 = concat("storage/", default_db);
-	char* url_2 = concat(url_1, "/");
+			char* url_1 = concat("storage/", default_db);
+			char* url_2 = concat(url_1, "/");
 
-	if(strcmp(second_word, reserved_words[9]) == 0){
-		char* table_name = getWordFromIndex(command, ' ', 3);
-		char* url_3 = concat(url_2, table_name);
-		char* url_final = concat(url_3, ".csv");
-		
-		selected_table = fopen(url_final, "rb");
+			char* table_name = getWordFromIndex(command, ' ', 3);
+			char* url_3 = concat(url_2, table_name);
+			char* url_final = concat(url_3, ".csv");
+			
+			selected_table = fopen(url_final, "rb");
 
-		if (selected_table == NULL)
-		{
-			red();
-		    printf("Error opening file!\n");
-		    resetColor();
-		    return 0;
-		}
+			if (selected_table == NULL)
+			{
+				throwError("Erro na abertura do arquivo!\n");
+				return 0;
+			}
 
-		fseek(selected_table, 0, SEEK_END);
-		int fsize = ftell(selected_table);
-		fseek(selected_table, 0, SEEK_SET);  //same as rewind(f);
-		
-		char *string = (char*) malloc(fsize + 1);
-		fread(string, fsize, 1, selected_table);
+			fseek(selected_table, 0, SEEK_END);
+			int fsize = ftell(selected_table);
+			fseek(selected_table, 0, SEEK_SET);  //same as rewind(f);
+			
+			char *string = (char*) malloc(fsize + 1);
+			fread(string, fsize, 1, selected_table);
 
-		string[fsize] = '\0';
+			string[fsize] = '\0';
 
-		green();
-		printf("%s\n", string);
+			green();
+			printf("%s\n", string);
+			resetColor();
+			fclose(selected_table);
+		}else{
+			//modularizar!
+		red();
+		printf("Comando inesperado: \"%s\"\n",  getWordFromIndex(command, ' ', 4));
 		resetColor();
-		fclose(selected_table);
+		}
+		
+		
+	}else{
+		//modularizar!
+		red();
+		printf("Comando inesperado: \"%s\"\n",  getWordFromIndex(command, ' ', 2));
+		resetColor();
 	}
+	
 
 	return 1;
 }
@@ -209,7 +222,7 @@ int insertRow(Row row, char* table_name){
 	fclose(table);
 	return 1;
 }
-// TODO: Falta verificar a primaryKey
+
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
 		char* table_name = getWordFromIndex(command, ' ', 3);
