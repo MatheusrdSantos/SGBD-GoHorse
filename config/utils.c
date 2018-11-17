@@ -335,7 +335,7 @@ char** splitData(char* row_data, char separator, int* size){
 				}
 			}
 			strings[cont][k] = '\0';
-			printf("splited: |%s| - size: %i\n", strings[cont], (int)strlen(strings[cont]));
+			//printf("splited: |%s| - size: %i\n", strings[cont], (int)strlen(strings[cont]));
 			last_step = i+1;
 			cont++;
 		}
@@ -826,6 +826,10 @@ int validateIntPrimary(char* data, char* table_name){
 
 int stringToInt(char* data){
 	int* numbers = (int*) malloc(sizeof(int));
+	//printf("data: %s", data);
+	data = removeChar(data, '\n');
+	data = removeChar(data, ' ');
+	//printf("pos data: %s", data);
 	for(int i = 0; i < strlen(data); i++)
 	{
 		numbers = (int*) realloc(numbers, sizeof(int)*(i+1));
@@ -1002,7 +1006,11 @@ int findPrimaryKeyIndex(char* header){
 	int size; 
  	char** declarations = split(header, ',', &size);
 	for(int i = 0; i<size; ++i){
+		while(declarations[i][0]==' '){
+			declarations[i] = removeCharFromPosition(declarations[i], 0);
+		}
 		char* type = getWordFromIndex(declarations[i], ' ', 1);
+		//printf("type: %s - i: %i - size: %i\n", type, i, size);
 		if(isPrimary(type)){
 			return i;
 		}

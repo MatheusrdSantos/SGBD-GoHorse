@@ -201,8 +201,8 @@ int insertRow(Row row, char* table_name){
 		throwError("Problema na leitura do arquivo");
 		return 0;
 	}
-	printf("data 1: %s\n", row.data[0]);
-	printf("data 2: %s\n", row.data[1]);
+	/*printf("data 1: %s\n", row.data[0]);
+	printf("data 2: %s\n", row.data[1]);*/
 
 	char* literal_data = concatVectorWithSeparator(row.data, ',', row.n_data);
 	fprintf(table, "%s\n", literal_data);
@@ -263,12 +263,14 @@ int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	}
 	i--;
 	int pk_index = findPrimaryKeyIndex(rows[0]);
+	//printf("rows[0]: %s\n", rows[0]);
 	//printf("pk: %i - i: %i\n", pk_index, i);
 	int size;
 	for(int j = 1; j < i; j++)
 	{
 		char* pk_data = splitData(rows[j], ',', &size)[pk_index];
 		numbers = (int*) realloc(numbers, sizeof(int*)*(j));
+		//numbers[j-1] = 1;
 		numbers[j-1] = stringToInt(pk_data);
 	}
 	
@@ -276,6 +278,7 @@ int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	{
 		printf("%i\n", numbers[k]);
 	}*/
+	//printf("PASSOU\n");
 	*n_numbers = i-1;
 	return numbers;
 

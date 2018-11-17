@@ -1,2 +1,5 @@
 char[100] teste, int* id
 "string teste", 1
+"string teste", 2
+"string teste", 3
+"string teste", 4
