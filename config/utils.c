@@ -53,7 +53,7 @@ int countWords(char* command, char separator){
 }
 
 /*
-* Retorna a primeir a palavra de uma string separada por espaço
+* Retorna a primeira palavra de uma string separada por espaço
 */
 char* getFirstWord(char* command){
 	char* firstWord =(char*) malloc(sizeof(char));
@@ -786,6 +786,9 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	char* header;
 	FILE* table;
 	table = getTableFileRead(db_name, table_name);
+	if(table == NULL){
+		return "";
+	}
 	header = readLineFromFile(table, 0);
 	fclose(table);
 	return header;
@@ -927,9 +930,9 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	if(isInt(type)){
 		if(isPrimary(type)){
 			if(validateIntPrimary(data, table_name)){
-				//displayConfirmMessage("Valor inteiro para primeryKey válido");
+				//displayConfirmMessage("Valor inteiro para primaryKey válido");
 			}else{
-				throwError("Valor inteiro para primeryKey inválido");
+				throwError("Valor inteiro para primaryKey inválido");
 				return 0;
 			}
 		}else{
@@ -975,6 +978,9 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 int validateValues(char* table_name, char** data){
 	char* db_name = getDefaultDatabaseName();
 	char* table_header = getTableHeaderFromDatabase(db_name, table_name);
+	if(strcmp(table_header, "")==0){
+		return -1;
+	}
 	int size;
 	char** columns_declaration = split(table_header, ',', &size);
 	

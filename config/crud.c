@@ -218,13 +218,21 @@ int exec_insert(char* command){
 			char* values = getValuesFromDeclaration(command);
 			int size = 0, result;
 			char** data = splitData(values, ',', &size);
-			if(validateValues(table_name, data)){	
+			int is_valid = validateValues(table_name, data);
+			if(is_valid == 1){	
 				Row row;
 				row.data = data;
 				row.n_data = size;
 				result = insertRow(row, table_name);
 				return result;
+			}else if(is_valid==0){
+				throwError("Erro durante a inserção: dados inválidos!");
+				return 0;
+			}else if (is_valid == -1) {
+				throwError("Erro durante a inserção: tabela desconhecida!");
+				return 0;
 			}
+			
 			
 		}
 	}else{
