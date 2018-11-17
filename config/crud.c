@@ -100,15 +100,22 @@ char* exec_list(char* command){
 
 		char** databases = getDatabasesName();
 		//não listar se for == default_bd.csv
-		int i = 3;
+		int i = 2;
 
 		// printa de forma bonita os nomes dos bancos
 		// dispayDatabasesName(databases);
-
+		char* default_databese_name = getDefaultDatabaseName();
 		// isso aqui vai para a função acima
 		while(databases[i] != NULL){
-			printf("%s\n", databases[i]);
-			i++;
+			if(strcmp(databases[i], default_databese_name)==0){
+				b_green();
+				printf("%s*\n", databases[i]);
+				resetColor();
+				i++;
+			}else{
+				printf("%s\n", databases[i]);
+				i++;
+			}
 		}
 
 	}else{
@@ -181,11 +188,11 @@ int exec_select(char* command){
 	return 1;
 }
 //insere os dados na tabela
-// insert into alunos values (1, "matheus", 9.0, 09/07/1999)
+// insert into alunos values (4, "matheus", 9.0, 09/07/1999)
 // insert into professores values (1, "jose joao", 2000.0)
 // int* id, char[50] nome, float media, date nasc
 // int* id, char[60] nome, float salario
-// insert into itens values (5, "teste", 9.9, 09/10/2018)
+// insert into itens values (6, "teste", 9.9, 09/10/2018)
 // insert into itens values (3, "teste", 9.9, 09/10/2018)
 int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
@@ -194,6 +201,9 @@ int insertRow(Row row, char* table_name){
 		throwError("Problema na leitura do arquivo");
 		return 0;
 	}
+	printf("data 1: %s\n", row.data[0]);
+	printf("data 2: %s\n", row.data[1]);
+
 	char* literal_data = concatVectorWithSeparator(row.data, ',', row.n_data);
 	fprintf(table, "%s\n", literal_data);
 	fclose(table);
@@ -207,12 +217,13 @@ int exec_insert(char* command){
 		{
 			char* values = getValuesFromDeclaration(command);
 			int size = 0, result;
-			char** data = split(values, ',', &size);
+			char** data = splitData(values, ',', &size);
 			if(validateValues(table_name, data)){	
 				Row row;
 				row.data = data;
 				row.n_data = size;
 				result = insertRow(row, table_name);
+				return result;
 			}
 			
 		}

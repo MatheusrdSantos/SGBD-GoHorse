@@ -296,7 +296,7 @@ char** split(char* text, char separator, int* size){
 * "mathes, ricardo" não vai bugar, pois ele ignora o que está entre as aspas
 */
 char** splitData(char* row_data, char separator, int* size){
-	//printf("aqui\n");
+	//printf("aqui: %s\n", row_data);
 	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
 	int cont = 0, text_size = strlen(row_data);
@@ -310,6 +310,9 @@ char** splitData(char* row_data, char separator, int* size){
 		}
 		if ((row_data[i]==separator && i!=0) || i==text_size-1)
 		{
+			if(i==text_size-1){
+				i++;
+			}
 			strings = (char**) realloc(strings, sizeof(char*)*(cont+1));
 			int k = 0;
 			for (int j = last_step; j < i; ++j, ++k)
@@ -332,7 +335,7 @@ char** splitData(char* row_data, char separator, int* size){
 				}
 			}
 			strings[cont][k] = '\0';
-			//printf("splited: %s - size: %i\n", strings[cont], (int)strlen(strings[cont]));
+			printf("splited: |%s| - size: %i\n", strings[cont], (int)strlen(strings[cont]));
 			last_step = i+1;
 			cont++;
 		}
