@@ -5,7 +5,7 @@ typedef struct{
 
 typedef struct{
 	char* name;
-	char**columns;
+	char** columns;
 	Row* rows;
 	int n_rows;
 	int n_columns;

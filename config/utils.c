@@ -1046,7 +1046,7 @@ int hasOperator(char* filter){
 }
 
 // faz uma validação únicamente da sintaxe
-int validateFilter(char** splited_filters, int n_filters){
+int validateFilterSyntax(char** splited_filters, int n_filters){
 	
 	for(int i = 0; i < n_filters; i++)
 	{
@@ -1071,6 +1071,16 @@ int validateFilter(char** splited_filters, int n_filters){
 	
 }
 
+/*
+* verifica se uma declaração está filtrando alguma coluna
+*/
+
+int filterMatchWithColumn(char* filter, Table table){
+	//getColumnNameFromFilter()
+	//getOperatorFromFilter()
+	//operatorMatchWithColumnType()
+}
+
 void applyFilter(Table* table, char* filters){
 	// aplicar filtro na tabela
 
@@ -1085,8 +1095,13 @@ void applyFilter(Table* table, char* filters){
 	{
 		printf("Splited filter: %s\n", splited_filters[i]);
 	}*/
+
 	// se for inválido imprime um erro e deixa table = NULL
-	if(validateFilter(splited_filters, n_filters)){
+	if(validateFilterSyntax(splited_filters, n_filters)){
+		// colocar um for para cada filtro
+			//filterMatchWithColumn();
+		// se todos forem válidos
+			//interpretFilter()
 		displayConfirmMessage("Aplicando filtros...\n");
 	}else{
 		throwError("Filtros inválidos. Operação não executada!\n");
