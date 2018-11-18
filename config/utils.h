@@ -54,4 +54,6 @@ int validateFilterSyntax(char** splited_filters, int n_filters);
 int hasOperator(char* filter);
 int isOperator(char symbol);
 int filterMatchWithColumn(char* filter, Table table);
+char* getColumnNameFromFilter(char* filter, Table table);
+int findOperator(char* filter);
 #include "utils.c"

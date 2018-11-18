@@ -1071,16 +1071,59 @@ int validateFilterSyntax(char** splited_filters, int n_filters){
 	
 }
 
+int findOperator(char* filter){
+	
+	for(int i = 0; i < strlen(filter); i++)
+	{
+		
+		if (isOperator(filter[i])) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+char* getColumnNameFromFilter(char* filter, Table table){
+	int operatorIndex = findOperator(filter);
+	
+	if (operatorIndex!=-1) {
+		char* cropped_left = cropStringLeft(filter, operatorIndex);
+		char* cropped_right = cropStringRight(filter, operatorIndex);
+		
+		// DEBUG
+		/*printf("left: %s\n", cropped_left);
+		printf("right: %s\n", cropped_right);*/
+		
+		for(int i = 0; i < table.n_columns; i++)
+		{
+			while(table.columns[i][0]==' '){
+				table.columns[i] = removeCharFromPosition(table.columns[i], 0);
+			}
+			char* column_name = getWordFromIndex(table.columns[i], ' ', 2);
+			printf("name->: %s\n", column_name);
+			if (strcmp(column_name, cropped_left)==0) {
+				return cropped_left;
+			}else if(strcmp(column_name, cropped_right)==0){
+				return cropped_right;
+			}
+		}
+		return NULL;
+	}
+	return NULL;
+}
 /*
 * verifica se uma declaração está filtrando alguma coluna
 */
 
 int filterMatchWithColumn(char* filter, Table table){
-	//getColumnNameFromFilter()
+	printf("column name: %s\n", getColumnNameFromFilter(filter, table));
+	//TODO: implementar as funções abaixo
 	//getOperatorFromFilter()
 	//operatorMatchWithColumnType()
 }
 
+// operação controle:
+// select table alunos * where (media>5 and id>3)
 void applyFilter(Table* table, char* filters){
 	// aplicar filtro na tabela
 
@@ -1098,8 +1141,15 @@ void applyFilter(Table* table, char* filters){
 
 	// se for inválido imprime um erro e deixa table = NULL
 	if(validateFilterSyntax(splited_filters, n_filters)){
+		
+		for(int i = 0; i < n_filters; i++)
+		{
+			if(i%2==0){
+				filterMatchWithColumn(splited_filters[i], *table);
+			}
+		}
+		
 		// colocar um for para cada filtro
-			//filterMatchWithColumn();
 		// se todos forem válidos
 			//interpretFilter()
 		displayConfirmMessage("Aplicando filtros...\n");
