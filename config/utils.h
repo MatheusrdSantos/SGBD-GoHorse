@@ -50,4 +50,7 @@ char** splitData(char* row_data, char separator, int* size);
 int valueIsInIntVector(int* vecto, int size, int value);
 void applyFilter(Table* table, char* filter);
 int* getAllIdsFromTable(char* table_name, int* n_numbers);
+int validateFilter(char** splited_filters, int n_filters);
+int hasOperator(char* filter);
+int isOperator(char symbol);
 #include "utils.c"

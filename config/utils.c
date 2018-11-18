@@ -1023,6 +1023,53 @@ int findPrimaryKeyIndex(char* header){
 	}
 	return -1;
 }
+int isOperator(char symbol){
+	
+	for(int i = 0; i < RESERVED_SYMBOLS_SIZE; i++)
+	{
+		if(symbol == reserved_symbols[i]){
+			return 1;
+		}
+	}
+	return 0;
+}
+int hasOperator(char* filter){
+	
+	for(int i = 0; i < strlen(filter); i++)
+	{
+		
+		if (isOperator(filter[i])) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// faz uma validação únicamente da sintaxe
+int validateFilter(char** splited_filters, int n_filters){
+	
+	for(int i = 0; i < n_filters; i++)
+	{
+		
+		if (i%2 == 0) {
+			if(!hasOperator(splited_filters[i])){
+				red();
+				printf("Sintaxe incorreta: \"%s\"\n", splited_filters[i]);
+				resetColor();
+				return 0;
+			}
+		}else{
+			if((strcmp(splited_filters[i], reserved_words[17])!=0 && strcmp(splited_filters[i], reserved_words[16])!=0) || (i+1)==n_filters){
+				red();
+				printf("Operador inesperado: \"%s\"\n", splited_filters[i]);
+				resetColor();
+				return 0;
+			}
+		}	
+	}
+	return 1;
+	
+}
 
 void applyFilter(Table* table, char* filters){
 	// aplicar filtro na tabela
@@ -1038,8 +1085,12 @@ void applyFilter(Table* table, char* filters){
 	{
 		printf("Splited filter: %s\n", splited_filters[i]);
 	}*/
-
-	
+	// se for inválido imprime um erro e deixa table = NULL
+	if(validateFilter(splited_filters, n_filters)){
+		displayConfirmMessage("Aplicando filtros...\n");
+	}else{
+		throwError("Filtros inválidos. Operação não executada!\n");
+	}
 	
 }
 
