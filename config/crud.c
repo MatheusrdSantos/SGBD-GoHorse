@@ -223,10 +223,9 @@ int exec_select(char* command){
 				if (strcmp(getWordFromIndex(command, ' ', 5), reserved_words[13])==0) {
 					// select table alunos * where (nota>5)
 					char* filter = getStringBetweenSymbols(command, '(', ')');
-					printf("filter: %s\n", filter);
 					char* table_name = getWordFromIndex(command, ' ', 3);
 					Table table = getTableWithData(table_name);
-					applyFilter(table, filter);
+					applyFilter(&table, filter);
 					printf("tablename: %s\n", table.name);
 					printf("n_columns: %i\n", table.n_columns);
 					printf("n_rows: %i\n", table.n_rows);
@@ -315,55 +314,3 @@ int exec_insert(char* command){
 	}
 }
 
-int* getAllIdsFromTable(char* table_name, int* n_numbers){
-	FILE* table = NULL;
-	/* FILE* table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 1));
-	fclose(table);
-	table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 2));
-	fclose(table);
-	table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 3));
-	fclose(table); */
-	char** rows = (char**) malloc(sizeof(char**));
-	char* row;
-	int i;
-	int* numbers = (int*) malloc(sizeof(int*));
-	for(i = 0; row!=NULL; i++)
-	{
-		
-		table = getTableFileRead(getDefaultDatabaseName(), table_name);
-		row = readLineFromFile(table, i);
-		fclose(table);
-		if(row != NULL){
-			rows = (char**) realloc(rows, sizeof(char*)*(i+1));
-			//printf("%s\n", row);
-			rows[i] = row;
-		}
-	}
-	i--;
-	int pk_index = findPrimaryKeyIndex(rows[0]);
-	//printf("rows[0]: %s\n", rows[0]);
-	//printf("pk: %i - i: %i\n", pk_index, i);
-	int size;
-	for(int j = 1; j < i; j++)
-	{
-		char* pk_data = splitData(rows[j], ',', &size)[pk_index];
-		numbers = (int*) realloc(numbers, sizeof(int*)*(j));
-		//numbers[j-1] = 1;
-		numbers[j-1] = stringToInt(pk_data);
-	}
-	
-	/*for(int k = 0; k < i-1; k++)
-	{
-		printf("%i\n", numbers[k]);
-	}*/
-	//printf("PASSOU\n");
-	*n_numbers = i-1;
-	return numbers;
-
-	/* table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 4));
-	fclose(table); */
-}

@@ -1024,7 +1024,74 @@ int findPrimaryKeyIndex(char* header){
 	return -1;
 }
 
-Table applyFilter(Table table, char* filter){
+void applyFilter(Table* table, char* filters){
 	// aplicar filtro na tabela
-	// retornar uma nova tabela com os dados filtrados pelo select
+
+	// DEBUG
+	//printf("filter: %s\n", filters);
+	
+	int n_filters;
+	char** splited_filters = split(filters, ' ', &n_filters);
+	
+	// DEBUG
+	/*for(int i = 0; i < n_filters; i++)
+	{
+		printf("Splited filter: %s\n", splited_filters[i]);
+	}*/
+
+	
+	
+}
+
+int* getAllIdsFromTable(char* table_name, int* n_numbers){
+	FILE* table = NULL;
+	/* FILE* table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 1));
+	fclose(table);
+	table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 2));
+	fclose(table);
+	table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 3));
+	fclose(table); */
+	char** rows = (char**) malloc(sizeof(char**));
+	char* row;
+	int i;
+	int* numbers = (int*) malloc(sizeof(int*));
+	for(i = 0; row!=NULL; i++)
+	{
+		
+		table = getTableFileRead(getDefaultDatabaseName(), table_name);
+		row = readLineFromFile(table, i);
+		fclose(table);
+		if(row != NULL){
+			rows = (char**) realloc(rows, sizeof(char*)*(i+1));
+			//printf("%s\n", row);
+			rows[i] = row;
+		}
+	}
+	i--;
+	int pk_index = findPrimaryKeyIndex(rows[0]);
+	//printf("rows[0]: %s\n", rows[0]);
+	//printf("pk: %i - i: %i\n", pk_index, i);
+	int size;
+	for(int j = 1; j < i; j++)
+	{
+		char* pk_data = splitData(rows[j], ',', &size)[pk_index];
+		numbers = (int*) realloc(numbers, sizeof(int*)*(j));
+		//numbers[j-1] = 1;
+		numbers[j-1] = stringToInt(pk_data);
+	}
+	
+	/*for(int k = 0; k < i-1; k++)
+	{
+		printf("%i\n", numbers[k]);
+	}*/
+	//printf("PASSOU\n");
+	*n_numbers = i-1;
+	return numbers;
+
+	/* table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	printf("-> %s\n", readLineFromFile(table, 4));
+	fclose(table); */
 }
