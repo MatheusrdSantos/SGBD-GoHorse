@@ -1023,3 +1023,8 @@ int findPrimaryKeyIndex(char* header){
 	}
 	return -1;
 }
+
+Table applyFilter(Table table, char* filter){
+	// aplicar filtro na tabela
+	// retornar uma nova tabela com os dados filtrados pelo select
+}

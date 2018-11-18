@@ -7,6 +7,8 @@ typedef struct{
 	char* name;
 	char**columns;
 	Row* rows;
+	int n_rows;
+	int n_columns;
 }Table;
 
 typedef struct{

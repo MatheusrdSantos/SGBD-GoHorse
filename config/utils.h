@@ -44,9 +44,9 @@ FILE* getTableFileWrite(char* db_name, char* table_name);
 char* concatVectorWithSeparator(char** vector, char separator, int size);
 int isPrimary(char* declaration_type);
 int validateIntPrimary(char* data, char* table_name);
-int* getAllIdsFromTable(char* table_name, int* n_numbers);
 char* readLineFromFile(FILE* table, int index);
 int findPrimaryKeyIndex(char* header);
 char** splitData(char* row_data, char separator, int* size);
 int valueIsInIntVector(int* vecto, int size, int value);
+Table applyFilter(Table table, char* filter);
 #include "utils.c"

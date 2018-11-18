@@ -144,6 +144,39 @@ int exec_set(char* command){
 
 }
 
+Table getTableWithData(char* table_name){
+	FILE* f_table = NULL;
+	f_table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	Table table;
+	table.name = table_name;
+	int n_columns;
+	table.columns = split(readLineFromFile(f_table, 0), ',', &n_columns);
+	fclose(f_table);
+	table.n_columns = n_columns;
+	Row* rows = (Row*) malloc(sizeof(Row));
+	char* data;
+	int i;
+	for(i = 1; data!=NULL; i++)
+	{
+		int n_columns_row;
+		f_table = getTableFileRead(getDefaultDatabaseName(), table_name);
+		data = readLineFromFile(f_table, i);
+		fclose(f_table);
+		if(data!=NULL){
+			//printf("%s\n", data);
+			Row row;
+			row.data = splitData(data, ',', &n_columns_row);
+			row.n_data = n_columns_row;
+			rows = (Row*) realloc(rows, sizeof(Row)*(i+1));
+			rows[i-1] = row;
+		}
+	}
+	table.rows = rows;
+	table.n_rows = i-1;
+	return table; 
+
+}
+
 int exec_select(char* command){
 	//Select table “table_name”
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9])==0){
@@ -183,10 +216,20 @@ int exec_select(char* command){
 			resetColor();
 			fclose(selected_table);
 		}else{
+
 			// verifica se tem * após o nome da tabela
 			if(strlen(getWordFromIndex(command, ' ', 4)) == 1 && getWordFromIndex(command, ' ', 4)[0] == reserved_symbols[3]){
 				printf("tem o *\n");
 				if (strcmp(getWordFromIndex(command, ' ', 5), reserved_words[13])==0) {
+					// select table alunos * where (nota>5)
+					char* filter = getStringBetweenSymbols(command, '(', ')');
+					printf("filter: %s\n", filter);
+					char* table_name = getWordFromIndex(command, ' ', 3);
+					Table table = getTableWithData(table_name);
+					applyFilter(table, filter);
+					printf("tablename: %s\n", table.name);
+					printf("n_columns: %i\n", table.n_columns);
+					printf("n_rows: %i\n", table.n_rows);
 					// getClonsure
 					printf("tem where\n");
 				}else{
@@ -194,6 +237,7 @@ int exec_select(char* command){
 				}
 				
 			}else if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[11])==0) {
+				// Select table alunos columns (id, nome) where (nota > 5)
 				//tem especificação de colunas
 				// getColumsName
 				printf("tem declaração de colunas\n");
