@@ -100,7 +100,7 @@ char* exec_list(char* command){
 
 		char** databases = getDatabasesName();
 		//não listar se for == default_bd.csv
-		int i = 2;
+		int i = 0;
 
 		// printa de forma bonita os nomes dos bancos
 		// dispayDatabasesName(databases);

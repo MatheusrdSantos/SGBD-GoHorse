@@ -6,3 +6,5 @@ char[100] teste, int* id
 "string teste", 6
 "string teste", 10
 "string teste", 11
+"teste com ,", 7
+"teste com ,", 8

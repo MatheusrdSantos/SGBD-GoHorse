@@ -163,7 +163,7 @@ char** getDatabasesName(){
 	struct dirent *ent;
 	if ((dir = opendir ("storage/")) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
-			if (strcmp(ent->d_name, reserved_files_name[0])==0)
+			if (strcmp(ent->d_name, reserved_files_name[0])==0 || strcmp(ent->d_name, ".")==0 || strcmp(ent->d_name, "..")==0)
 			{
 				continue;
 			}
