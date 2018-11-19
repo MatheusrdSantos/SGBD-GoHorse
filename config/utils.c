@@ -1118,6 +1118,8 @@ char* getColumnNameFromFilter(char* filter, Table table){
 int filterMatchWithColumn(char* filter, Table table){
 	printf("column name: %s\n", getColumnNameFromFilter(filter, table));
 	//TODO: implementar as funções abaixo
+	// existe um problema nesse fluxo: o operador pode ser uma string
+	// ex: ">=" ou "<="
 	//getOperatorFromFilter()
 	//operatorMatchWithColumnType()
 }
