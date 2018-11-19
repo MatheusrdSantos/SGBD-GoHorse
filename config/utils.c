@@ -1071,25 +1071,46 @@ int validateFilterSyntax(char** splited_filters, int n_filters){
 	
 }
 
-int findOperator(char* filter){
-	
+int* findOperator(char* filter){
+	//int* operatorsIndex[3] = {-1, -1, 0};
+	int* operatorsIndex = (int*) malloc(sizeof(int)*3);
+	operatorsIndex[0] = -1;
+	operatorsIndex[1] = -1;
+	operatorsIndex[2] = 0;
+
+	int n_operators = 0;
 	for(int i = 0; i < strlen(filter); i++)
 	{
 		
 		if (isOperator(filter[i])) {
-			return i;
+			operatorsIndex[n_operators] = i;
+			n_operators++;
 		}
 	}
-	return -1;
+	operatorsIndex[2] = n_operators;
+	return operatorsIndex;
 }
 
 char* getColumnNameFromFilter(char* filter, Table table){
-	int operatorIndex = findOperator(filter);
+	// filter
+	// ex: 10>=idade
+	int* operatorsIndex = findOperator(filter);
 	
-	if (operatorIndex!=-1) {
-		char* cropped_left = cropStringLeft(filter, operatorIndex);
-		char* cropped_right = cropStringRight(filter, operatorIndex);
-		
+	char* cropped_left = NULL;
+	char* cropped_right = NULL;
+	
+	if (operatorsIndex[0]!=-1) {
+		if (operatorsIndex[2]==1)
+		{
+			cropped_left = cropStringLeft(filter, operatorsIndex[0]);
+			cropped_right = cropStringRight(filter, operatorsIndex[0]);	
+		}else if(operatorsIndex[2]==2){
+			cropped_left = cropStringLeft(filter, operatorsIndex[1]);
+			cropped_right = cropStringRight(filter, operatorsIndex[0]);
+		}else{
+			throwError("Operadores inválidos!");
+			return NULL;
+		}
 		// DEBUG
 		/*printf("left: %s\n", cropped_left);
 		printf("right: %s\n", cropped_right);*/
@@ -1111,6 +1132,7 @@ char* getColumnNameFromFilter(char* filter, Table table){
 	}
 	return NULL;
 }
+
 /*
 * verifica se uma declaração está filtrando alguma coluna
 */

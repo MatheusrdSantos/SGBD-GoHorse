@@ -221,7 +221,8 @@ int exec_select(char* command){
 			if(strlen(getWordFromIndex(command, ' ', 4)) == 1 && getWordFromIndex(command, ' ', 4)[0] == reserved_symbols[3]){
 				printf("tem o *\n");
 				if (strcmp(getWordFromIndex(command, ' ', 5), reserved_words[13])==0) {
-					// select table alunos * where (nota>5)
+					// select table alunos * where (media>5)
+					// select table alunos * where (nome%math)
 					char* filter = getStringBetweenSymbols(command, '(', ')');
 					char* table_name = getWordFromIndex(command, ' ', 3);
 					Table table = getTableWithData(table_name);
@@ -236,7 +237,7 @@ int exec_select(char* command){
 				}
 				
 			}else if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[11])==0) {
-				// Select table alunos columns (id, nome) where (nota > 5)
+				// Select table alunos columns (id, nome) where (media > 5)
 				//tem especificação de colunas
 				// getColumsName
 				printf("tem declaração de colunas\n");
