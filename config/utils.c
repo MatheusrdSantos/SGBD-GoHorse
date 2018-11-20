@@ -163,6 +163,7 @@ char** getDatabasesName(){
 	struct dirent *ent;
 	if ((dir = opendir ("storage/")) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
+			//printf("d_name: %s\n", ent->d_name);
 			if (strcmp(ent->d_name, reserved_files_name[0])==0 || strcmp(ent->d_name, ".")==0 || strcmp(ent->d_name, "..")==0)
 			{
 				continue;
@@ -182,9 +183,11 @@ char** getDatabasesName(){
 	  	return 0;
 	}
 }
+
 /*
 * Retorna o nome do dabase padrão
 */
+
 char* getDefaultDatabaseName(){
 	FILE *default_db;
 	char* db_name = (char*) malloc(sizeof(char)*100);
@@ -1133,16 +1136,30 @@ char* getColumnNameFromFilter(char* filter, Table table){
 	return NULL;
 }
 
+char* getOperatorFromFilter(char* filter){
+	char* operator = (char*) malloc(sizeof(char));
+	int n_operators = 0;
+	for(int i = 0; i < strlen(filter); i++)
+	{
+		if(isOperator(filter[i])){
+			operator = (char*) realloc(operator, sizeof(char)*(n_operators+2));
+			operator[n_operators] = filter[i];
+			n_operators++;
+		}
+	}
+	operator[n_operators] = '\0';
+	return operator;
+}
+
 /*
 * verifica se uma declaração está filtrando alguma coluna
 */
 
 int filterMatchWithColumn(char* filter, Table table){
-	printf("column name: %s\n", getColumnNameFromFilter(filter, table));
-	//TODO: implementar as funções abaixo
-	// existe um problema nesse fluxo: o operador pode ser uma string
-	// ex: ">=" ou "<="
-	//getOperatorFromFilter()
+	char* column_name = getColumnNameFromFilter(filter, table);
+	printf("column name: %s\n", column_name);
+	char* operators = getOperatorFromFilter(filter);
+	printf("operator: %s\n", operators);
 	//operatorMatchWithColumnType()
 }
 

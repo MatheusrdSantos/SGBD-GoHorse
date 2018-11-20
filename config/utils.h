@@ -56,4 +56,5 @@ int isOperator(char symbol);
 int filterMatchWithColumn(char* filter, Table table);
 char* getColumnNameFromFilter(char* filter, Table table);
 int* findOperator(char* filter);
+char* getOperatorFromFilter(char* filter);
 #include "utils.c"
