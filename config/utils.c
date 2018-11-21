@@ -1222,6 +1222,12 @@ int filterMatchWithColumn(char* filter, Table table){
 	}
 }
 
+// retorna um código que significa alguma operação de:
+// >, <, >=, <=, =, %
+/*int interpretFilter(char* filter){
+
+}*/
+
 // operação controle:
 // select table alunos * where (media>5 and id>3)
 void applyFilter(Table* table, char* filters){
@@ -1255,7 +1261,17 @@ void applyFilter(Table* table, char* filters){
 			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
 		}else{
 			// se todos forem válidos
-				//interpretFilter()
+			//int isAnd = 0
+			/*for(int i = 0; i < n_filters; i++)
+			{
+				if(i%2==0){
+					//interpretFilter()
+				}else{
+					if(splited_filter[i]=="and"){
+						isAnd = 1;
+					}
+				}
+			}*/
 			displayConfirmMessage("Aplicando filtros...\n");
 		}
 	}else{
