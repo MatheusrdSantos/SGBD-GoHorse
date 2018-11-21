@@ -59,4 +59,5 @@ int* findOperator(char* filter);
 char* getOperatorFromFilter(char* filter);
 int operatorMatchWithColumnType(char* operators, char* column_name, Table table);
 char* getColumnTypeFromName(Table table, char* column_name);
+int isMathOperator(char* operator_d);
 #include "utils.c"
