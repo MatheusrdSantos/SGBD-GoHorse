@@ -1137,20 +1137,73 @@ char* getColumnNameFromFilter(char* filter, Table table){
 }
 
 char* getOperatorFromFilter(char* filter){
-	char* operator = (char*) malloc(sizeof(char));
+	char* operator_c = (char*) malloc(sizeof(char));
 	int n_operators = 0;
 	for(int i = 0; i < strlen(filter); i++)
 	{
 		if(isOperator(filter[i])){
-			operator = (char*) realloc(operator, sizeof(char)*(n_operators+2));
-			operator[n_operators] = filter[i];
+			operator_c = (char*) realloc(operator_c, sizeof(char)*(n_operators+2));
+			operator_c[n_operators] = filter[i];
 			n_operators++;
 		}
 	}
-	operator[n_operators] = '\0';
-	return operator;
+	operator_c[n_operators] = '\0';
+	return operator_c;
 }
 
+char* getColumnTypeFromName(Table table, char* column_name){
+	char* column_type;
+	for(int i=0; i<table.n_columns; i++){
+		while(table.columns[i][0] == ' '){
+			table.columns[i] = removeCharFromPosition(table.columns[i], 0);
+		}
+		if(strcmp(getWordFromIndex(table.columns[i], ' ', 2), column_name) == 0){
+			
+			return getWordFromIndex(table.columns[i], ' ', 1);
+		}
+	}
+	return NULL;
+}
+
+int isMathOperator(char* operator_d){
+	
+	for(int i = 0; i < strlen(operator_d); i++)
+	{
+		if(operator_d[i]!=reserved_symbols[0] && operator_d[i]!=reserved_symbols[1] && operator_d[i]!=reserved_symbols[2]){
+			return 0;
+		}
+	}
+	
+	return 1;
+}
+
+int operatorMatchWithColumnType(char* operators, char* column_name, Table table){
+	int isMathOp = isMathOperator(operators);
+	char* column_type = NULL;
+	if(isMathOp){
+		column_type = getColumnTypeFromName(table, column_name);
+		if(isInt(column_type) || isFloat(column_type) || isDate(column_type)){
+			//printf("Is interger match\n");
+			return 1;
+		}else{
+			//printf("Not Intege match\n");
+			return 0;
+		}
+	}else{
+		column_type = getColumnTypeFromName(table, column_name);
+		
+		if (isChar(column_type)) {
+			//printf("char match\n");
+			return 1;
+		}else{
+			//printf("char not match\n");
+			return 0;
+		}
+		
+	}
+	//printf("none match\n");
+	return 0;
+}
 /*
 * verifica se uma declaração está filtrando alguma coluna
 */
@@ -1160,7 +1213,13 @@ int filterMatchWithColumn(char* filter, Table table){
 	printf("column name: %s\n", column_name);
 	char* operators = getOperatorFromFilter(filter);
 	printf("operator: %s\n", operators);
-	//operatorMatchWithColumnType()
+	if(operatorMatchWithColumnType(operators, column_name, table)){
+		//printf("Operador correto!\n");
+		return 1;
+	}else{
+		//printf("Operador incorreto\n");
+		return 0;
+	}
 }
 
 // operação controle:
@@ -1171,7 +1230,7 @@ void applyFilter(Table* table, char* filters){
 	// DEBUG
 	//printf("filter: %s\n", filters);
 	
-	int n_filters;
+	int n_filters, has_error = 0;
 	char** splited_filters = split(filters, ' ', &n_filters);
 	
 	// DEBUG
@@ -1186,14 +1245,19 @@ void applyFilter(Table* table, char* filters){
 		for(int i = 0; i < n_filters; i++)
 		{
 			if(i%2==0){
-				filterMatchWithColumn(splited_filters[i], *table);
+				if(!filterMatchWithColumn(splited_filters[i], *table)){
+					has_error = 1;
+				}
 			}
 		}
 		
-		// colocar um for para cada filtro
-		// se todos forem válidos
-			//interpretFilter()
-		displayConfirmMessage("Aplicando filtros...\n");
+		if(has_error){
+			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
+		}else{
+			// se todos forem válidos
+				//interpretFilter()
+			displayConfirmMessage("Aplicando filtros...\n");
+		}
 	}else{
 		throwError("Filtros inválidos. Operação não executada!\n");
 	}

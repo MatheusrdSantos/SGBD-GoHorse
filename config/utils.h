@@ -57,4 +57,6 @@ int filterMatchWithColumn(char* filter, Table table);
 char* getColumnNameFromFilter(char* filter, Table table);
 int* findOperator(char* filter);
 char* getOperatorFromFilter(char* filter);
+int operatorMatchWithColumnType(char* operators, char* column_name, Table table);
+char* getColumnTypeFromName(Table table, char* column_name);
 #include "utils.c"
