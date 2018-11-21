@@ -64,5 +64,5 @@ int interpretFilter(char* filter);
 int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd);
 char* getValueFromFilter(char* filter_declaration,char* c_name);
 void orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value);
-int getColumnIndex(char** columns, char* column_name);
+int getColumnIndex(char** columns, char* column_name, int n_columns);
 #include "utils.c"

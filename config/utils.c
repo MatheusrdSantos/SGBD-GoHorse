@@ -1301,9 +1301,20 @@ char* getValueFromFilter(char* filter_declaration,char* c_name){
 	return NULL;
 }
 
-int getColumnIndex(char** columns, char* column_name){
+int getColumnIndex(char** columns, char* column_name, int n_columns){
 	
+	for(int i = 0; i < n_columns; i++)
+	{
+		while(columns[i][0]==' '){
+			columns[i] = removeCharFromPosition(columns[i], 0);
+		}
+		if(strcmp(getWordFromIndex(columns[i], ' ', 2), column_name)==0){
+			return i;
+		}
+	}
+	return -1;
 }
+
 /*
 * {'=', '>', '<', '*', '%'}
 * Códigos de retorno de acordo com o filtro
@@ -1316,7 +1327,7 @@ int getColumnIndex(char** columns, char* column_name){
 */
 void orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value){
 	if(operation_code == 1){
-		int column_index = getColumnIndex((*table).columns, column_name);
+		int column_index = getColumnIndex((*table).columns, column_name, (*table).n_columns);
 	}else if(operation_code == 2){
 
 	}else if(operation_code == 3){
