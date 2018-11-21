@@ -9,6 +9,7 @@ typedef struct{
 	Row* rows;
 	int n_rows;
 	int n_columns;
+	int pk_index;
 }Table;
 
 typedef struct{

@@ -1315,6 +1315,25 @@ int getColumnIndex(char** columns, char* column_name, int n_columns){
 	return -1;
 }
 
+int* applyGreaterThan(Table table, int filter_value, int column_index){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks = 0;
+	printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		int row_value = stringToInt(table.rows[i].data[column_index]);
+		if(row_value>filter_value){
+			// pega o valor da pk
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks+1));
+			pks[n_pks] = stringToInt(table.rows[i].data[table.pk_index]);
+			printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks++;
+		}
+	}
+	return pks;
+	
+}
 /*
 * {'=', '>', '<', '*', '%'}
 * Códigos de retorno de acordo com o filtro
@@ -1328,6 +1347,9 @@ int getColumnIndex(char** columns, char* column_name, int n_columns){
 void orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value){
 	if(operation_code == 1){
 		int column_index = getColumnIndex((*table).columns, column_name, (*table).n_columns);
+		int* remainders_pk;
+		// verificar se filter value é int ou float
+		remainders_pk = applyGreaterThan((*table), stringToInt(filter_value), column_index);
 	}else if(operation_code == 2){
 
 	}else if(operation_code == 3){

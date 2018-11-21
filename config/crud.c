@@ -155,6 +155,10 @@ Table getTableWithData(char* table_name){
 	table.n_columns = n_columns;
 	Row* rows = (Row*) malloc(sizeof(Row));
 	char* data;
+	char* table_header;
+	f_table = getTableFileRead(getDefaultDatabaseName(), table_name);
+	table_header = readLineFromFile(f_table, 0);
+	fclose(f_table);
 	int i;
 	for(i = 1; data!=NULL; i++)
 	{
@@ -173,6 +177,7 @@ Table getTableWithData(char* table_name){
 	}
 	table.rows = rows;
 	table.n_rows = i-1;
+	table.pk_index = findPrimaryKeyIndex(table_header);
 	return table; 
 
 }
