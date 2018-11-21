@@ -1262,7 +1262,80 @@ int interpretFilter(char* filter){
 	
 	return intVectorToInt(codes, n_symbols);
 }
-int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, int isAnd){
+
+char* getValueFromFilter(char* filter_declaration,char* c_name){
+	int* operatorsIndex = findOperator(filter_declaration);
+	
+	char* cropped_left = NULL;
+	char* cropped_right = NULL;
+	
+	if (operatorsIndex[0]!=-1) {
+		if (operatorsIndex[2]==1)
+		{
+			cropped_left = cropStringLeft(filter_declaration, operatorsIndex[0]);
+			cropped_right = cropStringRight(filter_declaration, operatorsIndex[0]);	
+		}else if(operatorsIndex[2]==2){
+			cropped_left = cropStringLeft(filter_declaration, operatorsIndex[1]);
+			cropped_right = cropStringRight(filter_declaration, operatorsIndex[0]);
+		}else{
+			throwError("Operadores inválidos!");
+			return NULL;
+		}
+		// DEBUG
+		/*printf("left: %s\n", cropped_left);
+		printf("right: %s\n", cropped_right);*/
+		
+		
+		while(c_name[0]==' '){
+			c_name = removeCharFromPosition(c_name, 0);
+		}
+		printf("name->: %s\n", c_name);
+		if (strcmp(c_name, cropped_left)!=0) {
+			return cropped_left;
+		}else if(strcmp(c_name, cropped_right)!=0){
+			return cropped_right;
+		}
+		
+		return NULL;
+	}
+	return NULL;
+}
+
+int getColumnIndex(char** columns, char* column_name){
+	
+}
+/*
+* {'=', '>', '<', '*', '%'}
+* Códigos de retorno de acordo com o filtro
+* 1 - >
+* 2 - <
+* 3 - =
+* 4 - %
+* 13 - >=
+* 23 - <= 
+*/
+void orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value){
+	if(operation_code == 1){
+		int column_index = getColumnIndex((*table).columns, column_name);
+	}else if(operation_code == 2){
+
+	}else if(operation_code == 3){
+		
+	}else if(operation_code == 4){
+
+	}else if(operation_code == 13){
+
+	}else if(operation_code == 23){
+
+	}
+}
+int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd){
+	if(isAnd){
+		for(int i = 0; i < n_operations; i++)
+		{
+			orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i]);
+		}
+	}
 	
 }
 // operação controle:
@@ -1276,6 +1349,9 @@ void applyFilter(Table* table, char* filters){
 	int n_filters, has_error = 0, n_columns = 0;
 	char** splited_filters = split(filters, ' ', &n_filters);
 	char** columnsName = (char**) malloc(sizeof(char*));
+	char** filter_values = (char**) malloc(sizeof(char*));
+	char* v_name;
+	char* c_name;
 	
 	// DEBUG
 	/*for(int i = 0; i < n_filters; i++)
@@ -1290,7 +1366,12 @@ void applyFilter(Table* table, char* filters){
 		{
 			if(i%2==0){
 				columnsName = (char**) realloc(columnsName, sizeof(char*)*(n_columns+1));
-				columnsName[n_columns] = getColumnNameFromFilter(splited_filters[i], *table);
+				filter_values = (char**) realloc(filter_values, sizeof(char*)*(n_columns+1));
+				c_name = getColumnNameFromFilter(splited_filters[i], *table);
+				v_name = getValueFromFilter(splited_filters[i], c_name);
+				columnsName[n_columns] = c_name;
+				filter_values[n_columns] = v_name;
+				//printf("v_name: %s\n", v_name);
 				n_columns++;
 				if(!filterMatchWithColumn(splited_filters[i], *table)){
 					has_error = 1;
@@ -1302,7 +1383,7 @@ void applyFilter(Table* table, char* filters){
 			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
 		}else{
 			// se todos forem válidos
-			int isAnd = 0, code, n_operations = 0;
+			int isAnd = 1, code, n_operations = 0;
 			int* operations_code = (int*) malloc(sizeof(int));
 			for(int i = 0; i < n_filters; i++, n_operations++)
 			{
@@ -1313,13 +1394,15 @@ void applyFilter(Table* table, char* filters){
 				}else{
 					if(strcmp(splited_filters[i], reserved_words[16])==0){
 						isAnd = 1;
-					}else if (strcmp(splited_filters[i], reserved_words[17])!=0) {
+					}else if (strcmp(splited_filters[i], reserved_words[17])==0) {
+						isAnd = 0;
+					}else{
 						throwError("Operador lógico inválido!");
 					}
 					
 				}
 			}
-			execOperations(operations_code, n_operations, table, columnsName, isAnd);
+			execOperations(operations_code, n_operations, table, columnsName, filter_values, isAnd);
 			displayConfirmMessage("Aplicando filtros...\n");
 		}
 	}else{
