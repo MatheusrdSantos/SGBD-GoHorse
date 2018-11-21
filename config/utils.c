@@ -1224,10 +1224,47 @@ int filterMatchWithColumn(char* filter, Table table){
 
 // retorna um código que significa alguma operação de:
 // >, <, >=, <=, =, %
-/*int interpretFilter(char* filter){
 
-}*/
-
+/*
+* {'=', '>', '<', '*', '%'}
+* Códigos de retorno de acordo com o filtro
+* 1 - >
+* 2 - <
+* 3 - =
+* 4 - %
+* 13 - >=
+* 23 - <= 
+*/
+int interpretFilter(char* filter){
+	int* codes = (int*) malloc(sizeof(int));
+	//printf("complete filter: %s\n", filter);
+	int n_symbols = 0;
+	for(int i = 0; i < strlen(filter); i++)
+	{
+		if(filter[i]==reserved_symbols[0]){
+			codes = (int*) realloc(codes, sizeof(int)*(n_symbols+1));
+			codes[n_symbols] = 3;
+			n_symbols++;
+		}else if(filter[i]==reserved_symbols[1]){
+			codes = (int*) realloc(codes, sizeof(int)*(n_symbols+1));
+			codes[n_symbols] = 1;
+			n_symbols++;
+		}else if(filter[i]==reserved_symbols[2]){
+			codes = (int*) realloc(codes, sizeof(int)*(n_symbols+1));
+			codes[n_symbols] = 2;
+			n_symbols++;
+		}else if(filter[i]==reserved_symbols[4]){
+			codes = (int*) realloc(codes, sizeof(int)*(n_symbols+1));
+			codes[n_symbols] = 4;
+			n_symbols++;
+		}
+	}
+	
+	return intVectorToInt(codes, n_symbols);
+}
+int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, int isAnd){
+	
+}
 // operação controle:
 // select table alunos * where (media>5 and id>3)
 void applyFilter(Table* table, char* filters){
@@ -1236,8 +1273,9 @@ void applyFilter(Table* table, char* filters){
 	// DEBUG
 	//printf("filter: %s\n", filters);
 	
-	int n_filters, has_error = 0;
+	int n_filters, has_error = 0, n_columns = 0;
 	char** splited_filters = split(filters, ' ', &n_filters);
+	char** columnsName = (char**) malloc(sizeof(char*));
 	
 	// DEBUG
 	/*for(int i = 0; i < n_filters; i++)
@@ -1251,6 +1289,9 @@ void applyFilter(Table* table, char* filters){
 		for(int i = 0; i < n_filters; i++)
 		{
 			if(i%2==0){
+				columnsName = (char**) realloc(columnsName, sizeof(char*)*(n_columns+1));
+				columnsName[n_columns] = getColumnNameFromFilter(splited_filters[i], *table);
+				n_columns++;
 				if(!filterMatchWithColumn(splited_filters[i], *table)){
 					has_error = 1;
 				}
@@ -1261,17 +1302,24 @@ void applyFilter(Table* table, char* filters){
 			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
 		}else{
 			// se todos forem válidos
-			//int isAnd = 0
-			/*for(int i = 0; i < n_filters; i++)
+			int isAnd = 0, code, n_operations = 0;
+			int* operations_code = (int*) malloc(sizeof(int));
+			for(int i = 0; i < n_filters; i++, n_operations++)
 			{
 				if(i%2==0){
-					//interpretFilter()
+					operations_code = (int*) realloc(operations_code, sizeof(int)*(n_operations+1));
+					operations_code[n_operations] = interpretFilter(splited_filters[i]);
+					printf("operation code: %i\n", operations_code[n_operations]);
 				}else{
-					if(splited_filter[i]=="and"){
+					if(strcmp(splited_filters[i], reserved_words[16])==0){
 						isAnd = 1;
+					}else if (strcmp(splited_filters[i], reserved_words[17])!=0) {
+						throwError("Operador lógico inválido!");
 					}
+					
 				}
-			}*/
+			}
+			execOperations(operations_code, n_operations, table, columnsName, isAnd);
 			displayConfirmMessage("Aplicando filtros...\n");
 		}
 	}else{

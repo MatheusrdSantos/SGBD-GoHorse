@@ -60,4 +60,6 @@ char* getOperatorFromFilter(char* filter);
 int operatorMatchWithColumnType(char* operators, char* column_name, Table table);
 char* getColumnTypeFromName(Table table, char* column_name);
 int isMathOperator(char* operator_d);
+int interpretFilter(char* filter);
+int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, int isAnd);
 #include "utils.c"
