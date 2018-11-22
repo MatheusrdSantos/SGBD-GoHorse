@@ -63,7 +63,7 @@ int isMathOperator(char* operator_d);
 int interpretFilter(char* filter);
 int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd);
 char* getValueFromFilter(char* filter_declaration,char* c_name);
-void orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value);
+int* orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value);
 int getColumnIndex(char** columns, char* column_name, int n_columns);
 int* applyGreaterThan(Table table, int filter_value, int column_index);
 #include "utils.c"

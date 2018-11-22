@@ -1344,15 +1344,16 @@ int* applyGreaterThan(Table table, int filter_value, int column_index){
 * 13 - >=
 * 23 - <= 
 */
-void orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value){
+int* orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value){
 	int column_index = getColumnIndex((*table).columns, column_name, (*table).n_columns);
 	//int column_index = 0;
 	if(operation_code == 1){
 		int* remainders_pk;
 		// verificar se filter value é int ou float
-		printf("column index: %i\n", column_index);
+		//printf("column index: %i\n", column_index);
 		remainders_pk = applyGreaterThan((*table), stringToInt(filter_value), column_index);
-		printf("column index2: %i\n", column_index);
+		return remainders_pk;
+		//printf("column index2: %i\n", column_index);
 	}else if(operation_code == 2){
 
 	}else if(operation_code == 3){
@@ -1367,11 +1368,12 @@ void orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 }
 int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd){
 	if(isAnd){
+		int* pks = (int*) malloc(sizeof(int));
 		for(int i = 0; i < n_operations; i++)
 		{
-			printf("operations_code: %i\n", operations_code[i]);
+			/*printf("operations_code: %i\n", operations_code[i]);
 			printf("columns_name: %s\n", columnsName[i]);
-			printf("filter_values: %s\n", filter_values[i]);
+			printf("filter_values: %s\n", filter_values[i]);*/
 			orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i]);
 		}
 		return 1;
@@ -1431,7 +1433,7 @@ void applyFilter(Table* table, char* filters){
 				if(i%2==0){
 					operations_code = (int*) realloc(operations_code, sizeof(int)*(n_operations+1));
 					operations_code[n_operations] = interpretFilter(splited_filters[i]);
-					printf("operation code: %i\n", operations_code[n_operations]);
+					//printf("operation code: %i\n", operations_code[n_operations]);
 					n_operations++;
 				}else{
 					if(strcmp(splited_filters[i], reserved_words[16])==0){
