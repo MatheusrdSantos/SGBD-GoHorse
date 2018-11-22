@@ -66,4 +66,5 @@ char* getValueFromFilter(char* filter_declaration,char* c_name);
 int* orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value, int* n_pks);
 int getColumnIndex(char** columns, char* column_name, int n_columns);
 int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pks);
+int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks);
 #include "utils.c"

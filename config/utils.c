@@ -1367,6 +1367,26 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 
 	}
 }
+// essa função só pode ser chamada caso exista um operador lógico
+int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
+	int* remainders = (int*) malloc(sizeof(int));
+	int n_remainders = 0;
+	for(int j = 0; j < n_pks[0]; j++)
+	{	
+		for(int k = 0; k < n_pks[1]; k++)
+		{
+			if(pks[0][j] == pks[1][k]){
+				remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
+				remainders[n_remainders] = pks[0][j];
+				n_remainders++; 
+			}
+			
+		}
+	}
+	*n_result_pks = n_remainders;
+	return remainders;	
+}
+
 int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd){
 	if(isAnd){
 		int** pks = (int**) malloc(sizeof(int*));
@@ -1385,6 +1405,16 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 		}
 		pks[i] = NULL;
 		// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
+		int j = 0, n_result_pks;
+		int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
+
+		
+		for(int j = 0; j < n_result_pks; j++)
+		{
+			printf("pk: %i\n", result_pks[j]);
+			j++;
+		}
+		
 		return 1;
 	}
 	
