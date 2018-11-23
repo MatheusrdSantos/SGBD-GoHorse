@@ -1318,7 +1318,7 @@ int getColumnIndex(char** columns, char* column_name, int n_columns){
 int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	printf("n_rows: %i\n", table.n_rows);
+	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
 		// pode não ser inteiro
@@ -1327,7 +1327,7 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 			// pega o valor da pk
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1377,6 +1377,7 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 		{
 			if(pks[0][j] == pks[1][k]){
 				remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
+				printf("-> %i\n", pks[0][j]);
 				remainders[n_remainders] = pks[0][j];
 				n_remainders++; 
 			}
@@ -1404,15 +1405,17 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 
 		}
 		pks[i] = NULL;
-		// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
-		int j = 0, n_result_pks;
-		int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
+		if(n_operations>1){
 
-		
-		for(int j = 0; j < n_result_pks; j++)
-		{
-			printf("pk: %i\n", result_pks[j]);
-			j++;
+			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
+			int j = 0, n_result_pks;
+			int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
+
+			
+			for(int j = 0; j < n_result_pks; j++)
+			{
+				printf("pk: %i\n", result_pks[j]);
+			}
 		}
 		
 		return 1;
