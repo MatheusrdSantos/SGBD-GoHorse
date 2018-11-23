@@ -1315,6 +1315,16 @@ int getColumnIndex(char** columns, char* column_name, int n_columns){
 	return -1;
 }
 
+int getLargestStringInArray(char** received_array, int size){
+	int pos_largestString, largestLen = 0;
+	for(int i = 0; i < size; i++)
+	{
+		if(strlen(received_array[i]) > largestLen)
+			pos_largestString = i;
+	}
+	return pos_largestString;
+}
+
 int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;

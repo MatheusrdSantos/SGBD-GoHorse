@@ -208,16 +208,51 @@ int exec_select(char* command){
 			}
 
 			fseek(selected_table, 0, SEEK_END);
-			int fsize = ftell(selected_table);
-			fseek(selected_table, 0, SEEK_SET);  //same as rewind(f);
+			int table_content_string_size = ftell(selected_table);
+			fseek(selected_table, 0, SEEK_SET);  //mesmo que rewind(f);
 			
-			char *string = (char*) malloc(fsize + 1);
-			fread(string, fsize, 1, selected_table);
+			char* table_content_string = (char*) malloc(table_content_string_size + 1);
+			fread(table_content_string, table_content_string_size, 1, selected_table);
 
-			string[fsize] = '\0';
+			table_content_string[table_content_string_size] = '\0';
 
-			green();
-			printf("%s\n", string);
+			int table_content_string_splited_size;
+			char** table_content_string_splited = splitData(table_content_string, '\n', &table_content_string_splited_size);
+			int table_splited_twice_size, size_largestString = 0;
+			for (int i = 0; i < table_content_string_splited_size; i++){
+				char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
+
+				int pos_largestString = getLargestStringInArray(table_splited_twice, table_splited_twice_size);
+				int size_largestString_line = strlen(table_splited_twice[pos_largestString]);
+				if(size_largestString < size_largestString_line)
+					size_largestString = size_largestString_line;
+			}
+			size_largestString++;
+			for (int i = 0; i < table_content_string_splited_size; i++){
+				if (i==0){b_blue();}
+				else{green();}
+				char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
+				int actual_stringSize;
+				for (int j = 0; j < table_splited_twice_size; j++)
+				{
+					actual_stringSize = strlen(table_splited_twice[j]);
+					if(i==table_content_string_splited_size-1 && j==table_splited_twice_size-1){
+						for (int k = 0; k < actual_stringSize-1; k++)
+						{
+							printf("%c", table_splited_twice[j][k]);
+						}
+						printf(" ");
+					}else{
+						printf("%s", table_splited_twice[j]);
+					}
+					while(actual_stringSize <= size_largestString){
+						printf(" ");
+						actual_stringSize++;
+					}
+					printf("|");	
+				}
+				printf("\n");
+			}
 			resetColor();
 			fclose(selected_table);
 		}else{
