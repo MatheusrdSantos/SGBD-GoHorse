@@ -98,18 +98,22 @@ char* exec_list(char* command){
 		printf("Você solicitou listar os bancos.\n");
 		resetColor();
 
+		char* default_databese_name = getDefaultDatabaseName();
 		char** databases = getDatabasesName();
 		//não listar se for == default_bd.csv
 		int i = 0;
 
 		// printa de forma bonita os nomes dos bancos
 		// dispayDatabasesName(databases);
-		char* default_databese_name = getDefaultDatabaseName();
+		//printf("fora: %s\n", databases[1]);
 		// isso aqui vai para a função acima
+		//printf("default_db: %s\n", default_databese_name);
 		while(databases[i] != NULL){
+			//printf("i: %i\n", i);
 			if(strcmp(databases[i], default_databese_name)==0){
 				b_green();
 				printf("%s*\n", databases[i]);
+				//printf("----\n");
 				resetColor();
 				i++;
 			}else{
@@ -121,7 +125,7 @@ char* exec_list(char* command){
 	}else{
 		throwError("Esse comando não existe, tente 'list tables' ou 'list databases'.\n");
 	}
-}
+}//insert into turmas values (1, 10)
 
 int exec_set(char* command){
 	FILE *default_db;

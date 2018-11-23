@@ -163,9 +163,9 @@ char** getDatabasesName(){
 	struct dirent *ent;
 	if ((dir = opendir ("storage/")) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
-			//printf("d_name: %s\n", ent->d_name);
 			if (strcmp(ent->d_name, reserved_files_name[0])==0 || strcmp(ent->d_name, ".")==0 || strcmp(ent->d_name, "..")==0)
 			{
+				//printf("entrou continue\n");
 				continue;
 			}
 			databases[i] = (char*) malloc(strlen(ent->d_name) * sizeof(char)); 
@@ -177,6 +177,7 @@ char** getDatabasesName(){
 		databases[i] = NULL;
 
 		closedir (dir);
+		//printf("d_name: %s - i: %i\n", databases[i-2], i);
 		return databases;
 	} else {
 	  	perror ("Não há bancos criados.");
