@@ -211,23 +211,24 @@ char* getDefaultDatabaseName(){
 char* removeChar(char* old_string, char symbol){
 	char* new_string = (char*) malloc(sizeof(char));
 	
-	//printf("old_string: %s\n", old_string);
+	//printf("old_string_rc: %s\n", old_string);
 	int size = strlen(old_string), k=0;
 	//printf("size: %i\n", size);
-	for (int i = 0; i < size; ++i)
+	for (int i = 0; i < size; ++i, k++)
 	{
-		//printf("k: %i - i: %i\n", k, i);
 		if (old_string[i]==symbol)
 		{
+			//printf("achou: %i\n", i);
+	 		k--;
 			continue;  		
-	 	}else{
-			k++;
 		}
 	 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	 	new_string[k] = old_string[i];
+		//printf("k: %i - i: %i\n", k, i);
+		//printf("new: %c - old: %c\n", new_string[k], old_string[i]);
 	}
 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
-	new_string[k] = '\0';
+	new_string[k+1] = '\0';
 	return new_string;
 }
 
@@ -1120,8 +1121,8 @@ char* getColumnNameFromFilter(char* filter, Table table){
 			return NULL;
 		}
 		// DEBUG
-		printf("left: %s\n", cropped_left);
-		printf("right: %s / size: %i\n", cropped_right, (int)strlen(cropped_right));
+		/*printf("left: %s\n", cropped_left);
+		printf("right: %s / size: %i\n", cropped_right, (int)strlen(cropped_right));*/
 
 		for(int i = 0; i < table.n_columns; i++)
 		{
@@ -1348,9 +1349,10 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 		// pode não ser inteiro
 		/*
 		printf("column_i: %i\n", column_index);
-		printf("valor suspeito: %s\n", table.rows[i].data[column_index]);
 		*/
+		//printf("valor suspeito: %s\n", table.rows[i].data[column_index]);
 		int row_value = stringToInt(table.rows[i].data[column_index]);
+		//printf("row_value: %i\n", row_value);
 		if(row_value>filter_value){
 			// pega o valor da pk
 			
@@ -1406,7 +1408,7 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 		{
 			if(pks[0][j] == pks[1][k]){
 				remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
-				printf("-> %i\n", pks[0][j]);
+				//printf("-> %i\n", pks[0][j]);
 				remainders[n_remainders] = pks[0][j];
 				n_remainders++; 
 			}
@@ -1440,14 +1442,14 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
 			int j = 0, n_result_pks;
 			int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
-
-			
+			printf("--------\n RESULT\n ------\n");
+			printf("n_results: %i\n", n_result_pks);
 			for(int j = 0; j < n_result_pks; j++)
 			{
 				printf("pk: %i\n", result_pks[j]);
 			}
 		}else{
-			
+			printf("n_pks: %i\n", n_pks[0]);
 			for(int j = 0; j < n_pks[0]; j++)
 			{
 				printf("pks: %i\n", pks[0][j]);
@@ -1490,7 +1492,6 @@ void applyFilter(Table* table, char* filters){
 				columnsName = (char**) realloc(columnsName, sizeof(char*)*(n_columns+1));
 				filter_values = (char**) realloc(filter_values, sizeof(char*)*(n_columns+1));
 				c_name = getColumnNameFromFilter(splited_filters[i], *table);
-				printf("----\n");
 				v_name = getValueFromFilter(splited_filters[i], c_name);
 				columnsName[n_columns] = c_name;
 				filter_values[n_columns] = v_name;
