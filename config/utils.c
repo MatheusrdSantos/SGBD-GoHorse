@@ -229,7 +229,7 @@ char* removeChar(char* old_string, char symbol){
 		//printf("new: %c - old: %c\n", new_string[k], old_string[i]);
 	}
 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
-	new_string[k+1] = '\0';
+	new_string[k] = '\0';
 	return new_string;
 }
 
@@ -1361,7 +1361,7 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 		/*
 		printf("column_i: %i\n", column_index);
 		*/
-		//printf("valor suspeito: %s\n", table.rows[i].data[column_index]);
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
 		//printf("row_value: %i\n", row_value);
 		if(row_value>filter_value){
@@ -1460,6 +1460,7 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 				printf("pk: %i\n", result_pks[j]);
 			}
 		}else{
+			printf("--------\n RESULT\n ------\n");
 			printf("n_pks: %i\n", n_pks[0]);
 			for(int j = 0; j < n_pks[0]; j++)
 			{
