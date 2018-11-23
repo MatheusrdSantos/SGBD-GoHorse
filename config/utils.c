@@ -210,14 +210,19 @@ char* getDefaultDatabaseName(){
 
 char* removeChar(char* old_string, char symbol){
 	char* new_string = (char*) malloc(sizeof(char));
+	
+	//printf("old_string: %s\n", old_string);
 	int size = strlen(old_string), k=0;
-	for (int i = 0; i < size; ++i, ++k)
+	//printf("size: %i\n", size);
+	for (int i = 0; i < size; ++i)
 	{
+		//printf("k: %i - i: %i\n", k, i);
 		if (old_string[i]==symbol)
 		{
-			k--;
 			continue;  		
-	 	}
+	 	}else{
+			k++;
+		}
 	 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	 	new_string[k] = old_string[i];
 	}
@@ -832,10 +837,10 @@ int validateIntPrimary(char* data, char* table_name){
 
 int stringToInt(char* data){
 	int* numbers = (int*) malloc(sizeof(int));
-	//printf("data: %s", data);
+	//printf("data: %s\n", data);
 	data = removeChar(data, '\n');
 	data = removeChar(data, ' ');
-	//printf("pos data: %s", data);
+	//printf("pos data: %s\n", data);
 	for(int i = 0; i < strlen(data); i++)
 	{
 		numbers = (int*) realloc(numbers, sizeof(int)*(i+1));
@@ -1115,24 +1120,29 @@ char* getColumnNameFromFilter(char* filter, Table table){
 			return NULL;
 		}
 		// DEBUG
-		/*printf("left: %s\n", cropped_left);
-		printf("right: %s\n", cropped_right);*/
-		
+		printf("left: %s\n", cropped_left);
+		printf("right: %s / size: %i\n", cropped_right, (int)strlen(cropped_right));
+
 		for(int i = 0; i < table.n_columns; i++)
 		{
 			while(table.columns[i][0]==' '){
 				table.columns[i] = removeCharFromPosition(table.columns[i], 0);
 			}
 			char* column_name = getWordFromIndex(table.columns[i], ' ', 2);
-			printf("name->: %s\n", column_name);
+			if(column_name[strlen(column_name)-1]=='\n'){
+				column_name = removeCharFromPosition(column_name, strlen(column_name)-1);
+			}
+			//printf("name->: %s/size: %i\n", column_name, (int)strlen(column_name));
 			if (strcmp(column_name, cropped_left)==0) {
 				return cropped_left;
 			}else if(strcmp(column_name, cropped_right)==0){
 				return cropped_right;
 			}
 		}
+		throwError("Nome de operador incorreto!");
 		return NULL;
 	}
+	throwError("Nome de operador incorreto2!");
 	return NULL;
 }
 
@@ -1153,11 +1163,18 @@ char* getOperatorFromFilter(char* filter){
 
 char* getColumnTypeFromName(Table table, char* column_name){
 	char* column_type;
+	char* column_declaration_name;
 	for(int i=0; i<table.n_columns; i++){
 		while(table.columns[i][0] == ' '){
 			table.columns[i] = removeCharFromPosition(table.columns[i], 0);
 		}
-		if(strcmp(getWordFromIndex(table.columns[i], ' ', 2), column_name) == 0){
+		column_declaration_name = getWordFromIndex(table.columns[i], ' ', 2);
+		
+		if (column_declaration_name[strlen(column_declaration_name)-1] == '\n') {
+			column_declaration_name = removeCharFromPosition(column_declaration_name, strlen(column_declaration_name)-1);
+		}
+		
+		if(strcmp(column_declaration_name, column_name) == 0){
 			
 			return getWordFromIndex(table.columns[i], ' ', 1);
 		}
@@ -1166,7 +1183,7 @@ char* getColumnTypeFromName(Table table, char* column_name){
 }
 
 int isMathOperator(char* operator_d){
-	
+	//printf("entrou\n");
 	for(int i = 0; i < strlen(operator_d); i++)
 	{
 		if(operator_d[i]!=reserved_symbols[0] && operator_d[i]!=reserved_symbols[1] && operator_d[i]!=reserved_symbols[2]){
@@ -1174,6 +1191,7 @@ int isMathOperator(char* operator_d){
 		}
 	}
 	
+	//printf("saiu\n");
 	return 1;
 }
 
@@ -1181,7 +1199,10 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 	int isMathOp = isMathOperator(operators);
 	char* column_type = NULL;
 	if(isMathOp){
+		//printf("antes\n");
 		column_type = getColumnTypeFromName(table, column_name);
+		//printf("depois\n");
+		//printf("column_type: %s\n", column_type);
 		if(isInt(column_type) || isFloat(column_type) || isDate(column_type)){
 			//printf("Is interger match\n");
 			return 1;
@@ -1210,9 +1231,9 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 
 int filterMatchWithColumn(char* filter, Table table){
 	char* column_name = getColumnNameFromFilter(filter, table);
-	printf("column name: %s\n", column_name);
+	//printf("column name: %s\n", column_name);
 	char* operators = getOperatorFromFilter(filter);
-	printf("operator: %s\n", operators);
+	//printf("operator: %s\n", operators);
 	if(operatorMatchWithColumnType(operators, column_name, table)){
 		//printf("Operador correto!\n");
 		return 1;
@@ -1308,6 +1329,9 @@ int getColumnIndex(char** columns, char* column_name, int n_columns){
 		while(columns[i][0]==' '){
 			columns[i] = removeCharFromPosition(columns[i], 0);
 		}
+		if(columns[i][strlen(columns[i])-1] == '\n'){
+			columns[i] = removeCharFromPosition(columns[i], strlen(columns[i])-1);
+		}
 		if(strcmp(getWordFromIndex(columns[i], ' ', 2), column_name)==0){
 			return i;
 		}
@@ -1322,9 +1346,14 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
 		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		printf("valor suspeito: %s\n", table.rows[i].data[column_index]);
+		*/
 		int row_value = stringToInt(table.rows[i].data[column_index]);
 		if(row_value>filter_value){
 			// pega o valor da pk
+			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
 			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
@@ -1393,11 +1422,12 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 		int** pks = (int**) malloc(sizeof(int*));
 		int* n_pks = (int*) malloc(sizeof(int));
 		int n_pks_aux, i;
+		printf("n_operation: %i\n", n_operations);
 		for(i = 0; i < n_operations; i++)
 		{
-			/*printf("operations_code: %i\n", operations_code[i]);
+			printf("operations_code: %i\n", operations_code[i]);
 			printf("columns_name: %s\n", columnsName[i]);
-			printf("filter_values: %s\n", filter_values[i]);*/
+			printf("filter_values: %s\n", filter_values[i]);
 			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
 			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
 			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
@@ -1416,6 +1446,13 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 			{
 				printf("pk: %i\n", result_pks[j]);
 			}
+		}else{
+			
+			for(int j = 0; j < n_pks[0]; j++)
+			{
+				printf("pks: %i\n", pks[0][j]);
+			}
+			
 		}
 		
 		return 1;
@@ -1453,6 +1490,7 @@ void applyFilter(Table* table, char* filters){
 				columnsName = (char**) realloc(columnsName, sizeof(char*)*(n_columns+1));
 				filter_values = (char**) realloc(filter_values, sizeof(char*)*(n_columns+1));
 				c_name = getColumnNameFromFilter(splited_filters[i], *table);
+				printf("----\n");
 				v_name = getValueFromFilter(splited_filters[i], c_name);
 				columnsName[n_columns] = c_name;
 				filter_values[n_columns] = v_name;
