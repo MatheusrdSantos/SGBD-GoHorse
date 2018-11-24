@@ -1378,6 +1378,60 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 	
 }
 
+int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		float row_value = strtof(table.rows[i].data[column_index], NULL);
+		//printf("row_value: %i\n", row_value);
+		if(row_value>filter_value){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		float row_value = strtof(table.rows[i].data[column_index], NULL);
+		//printf("row_value: %i\n", row_value);
+		if(row_value>filter_value){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
 int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1531,8 +1585,19 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
-		remainders_pk = applyGreaterThan((*table), stringToInt(filter_value), column_index, n_pks);
-		return remainders_pk;
+
+		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
+			
+			remainders_pk = applyGreaterThan((*table), stringToInt(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}else if(validateInt(filter_value) && isFloat(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+			remainders_pk = applyGreaterThanIntFloat((*table), stringToInt(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}else if(validateFloat(filter_value) && isFloat(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+			remainders_pk = applyGreaterThanFloatFloat((*table), strtof(filter_value, NULL), column_index, n_pks);
+			return remainders_pk;
+		}
+		
 		//printf("column index2: %i\n", column_index);
 	}else if(operation_code == 2){
 		int* remainders_pk;
@@ -1612,21 +1677,11 @@ int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 	for(int j = 0; j < n_pks[1]; j++)
 	{	
 		if(!valueIsInIntVector(remainders, n_remainders, pks[1][j])){
-			printf("entrou--\n");
+			//printf("entrou--\n");
 			remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
 			remainders[n_remainders] = pks[1][j];
 			n_remainders++;
 		}
-		/*for(int k = 0; k < n_pks[1]; k++)
-		{
-			if(pks[0][j] == pks[1][k]){
-				remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
-				//printf("-> %i\n", pks[0][j]);
-				remainders[n_remainders] = pks[0][j];
-				n_remainders++; 
-			}
-			
-		}*/
 	}
 	//printf("n_results: %i\n", n_remainders);
 	//printf("n_vetor 2: %i\n", n_pks[1]);
@@ -1639,12 +1694,12 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 		int** pks = (int**) malloc(sizeof(int*));
 		int* n_pks = (int*) malloc(sizeof(int));
 		int n_pks_aux, i;
-		printf("n_operation: %i\n", n_operations);
+		//printf("n_operation: %i\n", n_operations);
 		for(i = 0; i < n_operations; i++)
 		{
-			printf("operations_code: %i\n", operations_code[i]);
+			/*printf("operations_code: %i\n", operations_code[i]);
 			printf("columns_name: %s\n", columnsName[i]);
-			printf("filter_values: %s\n", filter_values[i]);
+			printf("filter_values: %s\n", filter_values[i]);*/
 			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
 			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
 			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
@@ -1657,21 +1712,21 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
 			int j = 0, n_result_pks;
 			int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
-			printf("--------\n RESULT\n ------\n");
+			/*printf("--------\n RESULT\n ------\n");
 			printf("n_results: %i\n", n_result_pks);
 			for(int j = 0; j < n_result_pks; j++)
 			{
 				printf("pk: %i\n", result_pks[j]);
-			}
+			}*/
 			*n_pks_to_print = n_result_pks;
 			return result_pks;
 		}else{
-			printf("--------\n RESULT\n ------\n");
+			/*printf("--------\n RESULT\n ------\n");
 			printf("n_pks: %i\n", n_pks[0]);
 			for(int j = 0; j < n_pks[0]; j++)
 			{
 				printf("pks: %i\n", pks[0][j]);
-			}
+			}*/
 			*n_pks_to_print = n_pks[0];
 			return pks[0];
 		}

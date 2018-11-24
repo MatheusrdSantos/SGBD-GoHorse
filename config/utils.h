@@ -75,4 +75,6 @@ int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n
 int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pks);
 int* applyStringSimilarity(Table table, char* filter_value, int column_index, int* n_pks);
 int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks);
+int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, int* n_pks);
+int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks);
 #include "utils.c"
