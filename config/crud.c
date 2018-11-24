@@ -270,9 +270,9 @@ int exec_select(char* command){
 					char* filter = getStringBetweenSymbols(command, '(', ')');
 					char* table_name = getWordFromIndex(command, ' ', 3);
 					Table table = getTableWithData(table_name);
-					applyFilter(&table, filter);
-					int vv[2] = {1,2};
-					printTableWithFilter(table, vv, 2);
+					int n_pks_to_print = 0;
+					int* pks_to_print = applyFilter(&table, filter, &n_pks_to_print);
+					printTableWithFilter(table, pks_to_print, n_pks_to_print);
 					/*printf("tablename: %s\n", table.name);
 					printf("n_columns: %i\n", table.n_columns);
 					printf("n_rows: %i\n", table.n_rows);*/

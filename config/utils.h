@@ -48,7 +48,7 @@ char* readLineFromFile(FILE* table, int index);
 int findPrimaryKeyIndex(char* header);
 char** splitData(char* row_data, char separator, int* size);
 int valueIsInIntVector(int* vecto, int size, int value);
-void applyFilter(Table* table, char* filter);
+int* applyFilter(Table* table, char* filters, int* n_pks_to_print);
 int* getAllIdsFromTable(char* table_name, int* n_numbers);
 int validateFilterSyntax(char** splited_filters, int n_filters);
 int hasOperator(char* filter);
@@ -61,7 +61,7 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 char* getColumnTypeFromName(Table table, char* column_name);
 int isMathOperator(char* operator_d);
 int interpretFilter(char* filter);
-int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd);
+int* execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd, int* n_pks_to_print);
 char* getValueFromFilter(char* filter_declaration,char* c_name);
 int* orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value, int* n_pks);
 int getColumnIndex(char** columns, char* column_name, int n_columns);

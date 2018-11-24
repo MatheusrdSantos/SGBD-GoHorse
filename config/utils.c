@@ -1430,7 +1430,7 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 	return remainders;	
 }
 
-int execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd){
+int* execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd, int* n_pks_to_print){
 	if(isAnd){
 		int** pks = (int**) malloc(sizeof(int*));
 		int* n_pks = (int*) malloc(sizeof(int));
@@ -1459,6 +1459,8 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 			{
 				printf("pk: %i\n", result_pks[j]);
 			}
+			*n_pks_to_print = n_result_pks;
+			return result_pks;
 		}else{
 			printf("--------\n RESULT\n ------\n");
 			printf("n_pks: %i\n", n_pks[0]);
@@ -1466,10 +1468,11 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 			{
 				printf("pks: %i\n", pks[0][j]);
 			}
-			
+			*n_pks_to_print = n_pks[0];
+			return pks[0];
 		}
 		
-		return 1;
+		return NULL;
 	}
 	
 }
@@ -1581,7 +1584,7 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 // operação controle:
 // select table alunos * where (media>5 and id>3)
 // select table alunos * where (id>2 and id>5)
-void applyFilter(Table* table, char* filters){
+int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 	// aplicar filtro na tabela
 
 	// DEBUG
@@ -1644,8 +1647,8 @@ void applyFilter(Table* table, char* filters){
 					
 				}
 			}
-			execOperations(operations_code, n_operations, table, columnsName, filter_values, isAnd);
-			displayConfirmMessage("Aplicando filtros...\n");
+			return execOperations(operations_code, n_operations, table, columnsName, filter_values, isAnd, n_pks_to_print);
+			//displayConfirmMessage("Aplicando filtros...\n");
 		}
 	}else{
 		throwError("Filtros inválidos. Operação não executada!\n");
