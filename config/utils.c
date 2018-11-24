@@ -1404,6 +1404,33 @@ int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 	return pks;
 	
 }
+
+int* applyEqualTo(Table table, int filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		int row_value = stringToInt(table.rows[i].data[column_index]);
+		//printf("row_value: %i\n", row_value);
+		if(row_value==filter_value){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
 /*
 * {'=', '>', '<', '*', '%'}
 * Códigos de retorno de acordo com o filtro
@@ -1433,6 +1460,12 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		//printf("column index2: %i\n", column_index);
 
 	}else if(operation_code == 3){
+		int* remainders_pk;
+		// verificar se filter value é int ou float
+		//printf("column index: %i\n", column_index);
+		remainders_pk = applyEqualTo((*table), stringToInt(filter_value), column_index, n_pks);
+		return remainders_pk;
+		//printf("column index2: %i\n", column_index);
 		
 	}else if(operation_code == 4){
 
