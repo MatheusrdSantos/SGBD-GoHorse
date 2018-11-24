@@ -72,4 +72,5 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print);
 int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks);
 int* applyEqualTo(Table table, int filter_value, int column_index, int* n_pks);
 int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n_pks);
+int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pks);
 #include "utils.c"
