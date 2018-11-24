@@ -1473,7 +1473,7 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 	}
 	
 }
-void printTableWithFilter(Table table, int* pks_to_print){
+void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 	//printf("->%s\n", table.rows[0].data[0]);
 	int table_content_string_splited_size;
 	int size_largestString = 0;
@@ -1542,6 +1542,10 @@ void printTableWithFilter(Table table, int* pks_to_print){
 	resetColor();
 	
 	for (int i = 0; i < table.n_rows-1; i++){
+		int current_pk = stringToInt(table.rows[i].data[table.pk_index]); 
+		if(!valueIsInIntVector(pks_to_print, n_pks_to_print, current_pk)){
+			continue;
+		}
 		green();
 		//char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
 		int actual_stringSize;

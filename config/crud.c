@@ -272,7 +272,7 @@ int exec_select(char* command){
 					Table table = getTableWithData(table_name);
 					applyFilter(&table, filter);
 					int vv[2] = {1,2};
-					printTableWithFilter(table, vv);
+					printTableWithFilter(table, vv, 2);
 					/*printf("tablename: %s\n", table.name);
 					printf("n_columns: %i\n", table.n_columns);
 					printf("n_rows: %i\n", table.n_rows);*/

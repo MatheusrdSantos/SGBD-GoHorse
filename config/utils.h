@@ -68,5 +68,5 @@ int getColumnIndex(char** columns, char* column_name, int n_columns);
 int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pks);
 int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks);
 int getLargestStringInArray(char** received_array, int size);
-void printTableWithFilter(Table table, int* pks_to_print);
+void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print);
 #include "utils.c"
