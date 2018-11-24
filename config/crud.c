@@ -271,6 +271,7 @@ int exec_select(char* command){
 					char* table_name = getWordFromIndex(command, ' ', 3);
 					Table table = getTableWithData(table_name);
 					int n_pks_to_print = 0;
+					printf("aqui\n");
 					int* pks_to_print = applyFilter(&table, filter, &n_pks_to_print);
 					printTableWithFilter(table, pks_to_print, n_pks_to_print);
 					/*printf("tablename: %s\n", table.name);
