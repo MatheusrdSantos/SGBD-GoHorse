@@ -1473,6 +1473,96 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 	}
 	
 }
+void printTableWithFilter(Table table, int* pks_to_print){
+	printf("->%s\n", table.rows[0].data[0]);
+	int table_content_string_splited_size;
+	int size_largestString = 0;
+	for (int i = 0; i < table.n_rows-1; i++){
+		int pos_largestString = getLargestStringInArray(table.rows[i].data, table.n_columns);
+		int size_largestString_line = strlen(table.rows[i].data[pos_largestString]);
+		if(size_largestString < size_largestString_line)
+			size_largestString = size_largestString_line;
+	}
+	//printf("inicio\n");
+	
+	size_largestString++;
+	b_blue();
+	for(int l = 0; l < table.n_columns; l++)
+	{
+		int actual_size = strlen(table.columns[l]);
+		if(l+1 == table.n_columns){
+			table.columns[l] = removeChar(table.columns[l], '\n');
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+		}else{
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+
+		}
+	}
+
+	for(int l = 0; l < table.n_columns; l++)
+	{
+		int actual_size = strlen(table.columns[l]);
+		if(l+1 == table.n_columns){
+			table.columns[l] = removeChar(table.columns[l], '\n');
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+			while(actual_size!=size_largestString){
+				printf(" ");
+				actual_size++;
+			}
+			printf("%s |\n", table.columns[l]);
+		}else{
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+			printf("| %s", table.columns[l]);
+			while(actual_size!=size_largestString){
+				printf(" ");
+				actual_size++;
+			}
+			printf(" |");
+		}
+	}
+	resetColor();
+	
+	for (int i = 0; i < table.n_rows-1; i++){
+		green();
+		//char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
+		int actual_stringSize;
+		for (int j = 0; j < table.n_columns; j++)
+		{
+			
+			if (j==0) {
+				printf("|");
+			}
+			
+			actual_stringSize = strlen(table.rows[i].data[j]);
+			if(i==table.n_rows-1 && j==table.rows[i].n_data-1){
+				for (int k = 0; k < actual_stringSize-1; k++)
+				{
+					printf("%c", table.rows[i].data[j][k]);
+				}
+				printf(" ");
+			}else{
+				table.rows[i].data[j] = removeChar(table.rows[i].data[j], '\n');
+				printf(" %s", table.rows[i].data[j]);
+			}
+			while(actual_stringSize <= size_largestString){
+				printf(" ");
+				actual_stringSize++;
+			}
+			printf("|");	
+		}
+		printf("\n");
+	}
+	resetColor();
+	//printf("fim\n");
+}
 // operação controle:
 // select table alunos * where (media>5 and id>3)
 // select table alunos * where (id>2 and id>5)

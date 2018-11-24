@@ -271,11 +271,14 @@ int exec_select(char* command){
 					char* table_name = getWordFromIndex(command, ' ', 3);
 					Table table = getTableWithData(table_name);
 					applyFilter(&table, filter);
-					printf("tablename: %s\n", table.name);
+					int vv[2] = {1,2};
+					printTableWithFilter(table, vv);
+					/*printf("tablename: %s\n", table.name);
 					printf("n_columns: %i\n", table.n_columns);
-					printf("n_rows: %i\n", table.n_rows);
+					printf("n_rows: %i\n", table.n_rows);*/
+
 					// getClonsure
-					printf("tem where\n");
+					//printf("tem where\n");
 				}else{
 					printf("falta o where\n");
 				}
