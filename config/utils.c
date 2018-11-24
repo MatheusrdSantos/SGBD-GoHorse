@@ -1474,7 +1474,7 @@ int execOperations(int* operations_code, int n_operations, Table* table, char** 
 	
 }
 void printTableWithFilter(Table table, int* pks_to_print){
-	printf("->%s\n", table.rows[0].data[0]);
+	//printf("->%s\n", table.rows[0].data[0]);
 	int table_content_string_splited_size;
 	int size_largestString = 0;
 	for (int i = 0; i < table.n_rows-1; i++){
@@ -1516,11 +1516,22 @@ void printTableWithFilter(Table table, int* pks_to_print){
 				actual_size++;
 			}
 			printf("%s |\n", table.columns[l]);
+		}else if(l==0){
+			printf("|");
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+			printf(" %s", table.columns[l]);
+			while(actual_size!=size_largestString){
+				printf(" ");
+				actual_size++;
+			}
+			printf(" |");
 		}else{
 			if (actual_size>size_largestString) {
 				size_largestString = actual_size;
 			}
-			printf("| %s", table.columns[l]);
+			printf(" %s", table.columns[l]);
 			while(actual_size!=size_largestString){
 				printf(" ");
 				actual_size++;
