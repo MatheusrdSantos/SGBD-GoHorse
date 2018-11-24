@@ -1597,6 +1597,43 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 	return remainders;	
 }
 
+// essa função só pode ser chamada caso exista um operador lógico
+int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks){
+	int* remainders = (int*) malloc(sizeof(int));
+	
+	for(int i = 0; i < n_pks[0]; i++)
+	{
+		remainders = (int*) realloc(remainders, sizeof(int)*(i+1));
+		remainders[i] = pks[0][i];
+	}
+	//printf("entrou aqui\n");
+	
+	int n_remainders = n_pks[0];
+	for(int j = 0; j < n_pks[1]; j++)
+	{	
+		if(!valueIsInIntVector(remainders, n_remainders, pks[1][j])){
+			printf("entrou--\n");
+			remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
+			remainders[n_remainders] = pks[1][j];
+			n_remainders++;
+		}
+		/*for(int k = 0; k < n_pks[1]; k++)
+		{
+			if(pks[0][j] == pks[1][k]){
+				remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
+				//printf("-> %i\n", pks[0][j]);
+				remainders[n_remainders] = pks[0][j];
+				n_remainders++; 
+			}
+			
+		}*/
+	}
+	//printf("n_results: %i\n", n_remainders);
+	//printf("n_vetor 2: %i\n", n_pks[1]);
+	*n_result_pks =n_remainders;
+	return remainders;	
+}
+
 int* execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd, int* n_pks_to_print){
 	if(isAnd){
 		int** pks = (int**) malloc(sizeof(int*));
@@ -1620,6 +1657,48 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
 			int j = 0, n_result_pks;
 			int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
+			printf("--------\n RESULT\n ------\n");
+			printf("n_results: %i\n", n_result_pks);
+			for(int j = 0; j < n_result_pks; j++)
+			{
+				printf("pk: %i\n", result_pks[j]);
+			}
+			*n_pks_to_print = n_result_pks;
+			return result_pks;
+		}else{
+			printf("--------\n RESULT\n ------\n");
+			printf("n_pks: %i\n", n_pks[0]);
+			for(int j = 0; j < n_pks[0]; j++)
+			{
+				printf("pks: %i\n", pks[0][j]);
+			}
+			*n_pks_to_print = n_pks[0];
+			return pks[0];
+		}
+		
+		return NULL;
+	}else{
+		int** pks = (int**) malloc(sizeof(int*));
+		int* n_pks = (int*) malloc(sizeof(int));
+		int n_pks_aux, i;
+		printf("n_operation: %i\n", n_operations);
+		for(i = 0; i < n_operations; i++)
+		{
+			printf("operations_code: %i\n", operations_code[i]);
+			printf("columns_name: %s\n", columnsName[i]);
+			printf("filter_values: %s\n", filter_values[i]);
+			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
+			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
+			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
+			n_pks[i] = n_pks_aux;
+
+		}
+		pks[i] = NULL;
+		if(n_operations>1){
+
+			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
+			int j = 0, n_result_pks;
+			int* result_pks = getComplementFromIntVector(pks, n_pks, &n_result_pks);
 			printf("--------\n RESULT\n ------\n");
 			printf("n_results: %i\n", n_result_pks);
 			for(int j = 0; j < n_result_pks; j++)
