@@ -70,7 +70,7 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks);
 int getLargestStringInArray(char** received_array, int size);
 void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print);
 int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks);
-int* applyEqualTo(Table table, int filter_value, int column_index, int* n_pks);
+int* applyEqualTo(Table table, char* filter_value, int column_index, int* n_pks);
 int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n_pks);
 int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pks);
 int* applyStringSimilarity(Table table, char* filter_value, int column_index, int* n_pks);
@@ -78,4 +78,7 @@ int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks);
 int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, int* n_pks);
 int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks);
 int* applyGreaterThanFloatInt(Table table, float filter_value, int column_index, int* n_pks);
+int* applyLessThanIntFloat(Table table, int filter_value, int column_index, int* n_pks);
+int* applyLessThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks);
+int* applyLessThanFloatInt(Table table, float filter_value, int column_index, int* n_pks);
 #include "utils.c"

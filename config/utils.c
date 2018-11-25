@@ -1486,7 +1486,7 @@ int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 	
 }
 
-int* applyEqualTo(Table table, int filter_value, int column_index, int* n_pks){
+int* applyLessThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
 	//printf("n_rows: %i\n", table.n_rows);
@@ -1497,9 +1497,93 @@ int* applyEqualTo(Table table, int filter_value, int column_index, int* n_pks){
 		printf("column_i: %i\n", column_index);
 		*/
 		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
-		int row_value = stringToInt(table.rows[i].data[column_index]);
+		float row_value = strtof(table.rows[i].data[column_index], NULL);
 		//printf("row_value: %i\n", row_value);
-		if(row_value==filter_value){
+		if(row_value<filter_value){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyLessThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		float row_value = strtof(table.rows[i].data[column_index], NULL);
+		//printf("row_value: %i\n", row_value);
+		if(row_value<filter_value){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyLessThanFloatInt(Table table, float filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		float row_value = stringToInt(table.rows[i].data[column_index]);
+		//printf("row_value: %i\n", row_value);
+		if(row_value<filter_value){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyEqualTo(Table table, char* filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		char* row_value = table.rows[i].data[column_index];
+		row_value = removeChar(row_value, '\n');
+		row_value = removeChar(row_value, ' ');
+		/*printf("row_value: %s\n", row_value);
+		printf("filter: %s\n", filter_value);*/
+		if(strcmp(row_value, filter_value)==0){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
@@ -1634,15 +1718,26 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
-		remainders_pk = applyLessThan((*table), stringToInt(filter_value), column_index, n_pks);
-		return remainders_pk;
-		//printf("column index2: %i\n", column_index);
+		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
+			remainders_pk = applyLessThan((*table), stringToInt(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}else if(validateInt(filter_value) && isFloat(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+			remainders_pk = applyLessThanIntFloat((*table), stringToInt(filter_value), column_index, n_pks);
+			return remainders_pk;
+
+		}else if(validateFloat(filter_value) && isFloat(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+			remainders_pk = applyLessThanFloatFloat((*table), strtof(filter_value, NULL), column_index, n_pks);
+			return remainders_pk;
+		}else if(validateFloat(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+			remainders_pk = applyLessThanFloatInt((*table), strtof(filter_value, NULL), column_index, n_pks);
+			return remainders_pk;
+		}
 
 	}else if(operation_code == 3){
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
-		remainders_pk = applyEqualTo((*table), stringToInt(filter_value), column_index, n_pks);
+		remainders_pk = applyEqualTo((*table), filter_value, column_index, n_pks);
 		return remainders_pk;
 		//printf("column index2: %i\n", column_index);
 		
@@ -1785,21 +1880,21 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
 			int j = 0, n_result_pks;
 			int* result_pks = getComplementFromIntVector(pks, n_pks, &n_result_pks);
-			printf("--------\n RESULT\n ------\n");
+			/*printf("--------\n RESULT\n ------\n");
 			printf("n_results: %i\n", n_result_pks);
 			for(int j = 0; j < n_result_pks; j++)
 			{
 				printf("pk: %i\n", result_pks[j]);
-			}
+			}*/
 			*n_pks_to_print = n_result_pks;
 			return result_pks;
 		}else{
-			printf("--------\n RESULT\n ------\n");
+			/*printf("--------\n RESULT\n ------\n");
 			printf("n_pks: %i\n", n_pks[0]);
 			for(int j = 0; j < n_pks[0]; j++)
 			{
 				printf("pks: %i\n", pks[0][j]);
-			}
+			}*/
 			*n_pks_to_print = n_pks[0];
 			return pks[0];
 		}

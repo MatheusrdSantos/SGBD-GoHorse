@@ -1,4 +1,4 @@
 int* id, char[60] nome, float salario
 1, "jose joao", 2000.0
-2, "jose joao", 2000.0
+2, "jose joao", 2000.9
 3, "wilson", 3000.0
