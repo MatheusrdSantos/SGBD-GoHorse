@@ -84,4 +84,7 @@ int* applyLessThanFloatInt(Table table, float filter_value, int column_index, in
 int* applyGreaterEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks);
 int* applyGreaterEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks);
 int* applyGreaterEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks);
+int* applyLessEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks);
+int* applyLessEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks);
+int* applyLessEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks);
 #include "utils.c"
