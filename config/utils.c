@@ -1949,7 +1949,6 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 			remainders_pk = applyLessEqualToFloatInt((*table), strtof(filter_value, NULL), column_index, n_pks);
 			return remainders_pk;
 		}
-
 	}
 }
 // essa função só pode ser chamada caso exista um operador lógico
