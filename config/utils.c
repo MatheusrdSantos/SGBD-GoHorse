@@ -1859,6 +1859,9 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
+		//if(isValidateDate and columnIsDate)
+			// applys the same filter logic
+		// aplysFilter
 
 		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
 			
