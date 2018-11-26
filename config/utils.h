@@ -87,4 +87,12 @@ int* applyGreaterEqualToFloatInt(Table table, float filter_value, int column_ind
 int* applyLessEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks);
 int* applyLessEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks);
 int* applyLessEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks);
+int* applyGreaterThanDate(Table table, Date filter_value, int column_index, int* n_pks);
+Date stringToDate(char* text_date);
+int compareDateGreater(Date date_1, Date date_2);
+int* applyLessThanDate(Table table, Date filter_value, int column_index, int* n_pks);
+int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_pks);
+int compareDateEqual(Date date_1, Date date_2);
+int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int* n_pks);
+int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, int* n_pks);
 #include "utils.c"

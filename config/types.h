@@ -16,4 +16,7 @@ typedef struct{
 	char* day;
 	char* month;
 	char* year;
+	int i_day;
+	int i_month;
+	int i_year;
 }Date;

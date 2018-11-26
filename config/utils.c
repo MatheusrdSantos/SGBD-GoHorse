@@ -1121,20 +1121,24 @@ char* getColumnNameFromFilter(char* filter, Table table){
 			throwError("Operadores inválidos!");
 			return NULL;
 		}
+		//
 		// DEBUG
 		/*printf("left: %s\n", cropped_left);
-		printf("right: %s / size: %i\n", cropped_right, (int)strlen(cropped_right));*/
-
+		printf("right: %s / size: %i\n", cropped_right, (int)strlen(cropped_right));
+		printf("n_columns: %i\n", table.n_columns);*/
 		for(int i = 0; i < table.n_columns; i++)
 		{
 			while(table.columns[i][0]==' '){
 				table.columns[i] = removeCharFromPosition(table.columns[i], 0);
 			}
+			//printf("original: %s\n", table.columns[i]);
 			char* column_name = getWordFromIndex(table.columns[i], ' ', 2);
-			if(column_name[strlen(column_name)-1]=='\n'){
+			column_name = removeChar(column_name, '\n');
+		
+			//printf("name->: %s -/- size: %i\n", column_name, (int)strlen(column_name));
+			/*if(column_name[strlen(column_name)-1]=='\n'){
 				column_name = removeCharFromPosition(column_name, strlen(column_name)-1);
-			}
-			//printf("name->: %s/size: %i\n", column_name, (int)strlen(column_name));
+			}*/
 			if (strcmp(column_name, cropped_left)==0) {
 				return cropped_left;
 			}else if(strcmp(column_name, cropped_right)==0){
@@ -1376,6 +1380,198 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 	*n_pks = n_pks_local;
 	return pks;
 	
+}
+
+Date stringToDate(char* text_date){
+	int vector_size;
+	char** date = split(text_date, '/', &vector_size);
+	Date new_date;
+	if(vector_size==3){
+		new_date.i_day = stringToInt(date[0]);
+		new_date.i_month = stringToInt(date[1]);
+		new_date.i_year = stringToInt(date[2]);
+	}
+	return new_date;
+}
+
+// verifica se a data 1 é maior que a data 2
+// (mais recente)
+int compareDateGreater(Date date_1, Date date_2){
+	if(date_1.i_year>date_2.i_year){
+		return 1;
+	}else if(date_1.i_year==date_2.i_year && date_1.i_month>date_2.i_month){
+		return 1;
+	}else if(date_1.i_year==date_2.i_year && date_1.i_month==date_2.i_month && date_1.i_day>date_2.i_day){
+		return 1;
+	}
+	return 0;
+}
+
+int compareDateEqual(Date date_1, Date date_2){
+	if(date_1.i_year == date_2.i_year && date_1.i_month==date_2.i_month && date_1.i_day==date_2.i_day){
+		return 1;
+	}
+	return 0;
+}
+
+int* applyGreaterThanDate(Table table, Date filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		
+		char* row_value = table.rows[i].data[column_index];
+		Date value_date;
+		value_date.i_day = stringToDate(row_value).i_day;
+		value_date.i_month = stringToDate(row_value).i_month;
+		value_date.i_year = stringToDate(row_value).i_year;
+		//printf("row_value: %i\n", row_value);
+		if(compareDateGreater(value_date, filter_value)){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		
+		char* row_value = table.rows[i].data[column_index];
+		Date value_date;
+		value_date.i_day = stringToDate(row_value).i_day;
+		value_date.i_month = stringToDate(row_value).i_month;
+		value_date.i_year = stringToDate(row_value).i_year;
+		//printf("row_value: %i\n", row_value);
+		if(compareDateGreater(value_date, filter_value) || compareDateEqual(value_date, filter_value)){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		
+		char* row_value = table.rows[i].data[column_index];
+		Date value_date;
+		value_date.i_day = stringToDate(row_value).i_day;
+		value_date.i_month = stringToDate(row_value).i_month;
+		value_date.i_year = stringToDate(row_value).i_year;
+		//printf("row_value: %i\n", row_value);
+		if(compareDateGreater(filter_value, value_date) || compareDateEqual(value_date, filter_value)){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+	
+}
+
+int* applyLessThanDate(Table table, Date filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		
+		char* row_value = table.rows[i].data[column_index];
+		Date value_date;
+		value_date.i_day = stringToDate(row_value).i_day;
+		value_date.i_month = stringToDate(row_value).i_month;
+		value_date.i_year = stringToDate(row_value).i_year;
+		//printf("row_value: %i\n", row_value);
+		if(compareDateGreater(filter_value, value_date)){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+
+}
+
+int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
+	int* pks = (int*) malloc(sizeof(int));
+	int n_pks_local = 0;
+	//printf("n_rows: %i\n", table.n_rows);
+	for(int i = 0; i < table.n_rows-1; i++)
+	{
+		// pode não ser inteiro
+		/*
+		printf("column_i: %i\n", column_index);
+		*/
+		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
+		
+		char* row_value = table.rows[i].data[column_index];
+		Date value_date;
+		value_date.i_day = stringToDate(row_value).i_day;
+		value_date.i_month = stringToDate(row_value).i_month;
+		value_date.i_year = stringToDate(row_value).i_year;
+		//printf("row_value: %i\n", row_value);
+		if(compareDateEqual(filter_value, value_date)){
+			// pega o valor da pk
+			
+			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
+			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
+			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
+			n_pks_local++;
+		}
+	}
+	*n_pks = n_pks_local;
+	return pks;
+
 }
 
 int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
@@ -1859,7 +2055,11 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
-		//if(isValidateDate and columnIsDate)
+		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+
+			remainders_pk = applyGreaterThanDate((*table), stringToDate(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}
 			// applys the same filter logic
 		// aplysFilter
 
@@ -1884,6 +2084,11 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
+		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+
+			remainders_pk = applyLessThanDate((*table), stringToDate(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}
 		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
 			remainders_pk = applyLessThan((*table), stringToInt(filter_value), column_index, n_pks);
 			return remainders_pk;
@@ -1903,8 +2108,14 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
+		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+
+			remainders_pk = applyEqualToDate((*table), stringToDate(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}
 		remainders_pk = applyEqualTo((*table), filter_value, column_index, n_pks);
 		return remainders_pk;
+		
 		//printf("column index2: %i\n", column_index);
 		
 	}else if(operation_code == 4){
@@ -1920,6 +2131,11 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
+		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+
+			remainders_pk = applyGreaterEqualToDate((*table), stringToDate(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}
 		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
 			remainders_pk = applyGreaterEqualTo((*table), stringToInt(filter_value), column_index, n_pks);
 			return remainders_pk;
@@ -1939,6 +2155,11 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
+		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
+
+			remainders_pk = applyLessEqualToDate((*table), stringToDate(filter_value), column_index, n_pks);
+			return remainders_pk;
+		}
 		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
 			remainders_pk = applyLessEqualTo((*table), stringToInt(filter_value), column_index, n_pks);
 			return remainders_pk;
@@ -2225,17 +2446,21 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 			if(i%2==0){
 				columnsName = (char**) realloc(columnsName, sizeof(char*)*(n_columns+1));
 				filter_values = (char**) realloc(filter_values, sizeof(char*)*(n_columns+1));
+				/*printf("c_name\n");
+				printf("solited_f: %s\n", splited_filters[i]);*/
 				c_name = getColumnNameFromFilter(splited_filters[i], *table);
 				v_name = getValueFromFilter(splited_filters[i], c_name);
 				columnsName[n_columns] = c_name;
 				filter_values[n_columns] = v_name;
 				//printf("v_name: %s\n", v_name);
 				n_columns++;
+				
 				if(!filterMatchWithColumn(splited_filters[i], *table)){
 					has_error = 1;
 				}
 			}
 		}
+		printf("quebrou aqui!\n");
 		
 		if(has_error){
 			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
