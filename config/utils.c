@@ -2279,15 +2279,15 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 		int** pks = (int**) malloc(sizeof(int*));
 		int* n_pks = (int*) malloc(sizeof(int));
 		int n_pks_aux, i;
-		printf("n_operation: %i\n", n_operations);
+		//printf("n_operation: %i\n", n_operations);
 		for(i = 0; i < n_operations; i++)
 		{
-			printf("operations_code: %i\n", operations_code[i]);
-			printf("columns_name: %s\n", columnsName[i]);
+			/*printf("operations_code: %i\n", operations_code[i]);
+			printf("columns_name: %s\n", columnsName[i]);*/
 			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
 			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
 			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
-			printf("filter_values: %s\n", filter_values[i]);
+			//printf("filter_values: %s\n", filter_values[i]);
 			n_pks[i] = n_pks_aux;
 
 		}
