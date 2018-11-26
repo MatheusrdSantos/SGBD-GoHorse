@@ -265,6 +265,11 @@ char** split(char* text, char separator, int* size){
 	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
 	int cont = 0, text_size = strlen(text);
+	if (text_size==1)
+	{
+		strings[0] = text;
+		return strings;
+	}
 	for (int i = 0; i < text_size; ++i)
 	{
 		if ((text[i]==separator && i!=0) || i==text_size-1)
@@ -906,7 +911,8 @@ int isValidYear(int year){
 }
 
 int validateDate(char* data){
-	int size;
+	int size = 0;
+	//printf("size com barra: %i\n", size);
 	char** date = split(data, '/', &size);
 	if(size!=3){
 		return 0;	
@@ -1316,7 +1322,7 @@ char* getValueFromFilter(char* filter_declaration,char* c_name){
 		while(c_name[0]==' '){
 			c_name = removeCharFromPosition(c_name, 0);
 		}
-		printf("name->: %s\n", c_name);
+		//printf("name->: %s\n", c_name);
 		if (strcmp(c_name, cropped_left)!=0) {
 			return cropped_left;
 		}else if(strcmp(c_name, cropped_right)!=0){
@@ -2055,11 +2061,14 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		int* remainders_pk;
 		// verificar se filter value é int ou float
 		//printf("column index: %i\n", column_index);
+		//printf("%s\n", filter_value);
+		
 		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
-
+			//printf("entrou no if\n");
 			remainders_pk = applyGreaterThanDate((*table), stringToDate(filter_value), column_index, n_pks);
 			return remainders_pk;
 		}
+		//printf("deu merda aqui!\n");
 			// applys the same filter logic
 		// aplysFilter
 
@@ -2275,10 +2284,10 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 		{
 			printf("operations_code: %i\n", operations_code[i]);
 			printf("columns_name: %s\n", columnsName[i]);
-			printf("filter_values: %s\n", filter_values[i]);
 			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
 			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
 			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
+			printf("filter_values: %s\n", filter_values[i]);
 			n_pks[i] = n_pks_aux;
 
 		}
@@ -2460,7 +2469,7 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 				}
 			}
 		}
-		printf("quebrou aqui!\n");
+		//printf("quebrou aqui!\n");
 		
 		if(has_error){
 			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
