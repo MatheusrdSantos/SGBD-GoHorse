@@ -95,4 +95,8 @@ int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_p
 int compareDateEqual(Date date_1, Date date_2);
 int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int* n_pks);
 int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, int* n_pks);
+char* getStringBetweenIndexes(char* text, int index_1, int index_2);
+int getNOcurrencyIndex(char* string_1, char symbol, int n);
+void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_print, char* filter_columns);
+int stringIsInVector(char** vector, char* string_1, int v_size);
 #include "utils.c"

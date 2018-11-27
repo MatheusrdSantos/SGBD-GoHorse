@@ -286,9 +286,27 @@ int exec_select(char* command){
 				
 			}else if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[11])==0) {
 				// Select table alunos columns (id, nome) where (media > 5)
+				// select table professores columns (id, salaro, nome) where (salario>2000.0)
 				//tem especificação de colunas
 				// getColumsName
-				printf("tem declaração de colunas\n");
+				int left_delimiter = getFirstOcurrencyIndex(command, '(');
+				int right_delimiter = getFirstOcurrencyIndex(command, ')');
+				char* columns_filter = getStringBetweenIndexes(command, left_delimiter, right_delimiter);
+				int left_delimiter_filter = getNOcurrencyIndex(command, '(', 2);
+				int right_delimiter_filter = getLastOcurrencyIndex(command, ')');
+				char* filter = getStringBetweenIndexes(command, left_delimiter_filter, right_delimiter_filter);
+				
+				char* table_name = getWordFromIndex(command, ' ', 3);
+				Table table = getTableWithData(table_name);
+				int n_pks_to_print = 0;
+				//printf("aqui\n");
+				int* pks_to_print = applyFilter(&table, filter, &n_pks_to_print);
+
+				printTableWithFilterColumns(table, pks_to_print, n_pks_to_print, columns_filter);
+				
+				/*printf("column filter: %s\n", columns_filter);
+				printf("filter: %s\n", filter);
+				printf("tem declaração de colunas\n");*/
 				
 			}else{
 				// filtro de colunas está faltando

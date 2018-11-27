@@ -261,10 +261,19 @@ char* removeCharFromPosition(char* old_string, int position){
 */
 
 char** split(char* text, char separator, int* size){
+	
 	//printf("initial text: %s\n", text);
 	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
 	int cont = 0, text_size = strlen(text);
+	//printf("text_size: %i\n", text_size);
+	
+	if(getFirstOcurrencyIndex(text, separator)==-1){
+		strings[0] = text;
+		*size = 1;
+		return strings;	
+	}
+
 	if (text_size==1)
 	{
 		strings[0] = text;
@@ -275,7 +284,8 @@ char** split(char* text, char separator, int* size){
 		if ((text[i]==separator && i!=0) || i==text_size-1)
 		{
 			strings = (char**) realloc(strings, sizeof(char*)*(cont+1));
-			int k = 0;
+			int k = 0, final_pos=0;
+
 			for (int j = last_step; j < i; ++j, ++k)
 			{
 				if (k==0)
@@ -672,6 +682,21 @@ int getFirstOcurrencyIndex(char* string_1, char symbol){
 		if (string_1[i]==symbol)
 		{
 			return i;
+		}
+	}
+	return -1;
+}
+
+int getNOcurrencyIndex(char* string_1, char symbol, int n){
+	int n_ocurrency = 0;
+	for (int i = 0; i < strlen(string_1); ++i)
+	{
+		if (string_1[i]==symbol)
+		{
+			n_ocurrency++;
+			if(n_ocurrency==n){
+				return i;
+			}
 		}
 	}
 	return -1;
@@ -2425,6 +2450,149 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 	resetColor();
 	//printf("fim\n");
 }
+
+int stringIsInVector(char** vector, char* string_1, int v_size){
+	//printf("string_1: %s\n", string_1);
+	string_1 = removeChar(string_1, ' ');
+	string_1 = removeChar(string_1, '\n');
+	for(int i = 0; i < v_size; i++)
+	{
+		vector[i] = removeChar(vector[i], ' ');
+		vector[i] = removeChar(vector[i], '\n');
+		
+		if (strcmp(vector[i], string_1)==0) {
+			return 1;
+		}
+		
+	}
+	return 0;
+}
+
+void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_print, char* filter_columns){
+	//printf("->%s\n", table.rows[0].data[0]);
+	int n_filter_columns_vector;
+	char** filter_columns_vector = split(filter_columns, ',', &n_filter_columns_vector);
+	//printf("1pos: %s\n", filter_columns_vector[0]);
+
+	int table_content_string_splited_size;
+	int size_largestString = 0;
+	for (int i = 0; i < table.n_rows-1; i++){
+		int pos_largestString = getLargestStringInArray(table.rows[i].data, table.n_columns);
+		int size_largestString_line = strlen(table.rows[i].data[pos_largestString]);
+		if(size_largestString < size_largestString_line)
+			size_largestString = size_largestString_line;
+	}
+	//printf("inicio\n");
+	
+	size_largestString++;
+	b_blue();
+	for(int l = 0; l < table.n_columns; l++)
+	{
+		int actual_size = strlen(table.columns[l]);
+		if(l+1 == table.n_columns){
+			table.columns[l] = removeChar(table.columns[l], '\n');
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+		}else{
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+
+		}
+	}
+
+	for(int l = 0; l < table.n_columns; l++)
+	{
+		int actual_size = strlen(table.columns[l]);
+	
+		table.columns[l] = removeChar(table.columns[l], '\n');
+		if(!stringIsInVector(filter_columns_vector, getWordFromIndex(table.columns[l], ' ', 2), n_filter_columns_vector)){
+			if(l==table.n_columns-1){
+				printf("\n");
+			}
+			continue;
+		}
+		
+
+		if(l+1 == table.n_columns){
+			table.columns[l] = removeChar(table.columns[l], '\n');
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+			while(actual_size!=size_largestString){
+				printf(" ");
+				actual_size++;
+			}
+			printf("%s |\n", table.columns[l]);
+		}else if(l==0){
+			printf("|");
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+			printf(" %s", table.columns[l]);
+			while(actual_size!=size_largestString){
+				printf(" ");
+				actual_size++;
+			}
+			printf(" |");
+		}else{
+			if (actual_size>size_largestString) {
+				size_largestString = actual_size;
+			}
+			printf(" %s", table.columns[l]);
+			while(actual_size!=size_largestString){
+				printf(" ");
+				actual_size++;
+			}
+			printf(" |");
+		}
+	}
+	resetColor();
+	
+	for (int i = 0; i < table.n_rows-1; i++){
+		
+		int current_pk = stringToInt(table.rows[i].data[table.pk_index]); 
+		if(!valueIsInIntVector(pks_to_print, n_pks_to_print, current_pk)){
+			continue;
+		}
+		green();
+		//char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
+		int actual_stringSize;
+		for (int j = 0; j < table.n_columns; j++)
+		{
+			table.columns[j] = removeChar(table.columns[j], '\n');
+			if(!stringIsInVector(filter_columns_vector, getWordFromIndex(table.columns[j], ' ', 2), n_filter_columns_vector)){
+				continue;
+			}
+
+			if (j==0) {
+				printf("|");
+			}
+			
+			actual_stringSize = strlen(table.rows[i].data[j]);
+			if(i==table.n_rows-1 && j==table.rows[i].n_data-1){
+				for (int k = 0; k < actual_stringSize-1; k++)
+				{
+					printf("%c", table.rows[i].data[j][k]);
+				}
+				printf(" ");
+			}else{
+				table.rows[i].data[j] = removeChar(table.rows[i].data[j], '\n');
+				printf(" %s", table.rows[i].data[j]);
+			}
+			while(actual_stringSize <= size_largestString){
+				printf(" ");
+				actual_stringSize++;
+			}
+			printf("|");	
+		}
+		printf("\n");
+	}
+	resetColor();
+	//printf("fim\n");
+}
+
 // operação controle:
 // select table alunos * where (media>5 and id>3)
 // select table alunos * where (id>2 and id>5)
@@ -2555,4 +2723,26 @@ int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	/* table = getTableFileRead(getDefaultDatabaseName(), table_name);
 	printf("-> %s\n", readLineFromFile(table, 4));
 	fclose(table); */
+}
+
+char* getStringBetweenIndexes(char* text, int index_1, int index_2){
+	char* cropped_string = (char*) malloc(sizeof(char));
+	if(index_1<0 || index_2>=strlen(text)){
+		return text;
+	}
+
+	int str_size = 0;
+	for(int i = 0; i < strlen(text); i++)
+	{
+		if(i>index_1 && i<index_2){
+			cropped_string = (char*) realloc(cropped_string, sizeof(char)*(str_size+1));
+			cropped_string[str_size] = text[i];
+			str_size++;
+		}else if(i==index_2){
+			cropped_string = (char*) realloc(cropped_string, sizeof(char)*(str_size+1));
+			cropped_string[str_size] = '\0';
+			return cropped_string;
+		}
+	}
+	return cropped_string;
 }
