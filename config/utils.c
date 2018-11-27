@@ -155,6 +155,9 @@ char** getTablesName(char* db_name){
 	}
 }
 
+/*
+* Retorna vetor de strings dos bancos criados.
+*/
 char** getDatabasesName(){
 	char** databases = (char**) malloc(sizeof(char*));
 	int i = 0;
@@ -2785,4 +2788,18 @@ char* getStringBetweenIndexes(char* text, int index_1, int index_2){
 		}
 	}
 	return cropped_string;
+}
+/*
+* Deleta tabela do banco
+*/
+int removeTable(char* db_name, char* table_name){
+	int ret_remove;
+	char* path = concat("storage/", db_name);
+	path = concat(path, "/\0");
+	path = concat(path, table_name);
+	path = concat(path, ".csv\0");
+
+	ret_remove = remove(path);
+
+	return ret_remove;
 }

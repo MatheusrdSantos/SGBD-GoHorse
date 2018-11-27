@@ -1,4 +1,3 @@
 int* id, char[30] nome, float salario
 2, "maria", 10000.0
-5, "joao", 29300.0
 3, "marta", 3000.0

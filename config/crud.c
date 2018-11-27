@@ -1,3 +1,6 @@
+/*
+* Executa comandos para criação de bancos de dados ou tabelas
+*/
 char* exec_create(char* command){
 	// se o comando tem apenas duas palavras
 	// executa a criação de um novo banco
@@ -38,6 +41,9 @@ char* exec_create(char* command){
 	// TODO: criar uma terceira condição para erro
 	return "ok";
 }
+/*
+* Auxiliar para criar uma tabela e colocar as colunas
+*/
 int createTableFromHeader(char* table_header, char* table_name){
 	FILE *table;
 	char* table_path = concat("storage/", getDefaultDatabaseName());
@@ -57,6 +63,9 @@ int createTableFromHeader(char* table_header, char* table_name){
 	return 1;
 	
 }
+/*
+* Cria uma tabela utilizando a função "createTableFromHeader" auxiliar
+*/
 int createTable(char* table_name, char* columns_name_command){
 	
 	char* tableHeader = getTableHeader(columns_name_command);
@@ -69,7 +78,9 @@ int createTable(char* table_name, char* columns_name_command){
 	}
 }
 
-// mudar o tipo de retorno para inteiro
+/*
+* Faz a listagem tanto das tabelas quanto dos bancos de dados
+*/
 char* exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
 		green();
@@ -127,6 +138,9 @@ char* exec_list(char* command){
 	}
 }//insert into turmas values (1, 10)
 
+/*
+* Seta o banco de dados default, ou seja, onde serão aplicados os comandos
+*/
 int exec_set(char* command){
 	FILE *default_db;
 	char* db_name = getWordFromIndex(command, ' ', 2);
@@ -148,6 +162,9 @@ int exec_set(char* command){
 
 }
 
+/*
+* Retorna toda a tabela e seus dados
+*/
 Table getTableWithData(char* table_name){
 	FILE* f_table = NULL;
 	f_table = getTableFileRead(getDefaultDatabaseName(), table_name);
@@ -186,6 +203,9 @@ Table getTableWithData(char* table_name){
 
 }
 
+/*
+* Realiza os comandos de busca (select)
+*/
 int exec_select(char* command){
 	//Select table “table_name”
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9])==0){
@@ -333,6 +353,9 @@ int exec_select(char* command){
 // int* id, char[60] nome, float salario
 // insert into itens values (6, "teste", 9.9, 09/10/2018)
 // insert into itens values (3, "teste", 9.9, 09/10/2018)
+/*
+* Insere tupla na tabela
+*/
 int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
 	FILE* table = getTableFileAppend(getDefaultDatabaseName(), table_name);
@@ -349,6 +372,9 @@ int insertRow(Row row, char* table_name){
 	return 1;
 }
 
+/*
+* Executa os comandos de inserção (insert)
+*/
 int exec_insert(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[7])==0){
 		char* table_name = getWordFromIndex(command, ' ', 3);
@@ -382,6 +408,9 @@ int exec_insert(char* command){
 	}
 }
 
+/*
+* Deleta tuplas
+*/
 int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, Table table){
 	FILE* f_table = getTableFileReadBinary(getDefaultDatabaseName(), table_name);
 	if (f_table == NULL)
@@ -446,6 +475,9 @@ int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, T
 	return 1;
 }
 
+/*
+* Executa os comandos de exclusão tanto de tuplas quanto de tabelas
+*/
 int exec_delete(char* command){
 	// delete table professores where (id=3)
 	// create table professores columns (int* id, char[30] nome, float salario)
@@ -457,6 +489,18 @@ int exec_delete(char* command){
 		return 0;
 	}
 	if(countWords(command, ' ')==3){
+		char* table_name = getWordFromIndex(command, ' ', 3);
+		char* db_name = getDefaultDatabaseName();
+
+		int ret_remove_table = removeTable(db_name, table_name);
+
+		if(ret_remove_table == 0){
+			displayConfirmMessage("Tabela deletada com sucesso!");
+		}else{
+			throwError("Não foi possível deletar a tabela.");
+		}
+
+		return 0;
 		//executar delete de tabela
 	}else if(strcmp(getWordFromIndex(command, ' ', 4), reserved_words[13]) == 0){
 		//printf("tem o *\n");
