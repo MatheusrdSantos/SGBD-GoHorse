@@ -363,6 +363,7 @@ int exec_insert(char* command){
 				row.data = data;
 				row.n_data = size;
 				result = insertRow(row, table_name);
+				exec_select(concat("select table ", table_name));
 				return result;
 			}else if(is_valid==0){
 				throwError("Erro durante a inserção: dados inválidos!");
@@ -380,4 +381,108 @@ int exec_insert(char* command){
 		return 0;
 	}
 }
+
+int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, Table table){
+	FILE* f_table = getTableFileReadBinary(getDefaultDatabaseName(), table_name);
+	if (f_table == NULL)
+	{
+		throwError("Erro na abertura do arquivo!\n");
+		return 0;
+	}
+
+	fseek(f_table, 0, SEEK_END);
+	int table_content_string_size = ftell(f_table);
+	fseek(f_table, 0, SEEK_SET);  //mesmo que rewind(f);
+	
+	char* table_content_string = (char*) malloc(table_content_string_size + 1);
+	fread(table_content_string, table_content_string_size, 1, f_table);
+
+	table_content_string[table_content_string_size] = '\0';
+	//printf("%s\n", table_content_string);
+	fclose(f_table);
+	int table_content_splited_size;
+	char** table_content_splited = splitData(table_content_string, '\n', &table_content_splited_size);
+	//printf("n_lines: %i\n", table_content_splited_size);
+	
+	int* indexes_to_ignore = (int*) malloc(sizeof(int));
+	int n_ignored = 0;
+	int n_columns;
+	for(int i = 1; i < table_content_splited_size; i++)
+	{
+		
+		char** splited_data = splitData(table_content_splited[i], ',', &n_columns);
+		int current_pk = stringToInt(splited_data[table.pk_index]);
+		
+		if (valueIsInIntVector(pks_to_delete, n_pks_to_delete, current_pk)) {
+			indexes_to_ignore = (int*) realloc(indexes_to_ignore, sizeof(int)*(n_ignored+1));
+			indexes_to_ignore[n_ignored] = i;
+			n_ignored++;
+		}
+
+	}
+
+	f_table = getTableFileWrite(getDefaultDatabaseName(), table_name);
+	if (f_table == NULL)
+	{
+		throwError("Erro na abertura do arquivo!\n");
+		return 0;
+	}
+
+
+	for(int i = 0; i < table_content_splited_size; i++)
+	{
+		
+		if (!valueIsInIntVector(indexes_to_ignore, n_ignored, i)) {
+			if(i+1==table_content_splited_size){
+				fprintf(f_table, "%s", table_content_splited[i]);
+			}else{
+				fprintf(f_table, "%s\n", table_content_splited[i]);
+			}
+		}
+		
+	}
+	
+	fclose(f_table);
+	return 1;
+}
+
+int exec_delete(char* command){
+	// delete table professores where (id=3)
+	// create table professores columns (int* id, char[30] nome, float salario)
+	// insert into professores values (3, "maria", 4000.0)
+	// verifica se tem * após o nome da tabela
+	
+	if (strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9])!=0) {
+		throwError("Comando \"table\" não encontrado!");
+		return 0;
+	}
+	if(countWords(command, ' ')==3){
+		//executar delete de tabela
+	}else if(strcmp(getWordFromIndex(command, ' ', 4), reserved_words[13]) == 0){
+		//printf("tem o *\n");
+		// executa delete de registro
+		// select table alunos * where (media>5)
+		// select table alunos * where (nome%math)
+		//int* id, char[30] nome, float salario
+		/*1, "jose", 2000.0
+		2, "mario", 3000.0
+		3, "maria", 4000.0*/
+		char* filter = getStringBetweenSymbols(command, '(', ')');
+		char* table_name = getWordFromIndex(command, ' ', 3);
+		Table table = getTableWithData(table_name);
+		int n_pks_to_delete = 0;
+		int* pks_to_delete = applyFilter(&table, filter, &n_pks_to_delete);
+		//printTableWithFilter(table, pks_to_delete, n_pks_to_delete);
+		deleteRegisters(table_name, pks_to_delete, n_pks_to_delete, table);
+		exec_select(concat("select table ", table_name));
+		/*printf("tablename: %s\n", table.name);
+		printf("n_columns: %i\n", table.n_columns);
+		printf("n_rows: %i\n", table.n_rows);*/
+
+		// getClonsure
+		//printf("tem where\n");
+		
+	}
+}
+
 

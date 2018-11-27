@@ -325,6 +325,19 @@ char** splitData(char* row_data, char separator, int* size){
 	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
 	int cont = 0, text_size = strlen(row_data);
+
+	if(getFirstOcurrencyIndex(row_data, separator)==-1){
+		strings[0] = row_data;
+		*size = 1;
+		return strings;	
+	}
+
+	if (text_size==1)
+	{
+		strings[0] = row_data;
+		return strings;
+	}
+
 	for (int i = 0; i < text_size; ++i)
 	{
 		if(row_data[i]=='"'){
@@ -756,6 +769,17 @@ FILE* getTableFileRead(char* db_name, char* table_name){
 	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "r");
+	return table;
+}
+
+FILE* getTableFileReadBinary(char* db_name, char* table_name){
+	char* path = concat("storage/", db_name);
+	path = concat(path, "/\0");
+	path = concat(path, table_name);
+	path = concat(path, ".csv\0");
+	//printf("path: %s\n", path);
+	FILE* table = NULL;
+	table = fopen(path, "rb");
 	return table;
 }
 

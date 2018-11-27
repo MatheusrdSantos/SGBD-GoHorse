@@ -41,6 +41,7 @@ int isValidMonth(int month);
 int isValidDay(int day);
 FILE* getTableFileRead(char* db_name, char* table_name);
 FILE* getTableFileWrite(char* db_name, char* table_name);
+FILE* getTableFileReadBinary(char* db_name, char* table_name);
 char* concatVectorWithSeparator(char** vector, char separator, int size);
 int isPrimary(char* declaration_type);
 int validateIntPrimary(char* data, char* table_name);
@@ -99,4 +100,5 @@ char* getStringBetweenIndexes(char* text, int index_1, int index_2);
 int getNOcurrencyIndex(char* string_1, char symbol, int n);
 void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_print, char* filter_columns);
 int stringIsInVector(char** vector, char* string_1, int v_size);
+int exec_delete(char* command);
 #include "utils.c"

@@ -32,7 +32,7 @@ void execute(char* command){
 		}else if(command_index == 1){
 			exec_create(command);
 		}else if(command_index == 2){
-			//exec_delete(command);
+			exec_delete(command);
 		}else if(command_index == 3){
 			exec_select(command);
 		}else if(command_index == 4){
