@@ -2496,7 +2496,7 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 	//printf("->%s\n", table.rows[0].data[0]);
 	int n_filter_columns_vector;
 	char** filter_columns_vector = split(filter_columns, ',', &n_filter_columns_vector);
-	//printf("1pos: %s\n", filter_columns_vector[0]);
+	printf("1pos: %s\n", filter_columns_vector[0]);
 
 	int table_content_string_splited_size;
 	int size_largestString = 0;
@@ -2525,17 +2525,27 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 
 		}
 	}
-
+	//printf("n_coluns: %i\n", table.n_columns);
+	int n_displayed = 0;
 	for(int l = 0; l < table.n_columns; l++)
 	{
 		int actual_size = strlen(table.columns[l]);
+		//printf("coluns: %s\n", table.columns[l]);
 	
 		table.columns[l] = removeChar(table.columns[l], '\n');
+		while(table.columns[l][0]==' '){
+			table.columns[l] = removeCharFromPosition(table.columns[l], 0);
+		}
 		if(!stringIsInVector(filter_columns_vector, getWordFromIndex(table.columns[l], ' ', 2), n_filter_columns_vector)){
 			if(l==table.n_columns-1){
 				printf("\n");
 			}
 			continue;
+		}
+		
+		if (n_displayed==0 && l>0) {
+			printf("|");
+			n_displayed++;
 		}
 		
 
@@ -2548,7 +2558,7 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 				printf(" ");
 				actual_size++;
 			}
-			printf("%s |\n", table.columns[l]);
+			printf("%s  |\n", table.columns[l]);
 		}else if(l==0){
 			printf("|");
 			if (actual_size>size_largestString) {
@@ -2564,7 +2574,7 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 			if (actual_size>size_largestString) {
 				size_largestString = actual_size;
 			}
-			printf(" %s", table.columns[l]);
+			printf(" %s ", table.columns[l]);
 			while(actual_size!=size_largestString){
 				printf(" ");
 				actual_size++;
@@ -2575,6 +2585,7 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 	resetColor();
 	
 	for (int i = 0; i < table.n_rows-1; i++){
+		n_displayed = 0;
 		
 		int current_pk = stringToInt(table.rows[i].data[table.pk_index]); 
 		if(!valueIsInIntVector(pks_to_print, n_pks_to_print, current_pk)){
@@ -2588,6 +2599,11 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 			table.columns[j] = removeChar(table.columns[j], '\n');
 			if(!stringIsInVector(filter_columns_vector, getWordFromIndex(table.columns[j], ' ', 2), n_filter_columns_vector)){
 				continue;
+			}
+			
+			if (n_displayed==0 && j>0) {
+				printf("|");
+				n_displayed++;
 			}
 
 			if (j==0) {
