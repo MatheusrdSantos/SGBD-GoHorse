@@ -2478,6 +2478,9 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 	//printf("fim\n");
 }
 
+/*
+* Checa se uma string existe em determinado vetor de strings
+*/
 int stringIsInVector(char** vector, char* string_1, int v_size){
 	//printf("string_1: %s\n", string_1);
 	string_1 = removeChar(string_1, ' ');
@@ -2495,6 +2498,9 @@ int stringIsInVector(char** vector, char* string_1, int v_size){
 	return 0;
 }
 
+/*
+* Imprime tabela com os filtros do comando
+*/
 void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_print, char* filter_columns){
 	//printf("->%s\n", table.rows[0].data[0]);
 	int n_filter_columns_vector;
@@ -2639,6 +2645,10 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 // operação controle:
 // select table alunos * where (media>5 and id>3)
 // select table alunos * where (id>2 and id>5)
+
+/*
+* Aplica os filtros advindos do comando que os necessita
+*/
 int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 	// aplicar filtro na tabela
 
@@ -2715,6 +2725,9 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 	
 }
 
+/*
+* Retorna todos os ids de uma tabela
+*/
 int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	FILE* table = NULL;
 	/* FILE* table = getTableFileRead(getDefaultDatabaseName(), table_name);
@@ -2768,6 +2781,9 @@ int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	fclose(table); */
 }
 
+/*
+* retorna string entre posições de outra string
+*/
 char* getStringBetweenIndexes(char* text, int index_1, int index_2){
 	char* cropped_string = (char*) malloc(sizeof(char));
 	if(index_1<0 || index_2>=strlen(text)){
@@ -2789,6 +2805,7 @@ char* getStringBetweenIndexes(char* text, int index_1, int index_2){
 	}
 	return cropped_string;
 }
+
 /*
 * Deleta tabela do banco
 */
