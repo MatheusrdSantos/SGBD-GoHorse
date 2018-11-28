@@ -37,6 +37,7 @@ int exec_input_file(){
 	fread(table_content_string, table_content_string_size, 1, input);
 
 	table_content_string[table_content_string_size] = '\0';
+	//printf("content size: %i\n", table_content_string_size);
 	//printf("%s\n", table_content_string);
 	fclose(input);
 
@@ -51,10 +52,10 @@ int exec_input_file(){
 		execute(concat(table_content_splited[i], "\n"));
 	}*/
 	int i = 0;
-	while(table_content_string[i]!='\0'){
+	while(table_content_string[i]!='\0' && i<table_content_string_size){
 		char* command = (char*) malloc(sizeof(char));
 		int j = 0, commented_line = 0;
-		while(table_content_string[i]!='\n'){
+		while(table_content_string[i]!='\n' && table_content_string[i]!='\0'){
 			
 			if (j==0) {
 				
@@ -70,10 +71,17 @@ int exec_input_file(){
 			i++;
 			j++;
 		}
-
 		if(!commented_line){
-			command[j] = '\0';
-			execute(removeCharFromPosition(command, j-1));
+			if(command[j] == '\0'){
+				printf("input command: %s limit\n", command);
+				execute(command);
+			}else{	
+				command[j] = '\0';
+				//printf("char: %c, i: %i\n", command[j-1], i);
+				command = removeCharFromPosition(command, j-1);
+				//printf("input command: %s limit\n", command);
+				execute(command);
+			}
 		}
 		i++;
 	}
