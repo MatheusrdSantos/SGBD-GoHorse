@@ -102,4 +102,5 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 int stringIsInVector(char** vector, char* string_1, int v_size);
 int exec_delete(char* command);
 int removeTable(char* db_name, char* table_name);
+void printTable(Table table);
 #include "utils.c"

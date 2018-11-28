@@ -211,16 +211,16 @@ int exec_select(char* command){
 	if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9])==0){
 		// executa um select simples, sem filtros
 		if(countWords(command, ' ')==3){
-			FILE *selected_table;
+			//FILE *selected_table;
 
-			char* default_db = getDefaultDatabaseName();
+			/*char* default_db = getDefaultDatabaseName();
 			char* table_content = (char*) malloc(sizeof(char)*100);
 
 			char* url_1 = concat("storage/", default_db);
-			char* url_2 = concat(url_1, "/");
+			char* url_2 = concat(url_1, "/");*/
 
 			char* table_name = getWordFromIndex(command, ' ', 3);
-			char* url_3 = concat(url_2, table_name);
+			/*char* url_3 = concat(url_2, table_name);
 			char* url_final = concat(url_3, ".csv");
 			
 			selected_table = fopen(url_final, "rb");
@@ -237,10 +237,13 @@ int exec_select(char* command){
 			
 			char* table_content_string = (char*) malloc(table_content_string_size + 1);
 			fread(table_content_string, table_content_string_size, 1, selected_table);
+			fclose(selected_table);*/
 
-			table_content_string[table_content_string_size] = '\0';
-
-			int table_content_string_splited_size;
+			//table_content_string[table_content_string_size] = '\0';
+			Table table = getTableWithData(table_name);
+			printTable(table);
+			
+			/*int table_content_string_splited_size;
 			char** table_content_string_splited = splitData(table_content_string, '\n', &table_content_string_splited_size);
 			int table_splited_twice_size, size_largestString = 0;
 			for (int i = 0; i < table_content_string_splited_size; i++){
@@ -278,7 +281,7 @@ int exec_select(char* command){
 				printf("\n");
 			}
 			resetColor();
-			fclose(selected_table);
+			*/
 		}else{
 
 			// verifica se tem * após o nome da tabela

@@ -73,12 +73,12 @@ int exec_input_file(){
 		}
 		if(!commented_line){
 			if(command[j] == '\0'){
-				printf("input command: %s limit\n", command);
+				//printf("input command: %s limit\n", command);
 				execute(command);
 			}else{	
 				command[j] = '\0';
 				//printf("char: %c, i: %i\n", command[j-1], i);
-				command = removeCharFromPosition(command, j-1);
+				//command = removeCharFromPosition(command, j-1);
 				//printf("input command: %s limit\n", command);
 				execute(command);
 			}
