@@ -1,1 +1,23 @@
-create loja
+/create loja
+/set loja
+/list databases
+/create table produtos columns (int* id, char[255] descricao, float preco, date validade)
+/insert into produtos values (1, "arroz", 1.0, 10/10/2018)
+/insert into produtos values (2, "feijao", 2.0, 10/11/2018)
+/insert into produtos values (3, "garrafa", 2.5, 10/11/2028)
+/insert into produtos values (4, "batata", 3.5, 20/11/2018)
+/insert into produtos values (5, "chocolate", 13.5, 20/12/2018)
+/select table produtos * where (id>2)
+/select table produtos * where (id>2 and preco<=3.5)
+/select table produtos * where (id=1 or preco>10)
+/select table produtos * where (descricao%arroz)
+/select table produtos * where (descricao%h or descricao%f)
+/select table produtos * where (validade>=10/11/2018)
+/select table produtos columns (id) where (id>2)
+/select table produtos columns (id, preco) where (id>2 and preco<=3.5)
+/select table produtos columns (id, validade) where (id=1 or preco>10)
+/select table produtos columns (descricao, preco, validade) where (descricao%arroz)
+/select table produtos columns (descricao) where (descricao%h or descricao%f)
+/delete table produtos where (id=1)
+/delete table produtos where (descricao%h or descricao%f)
+/delete table produtos

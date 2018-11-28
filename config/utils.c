@@ -75,6 +75,7 @@ char* getFirstWord(char* command){
 int valueIsInVector(char* word, char** array, int size){
 	for (int i = 0; i < size; ++i)
 	{
+		//printf("%s - %s\n", word, array[i]);
 		if (strcmp(word, array[i])==0)
 		{
 			return i+1;
@@ -2506,7 +2507,7 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 	//printf("->%s\n", table.rows[0].data[0]);
 	int n_filter_columns_vector;
 	char** filter_columns_vector = split(filter_columns, ',', &n_filter_columns_vector);
-	printf("1pos: %s\n", filter_columns_vector[0]);
+	//printf("1pos: %s\n", filter_columns_vector[0]);
 
 	int table_content_string_splited_size;
 	int size_largestString = 0;

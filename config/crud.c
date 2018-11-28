@@ -317,7 +317,7 @@ int exec_select(char* command){
 				char* filter = getStringBetweenIndexes(command, left_delimiter_filter, right_delimiter_filter);
 				
 				char* table_name = getWordFromIndex(command, ' ', 3);
-				printf("%s\n", table_name);
+				//printf("%s\n", table_name);
 				char** tables_name = getTablesName(getDefaultDatabaseName());
 				if(tables_name==NULL){
 					throwError("Não existem tabelas no banco!");
@@ -327,8 +327,9 @@ int exec_select(char* command){
 				while(tables_name[n]!=NULL){
 					n++;
 				}
-				
-				if (!valueIsInVector(table_name, tables_name, n-1)) {
+				//printf("n-> %i\n", n);
+				char* full_name = concat(table_name, ".csv");
+				if (!valueIsInVector(full_name, tables_name, n)) {
 					throwError("Tabela não encontrada!");
 					return 1;
 				}
