@@ -317,6 +317,23 @@ int exec_select(char* command){
 				char* filter = getStringBetweenIndexes(command, left_delimiter_filter, right_delimiter_filter);
 				
 				char* table_name = getWordFromIndex(command, ' ', 3);
+				printf("%s\n", table_name);
+				char** tables_name = getTablesName(getDefaultDatabaseName());
+				if(tables_name==NULL){
+					throwError("Não existem tabelas no banco!");
+					return 1;
+				}
+				int n = 0;
+				while(tables_name[n]!=NULL){
+					n++;
+				}
+				
+				if (!valueIsInVector(table_name, tables_name, n-1)) {
+					throwError("Tabela não encontrada!");
+					return 1;
+				}
+				
+
 				Table table = getTableWithData(table_name);
 				int n_pks_to_print = 0;
 				//printf("aqui\n");

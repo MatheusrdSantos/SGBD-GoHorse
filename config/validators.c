@@ -17,8 +17,70 @@ int isReserverdWord(char* word, char** reserved){
 int validate(char* command){
 	char* first_word = getFirstWord(command);
 	return isReserverdWord(first_word, reserved_words);
-	
 }
+
+int exec_input_file(){
+	FILE* input;
+	input = fopen("input_commands.txt", "rb");
+
+	if (input == NULL)
+	{
+		throwError("Erro na abertura do arquivo!\n");
+		return 0;
+	}
+
+	fseek(input, 0, SEEK_END);
+	int table_content_string_size = ftell(input);
+	fseek(input, 0, SEEK_SET);  //mesmo que rewind(f);
+	
+	char* table_content_string = (char*) malloc(table_content_string_size + 1);
+	fread(table_content_string, table_content_string_size, 1, input);
+
+	table_content_string[table_content_string_size] = '\0';
+	//printf("%s\n", table_content_string);
+	fclose(input);
+
+
+	/*int table_content_splited_size;
+	char** table_content_splited = split(table_content_string, '\n', &table_content_splited_size);
+	printf("size: %i\n", table_content_splited_size);
+	printf("%s-", table_content_splited[0]);*/
+	/*for(int i = 0; i < table_content_splited_size; i++)
+	{
+		printf("%s-", table_content_splited[i]);
+		execute(concat(table_content_splited[i], "\n"));
+	}*/
+	int i = 0;
+	while(table_content_string[i]!='\0'){
+		char* command = (char*) malloc(sizeof(char));
+		int j = 0, commented_line = 0;
+		while(table_content_string[i]!='\n'){
+			
+			if (j==0) {
+				
+				if (table_content_string[i]=='/') {
+					commented_line = 1;
+				}
+				
+			}
+			if(!commented_line){
+				command = (char*) realloc(command, sizeof(char)*(j+2));
+				command[j] = table_content_string[i];
+			}
+			i++;
+			j++;
+		}
+
+		if(!commented_line){
+			command[j] = '\0';
+			execute(removeCharFromPosition(command, j-1));
+		}
+		i++;
+	}
+	
+	return 1;
+}
+
 void execute(char* command){
 	int command_index = validate(command);
 	if (command_index == -1)
@@ -43,6 +105,8 @@ void execute(char* command){
 			exec_insert(command);
 		}else if(command_index == 7){
 			//exec_add(command);
+		}else if(command_index == 18){
+			exec_input_file();
 		}
 		printf("Executada a operação \"%s\"\n", reserved_words[command_index]);
 	}

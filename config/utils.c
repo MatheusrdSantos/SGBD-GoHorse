@@ -152,6 +152,7 @@ char** getTablesName(char* db_name){
 		return tables;
 	} else {
 	  	printf("Banco não encontrado ou não há tabelas.\n");
+		return NULL;
 	}
 }
 
