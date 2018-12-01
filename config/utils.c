@@ -77,7 +77,6 @@ char* getFirstWord(char* command){
 int valueIsInVector(char* word, char** array, int size){
 	for (int i = 0; i < size; ++i)
 	{
-		//printf("%s - %s\n", word, array[i]);
 		if (strcmp(word, array[i])==0)
 		{
 			return i+1;
@@ -149,11 +148,9 @@ char** getTablesName(char* db_name){
 				continue;
 			}
 			tables[i] = (char*) malloc((strlen(ent->d_name)+1) * sizeof(char));
-			//printf("strlen d_name: %i\n", strlen(ent->d_name));
 			tables[i] = ent->d_name;
 			i++;
 			tables = (char**) realloc(tables, sizeof(char*)*(i+1));
-			//printf("sizeof(char*)*(i+1): %i\n", sizeof(char*)*(i+1));
 		}
 
 		tables[i] = NULL;
@@ -180,7 +177,6 @@ char** getDatabasesName(){
 		while ((ent = readdir (dir)) != NULL) {
 			if (strcmp(ent->d_name, reserved_files_name[0])==0 || strcmp(ent->d_name, ".")==0 || strcmp(ent->d_name, "..")==0)
 			{
-				//printf("entrou continue\n");
 				continue;
 			}
 			databases[i] = (char*) malloc(strlen(ent->d_name) * sizeof(char)); 
@@ -192,7 +188,6 @@ char** getDatabasesName(){
 		databases[i] = NULL;
 
 		closedir (dir);
-		//printf("d_name: %s - i: %i\n", databases[i-2], i);
 		return databases;
 	} else {
 	  	perror ("Não há bancos criados.");
@@ -210,9 +205,7 @@ char* getDefaultDatabaseName(){
 	default_db = fopen("storage/default_db.csv", "r");
 	if (default_db == NULL)
 	{
-		red();
-	    printf("Error opening file!\n");
-	    resetColor();
+		throwError("Error opening file!\n");
 	    return 0;
 	}
 	fscanf(default_db, "%s", db_name);
@@ -227,21 +220,16 @@ char* getDefaultDatabaseName(){
 char* removeChar(char* old_string, char symbol){
 	char* new_string = (char*) malloc(sizeof(char));
 	
-	//printf("old_string_rc: %s\n", old_string);
 	int size = strlen(old_string), k=0;
-	//printf("size: %i\n", size);
 	for (int i = 0; i < size; ++i, k++)
 	{
 		if (old_string[i]==symbol)
-		{
-			//printf("achou: %i\n", i);
+		{;
 	 		k--;
 			continue;  		
 		}
 	 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	 	new_string[k] = old_string[i];
-		//printf("k: %i - i: %i\n", k, i);
-		//printf("new: %c - old: %c\n", new_string[k], old_string[i]);
 	}
 	new_string = (char*) realloc(new_string, sizeof(char)*(k+1));
 	new_string[k] = '\0';
@@ -278,11 +266,9 @@ char* removeCharFromPosition(char* old_string, int position){
 */
 char** split(char* text, char separator, int* size){
 	
-	//printf("initial text: %s\n", text);
 	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
 	int cont = 0, text_size = strlen(text);
-	//printf("text_size: %i\n", text_size);
 	
 	// caso o separador não exista, retorna o vetor com a string passada
 	// por parâmetro
@@ -327,13 +313,11 @@ char** split(char* text, char separator, int* size){
 				}
 			}
 			strings[cont][k] = '\0';
-			//printf("splited: %s - size: %i\n", strings[cont], (int)strlen(strings[cont]));
 			last_step = i+1;
 			cont++;
 		}
 	}
 	*size = cont;
-	//printf("size: %i\n", *size);
 	return strings;
 }
 
@@ -344,7 +328,6 @@ char** split(char* text, char separator, int* size){
 * retorno: vetor de strings com base no separador
 */
 char** splitData(char* row_data, char separator, int* size){
-	//printf("aqui: %s\n", row_data);
 	char** strings = (char**) malloc(sizeof(char*));
 	int last_step = 0; 
 	int cont = 0, text_size = strlen(row_data);
@@ -396,13 +379,11 @@ char** splitData(char* row_data, char separator, int* size){
 				}
 			}
 			strings[cont][k] = '\0';
-			//printf("splited: |%s| - size: %i\n", strings[cont], (int)strlen(strings[cont]));
 			last_step = i+1;
 			cont++;
 		}
 	}
 	*size = cont;
-	//printf("size: %i\n", *size);
 	return strings;
 }
 
@@ -434,13 +415,6 @@ char* cropStringRight(char* old_string, int index){
 	new_string[index]= '\0';
 	return new_string;
 }
-
-/*
-* Corta a string até o index especificado. Também pode ser interpertada como
-* uma funçaõ que retorna a string até o enésimo char começando a contar do final.
-* Ex: cropStringLeft("matheus", 4) = "eus"
-* left significa que ele vai ignorar o que tem à esquerda
-*/
 
 /*
 * função: corta a string até o index especificado. Também pode ser interpertada como
@@ -813,11 +787,9 @@ char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol
 char* getValuesFromDeclaration(char* command){
 	if (command[strlen(command)-1]!=')')
 	{
-		//printf("sintaxe error\n");
 		return "error";
 	}else{
 		char* data = getStringBetweenSymbols(command, '(', ')');
-		//printf("->>> %s\n", data);
 		return data;
 	}
 }
