@@ -1,7 +1,8 @@
 /*
-* Executa comandos para criação de bancos de dados ou tabelas
+* função:  executa comandos para criação de bancos de dados ou tabelas
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
-char* exec_create(char* command){
+int exec_create(char* command){
 	// se o comando tem apenas duas palavras
 	// executa a criação de um novo banco
 	if (countWords(command, ' ')==2){
@@ -10,6 +11,7 @@ char* exec_create(char* command){
 		//checa se banco já existe
 		if(databaseExist(db_name)!=-1){
 			displayAlertMessage("O banco de dados já existe!");
+			return 0;
 		}else{
 			// verifica se o sistema operacional é windows ou linux
 			// isso ocorre porque o caractere de diretório é diferente para os dois sistemas
@@ -35,6 +37,7 @@ char* exec_create(char* command){
 			}
 			
 		}
+		return 1;
 	// verifica sea segunda palavra é 'table'
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){
 		// create table
@@ -53,25 +56,30 @@ char* exec_create(char* command){
 				red();
 				printf("Está faltando um \"(\" após o comando \"columns\"!\n");
 				resetColor();
+				return 0;
 			}else{
 				createTable(table_name, columns_name);
+				return 1;
 			}
 		}else{
 			//modularizar!
 			red();
 			printf("Comando inesperado: \"%s\"\n",  getWordFromIndex(command, ' ', 4));
 			resetColor();
+			return 0;
 		}
 	}else{
 		throwError("Não foi encontrada declaração de colunas!");
+		return 0;
 	}
-	return "ok";
+	return 1;
 }
 
-/*
-* Cria a tabela a partir do cabeçalho, do nome e do banco de dados padrão
-*/
 
+/*
+* função:  cria a tabela a partir do cabeçalho, do nome e do banco de dados padrão
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
+*/
 int createTableFromHeader(char* table_header, char* table_name){
 	FILE *table;
 	char* table_path = concat("storage/", getDefaultDatabaseName());
@@ -91,16 +99,18 @@ int createTableFromHeader(char* table_header, char* table_name){
 }
 
 
-/*
-* Cria uma tabela utilizando a função "createTableFromHeader" auxiliar
-*/
 
+/*
+* função:  cria uma tabela utilizando a função "createTableFromHeader" auxiliar
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
+*/
 int createTable(char* table_name, char* columns_name_command){
 	
 	char* tableHeader = getTableHeader(columns_name_command);
 	if (strcmp(tableHeader, "error")==0)
 	{
 		throwError("Erro durante a criação da tabela!");
+		return 0;
 	}else{
 		displayConfirmMessage("Criando tabela...");
 		return createTableFromHeader(tableHeader, table_name);
@@ -108,9 +118,10 @@ int createTable(char* table_name, char* columns_name_command){
 }
 
 /*
-* Faz a listagem tanto das tabelas quanto dos bancos de dados
+* função:  faz a listagem tanto das tabelas quanto dos bancos de dados
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
-char* exec_list(char* command){
+int exec_list(char* command){
 	if(strcmp(command, "list tables") == 0){
 
 		displayMessage("Você solicitou listar as tabelas.\n");
@@ -127,7 +138,7 @@ char* exec_list(char* command){
 			printf("\n");
 			i++;
 		}
-
+		return 1;
 	}else if(strcmp(command, "list databases") == 0){
 		displayMessage("Você solicitou listar os bancos.\n");
 
@@ -149,14 +160,16 @@ char* exec_list(char* command){
 				i++;
 			}
 		}
-
+		return 1;
 	}else{
 		throwError("Esse comando não existe, tente 'list tables' ou 'list databases'.\n");
+		return 0;
 	}
 }
 
 /*
-* Seta o banco de dados default, ou seja, onde serão aplicados os comandos
+* função: seleciona o banco de dados padrão, ou seja, onde serão aplicados os comandos
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
 int exec_set(char* command){
 	FILE *default_db;
@@ -178,7 +191,8 @@ int exec_set(char* command){
 }
 
 /*
-* Retorna toda a tabela em forma de Table e seus dados
+* função: recupera todos os dados da tabela
+* retorno: struct Table preenchida com seus dados
 */
 Table getTableWithData(char* table_name){
 	FILE* f_table = NULL;
@@ -220,7 +234,8 @@ Table getTableWithData(char* table_name){
 }
 
 /*
-* Realiza os comandos de busca (select)
+* função: realiza os comandos de busca
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
 int exec_select(char* command){
 
@@ -345,8 +360,10 @@ int exec_select(char* command){
 // insert into itens values (3, "teste", 9.9, 09/10/2018)
 
 /*
-* Insere tupla na tabela
+* função: escreve registro na tabela
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
+
 int insertRow(Row row, char* table_name){
 	displayMessage("Escrevendo dados em disco");
 	FILE* table = getTableFileAppend(getDefaultDatabaseName(), table_name);
@@ -363,8 +380,10 @@ int insertRow(Row row, char* table_name){
 	return 1;
 }
 
+
 /*
-* Executa os comandos de inserção (insert)
+* função: executa os comandos de inserção (insert)
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
 int exec_insert(char* command){
 
@@ -404,7 +423,8 @@ int exec_insert(char* command){
 }
 
 /*
-* Deleta linhas a partir de um vetor de primary keys
+* função: deleta registros na tabela apartir de um vetor de primery keys
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
 int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, Table table){
 	FILE* f_table = getTableFileReadBinary(getDefaultDatabaseName(), table_name);
@@ -475,10 +495,11 @@ int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, T
 	return 1;
 }
 
-/*
-* Executa os comandos de exclusão tanto de linhas quanto de tabelas
-*/
 
+/*
+* função: executa os comandos de exclusão tanto de linhas quanto de tabelas
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
+*/
 int exec_delete(char* command){
 	// delete table professores where (id=3)
 	// create table professores columns (int* id, char[30] nome, float salario)
