@@ -72,16 +72,42 @@ int exec_input_file(){
 			j++;
 		}
 		if(!commented_line){
-			if(command[j] == '\0'){
-				//printf("input command: %s limit\n", command);
-				execute(command);
-			}else{	
-				command[j] = '\0';
-				//printf("char: %c, i: %i\n", command[j-1], i);
-				//command = removeCharFromPosition(command, j-1);
-				//printf("input command: %s limit\n", command);
-				execute(command);
+			
+			if (strcmp(PLATFORM_NAME, "windows")==0) {
+				//printf("windows\n");
+				if(command[j] == '\0'){
+					//printf("input command: %s limit\n", command);
+					execute(command);
+				}else{	
+					command[j] = '\0';
+					//printf("char: %c, i: %i\n", command[j-1], i);
+					command = removeCharFromPosition(command, j-1);
+					//printf("input command: %s limit\n", command);
+					execute(command);
+				}
+			}else if(strcmp(PLATFORM_NAME, "linux")==0){
+				//printf("linux\n");
+				if(command[j-1] == '\0'){
+					//printf("entou 1\n");
+					//printf("input command: %s\n", command);
+					execute(command);
+				}else{	
+					command[j-1] = '\0';
+					printf("entou 2\n");
+
+					//printf("char: %c, i: %i\n", command[j-1], i);
+					//command = removeCharFromPosition(command, j-1);
+					//printf("input command: %s\n", command);
+					//printf("final pos: %i", (int) '\0');
+					execute(command);
+				}
+
+			}else{
+				throwError("Esta funcionalidade não funciona em seu S.O.");
+				throwError("Funcionalidade suportada apenas para: Windows32, Windows64, Linux");
 			}
+			
+			
 		}
 		i++;
 	}

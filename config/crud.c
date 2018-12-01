@@ -10,7 +10,27 @@ char* exec_create(char* command){
 		if(databaseExist(db_name)!=-1){
 			displayAlertMessage("O banco de dados já existe!");
 		}else{
-			int result = mkdir(concat("storage/", db_name), 0777);
+			if (strcmp(PLATFORM_NAME, "windows")==0) {
+				//int result = _mkdir(concat("storage/", db_name));
+				char* dash = (char*) malloc(sizeof(char));
+				dash[0] = 92; // caractere '\'
+				char* storage_path = concat("storage", dash);
+				//printf("db_name: %s\n", db_name);
+				//printf("size: %i\n", (int)strlen(db_name));
+				char* command_line = concat("mkdir ", concat(storage_path, db_name)); 
+				//printf("comando: %s\n", command_line);
+				system(command_line);
+			}else if (strcmp(PLATFORM_NAME, "linux")==0) {
+				char* command_line = concat("mkdir ", concat("storage/", db_name)); 
+				//printf("db_name: %s\n", db_name);
+				//printf("size: %i\n", (int)strlen(db_name));
+				//printf("char: %c\n", db_name[4]);
+				//printf("int: %i\n", (int) db_name[4]);
+				//printf("comando: %s\n", command_line);
+				system(command_line);
+				//int result = mkdir(concat("storage/", db_name), 0777);
+			}
+			
 			//int result = mkdir(concat("storage/", db_name));
 		}
 	}else if(strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9]) == 0){

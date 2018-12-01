@@ -6,6 +6,17 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#if defined(_WIN32)
+    #define PLATFORM_NAME "windows" // Windows
+#elif defined(_WIN64)
+    #define PLATFORM_NAME "windows" // Windows
+#elif defined(__linux__)
+    #define PLATFORM_NAME "linux" // Debian, Ubuntu, Gentoo, Fedora, openSUSE, RedHat, Centos and other
+#else
+    #define PLATFORM_NAME NULL
+#endif
+
 #define RESERVED_WORDS_SIZE 19
 #define RESERVED_SYMBOLS_SIZE 5
 #define RESERVED_PRIMITIVE_TYPES_SIZE 4

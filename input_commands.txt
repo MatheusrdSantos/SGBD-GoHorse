@@ -1,4 +1,4 @@
-/create loja
+create loja
 /set loja
 /list databases
 /create table produtos columns (int* id, char[255] descricao, float preco, date validade)
