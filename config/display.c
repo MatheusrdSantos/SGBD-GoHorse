@@ -1,14 +1,29 @@
+/*
+* função: imprime informações do sistema
+* retorno: void
+*/
 void info(){
 	yellow();
 	printf("GoHorse entreprise.\n");
 	printf("System Version: 1.0\n");
 	resetColor();
 }
+
+
+/*
+* função: imprime mensagem de despedida
+* retorno: void
+*/
 void bye(){
 	yellow();
 	printf("Bye, see you later!\n");
 	resetColor();
 }
+
+/*
+* função: imprime um menu de ajuda
+* retorno: void
+*/
 void printHelp(){
 	cyan();
 	printf("Comandos para os bancos de dados:  \n");
@@ -25,24 +40,43 @@ void printHelp(){
 	printf("	select table professores columns (id, salaro, nome) - ou \"*\" para todas colunas - where (salario>2000.0): seleciona determinadas tuplas da tabela baseando-se na cláusula. \n");
 	resetColor();
 }
+
+/*
+* função: imprime um um erro
+* retorno: void
+*/
 void throwError(char* error_message){
 	red();
 	printf("%s\n", error_message);
 	resetColor();
 }
 
+/*
+* função: imprime uma mensagem
+* retorno: void
+*/
 void displayMessage(char* message){
 	yellow();
 	printf("%s\n", message);
 	resetColor();
 }
 
+
+/*
+* função: imprime um alerta
+* retorno: void
+*/
 void displayAlertMessage(char* message){
 	b_yellow();
 	printf("%s\n", message);
 	resetColor();
 }
 
+
+/*
+* função: imprime uma mensagem de confirmação
+* retorno: void
+*/
 void displayConfirmMessage(char* message){
 	b_green();
 	printf("%s\n", message);
