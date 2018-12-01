@@ -1292,6 +1292,7 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 	//printf("none match\n");
 	return 0;
 }
+
 /*
 * verifica se uma declaração está filtrando alguma coluna
 */
