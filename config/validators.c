@@ -1,24 +1,39 @@
+// recupera os comandos digitados pelo usuário enquanto ele não apertar o enter
 char* getCommand(){
-	// liberar espaço na memória após executar o comando free(command)
 	char* command = (char*) malloc(sizeof(char));
 
 		int i = 0;
 		while(command[i-1]!='\n'){
-			command=realloc(command, (sizeof(char)*i+sizeof(char)));
+			command= (char*) realloc(command, (sizeof(char)*i+sizeof(char)));
 			command[i]=getchar();
 			i++;
 		}
 		command[i-1]='\0';
 		return command;
 }
+
+/*
+* função: verifica se a palavra é reservada
+* retorno: index da palavra no vetor de palavras reservadas
+*/
 int isReserverdWord(char* word, char** reserved){
 	return getWordIndex(word, reserved);
 }
+
+
+/*
+* função: valida a primeira palavra de cada comando
+* retorno: index da palavra no vetor de palavras reservadas
+*/
 int validate(char* command){
 	char* first_word = getFirstWord(command);
 	return isReserverdWord(first_word, reserved_words);
 }
 
+/*
+* função: recupera os comandos escritos no arquivo "input_commands.txt" e os executa 
+* retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
+*/
 int exec_input_file(){
 	FILE* input;
 	input = fopen("input_commands.txt", "rb");
@@ -119,6 +134,11 @@ int exec_input_file(){
 	return 1;
 }
 
+/*
+* função: executa os comandos digitados na entrada padrão com base na primeira palavra digitada   
+* retorno: void
+*/
+
 void execute(char* command){
 	int command_index = validate(command);
 	if (command_index == -1)
@@ -149,6 +169,11 @@ void execute(char* command){
 		printf("Executada a operação \"%s\"\n", reserved_words[command_index]);
 	}
 }
+
+/*
+* função: mantém o código sendo executado enquanto não receber o comando "exit" 
+* retorno: void
+*/
 void run(){
 	while(1){
 		char*command=getCommand();
