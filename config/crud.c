@@ -16,22 +16,14 @@ int exec_create(char* command){
 			// verifica se o sistema operacional é windows ou linux
 			// isso ocorre porque o caractere de diretório é diferente para os dois sistemas
 			if (strcmp(PLATFORM_NAME, "windows")==0) {
-				//int result = _mkdir(concat("storage/", db_name));
+				
 				char* dash = (char*) malloc(sizeof(char));
 				dash[0] = 92; // caractere '\'
 				char* storage_path = concat("storage", dash);
-				//printf("db_name: %s\n", db_name);
-				//printf("size: %i\n", (int)strlen(db_name));
 				char* command_line = concat("mkdir ", concat(storage_path, db_name)); 
-				//printf("comando: %s\n", command_line);
 				system(command_line);
 			}else if (strcmp(PLATFORM_NAME, "linux")==0) {
 				char* command_line = concat("mkdir ", concat("storage/", db_name)); 
-				//printf("db_name: %s\n", db_name);
-				//printf("size: %i\n", (int)strlen(db_name));
-				//printf("char: %c\n", db_name[4]);
-				//printf("int: %i\n", (int) db_name[4]);
-				//printf("comando: %s\n", command_line);
 				system(command_line);
 				
 			}
@@ -219,7 +211,6 @@ Table getTableWithData(char* table_name){
 		data = readLineFromFile(f_table, i);
 		fclose(f_table);
 		if(data!=NULL){
-			//printf("%s\n", data);
 			Row row;
 			row.data = splitData(data, ',', &n_columns_row);
 			row.n_data = n_columns_row;
@@ -253,13 +244,10 @@ int exec_select(char* command){
 
 			// verifica se tem * após o nome da tabela
 			if(strlen(getWordFromIndex(command, ' ', 4)) == 1 && getWordFromIndex(command, ' ', 4)[0] == reserved_symbols[3]){
-				//printf("tem o *\n");
 
 				// verifica se tem a palavra reservada where
 				if (strcmp(getWordFromIndex(command, ' ', 5), reserved_words[13])==0) {
-					// select table alunos * where (media>5)
-					// select table alunos * where (nome%math)
-					//printf("comando: %s\n", command);
+
 					// recupera o filtro
 					char* filter = getStringBetweenSymbols(command, '(', ')');
 					if(strcmp(filter, "error")==0){
@@ -272,22 +260,12 @@ int exec_select(char* command){
 
 					int* pks_to_print = applyFilter(&table, filter, &n_pks_to_print);
 					printTableWithFilter(table, pks_to_print, n_pks_to_print);
-					/*printf("tablename: %s\n", table.name);
-					printf("n_columns: %i\n", table.n_columns);
-					printf("n_rows: %i\n", table.n_rows);*/
-
-					// getClonsure
-					//printf("tem where\n");
 				}else{
 					printf("falta o where\n");
 				}
 			// verifica se tem a palavra reservada 'columns'
 			}else if (strcmp(getWordFromIndex(command, ' ', 4), reserved_words[11])==0) {
-				// Select table alunos columns (id, nome) where (media > 5)
-				// select table professores columns (id, salaro, nome) where (salario>2000.0)
-				//tem especificação de colunas
-				// getColumsName
-				
+				//tem especificação de colunas	
 				// recpera o nome das colunas
 				int left_delimiter = getFirstOcurrencyIndex(command, '(');
 				int right_delimiter = getFirstOcurrencyIndex(command, ')');
@@ -299,7 +277,7 @@ int exec_select(char* command){
 				char* filter = getStringBetweenIndexes(command, left_delimiter_filter, right_delimiter_filter);
 				
 				char* table_name = getWordFromIndex(command, ' ', 3);
-				//printf("%s\n", table_name);
+				
 				char** tables_name = getTablesName(getDefaultDatabaseName());
 				if(tables_name==NULL){
 					throwError("Não existem tabelas no banco!");
@@ -311,7 +289,7 @@ int exec_select(char* command){
 				while(tables_name[n]!=NULL){
 					n++;
 				}
-				//printf("n-> %i\n", n);
+				
 
 				// verifica se a tabela existe no banco
 				char* full_name = concat(table_name, ".csv");
@@ -323,14 +301,10 @@ int exec_select(char* command){
 
 				Table table = getTableWithData(table_name);
 				int n_pks_to_print = 0;
-				//printf("aqui\n");
+				
 				int* pks_to_print = applyFilter(&table, filter, &n_pks_to_print);
 
 				printTableWithFilterColumns(table, pks_to_print, n_pks_to_print, columns_filter);
-				
-				/*printf("column filter: %s\n", columns_filter);
-				printf("filter: %s\n", filter);
-				printf("tem declaração de colunas\n");*/
 				
 			}else{
 				// filtro de colunas está faltando
@@ -351,28 +325,19 @@ int exec_select(char* command){
 	return 1;
 }
 
-//insere os dados na tabela
-// insert into alunos values (4, "matheus", 9.0, 09/07/1999)
-// insert into professores values (1, "jose joao", 2000.0)
-// int* id, char[50] nome, float media, date nasc
-// int* id, char[60] nome, float salario
-// insert into itens values (6, "teste", 9.9, 09/10/2018)
-// insert into itens values (3, "teste", 9.9, 09/10/2018)
-
 /*
 * função: escreve registro na tabela
 * retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
 
 int insertRow(Row row, char* table_name){
-	displayMessage("Escrevendo dados em disco");
+	displayMessage("Escrevendo dados no arquivo...");
 	FILE* table = getTableFileAppend(getDefaultDatabaseName(), table_name);
+
 	if(table == NULL){
 		throwError("Problema na leitura do arquivo");
 		return 0;
 	}
-	/*printf("data 1: %s\n", row.data[0]);
-	printf("data 2: %s\n", row.data[1]);*/
 
 	char* literal_data = concatVectorWithSeparator(row.data, ',', row.n_data);
 	fprintf(table, "%s\n", literal_data);
@@ -443,13 +408,11 @@ int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, T
 	fread(table_content_string, table_content_string_size, 1, f_table);
 
 	table_content_string[table_content_string_size] = '\0';
-	//printf("%s\n", table_content_string);
+	
 	fclose(f_table);
-
 
 	int table_content_splited_size;
 	char** table_content_splited = splitData(table_content_string, '\n', &table_content_splited_size);
-	//printf("n_lines: %i\n", table_content_splited_size);
 	
 	// recupera os indexes para serem ignorados com base nas primary keys passadas
 	int* indexes_to_ignore = (int*) malloc(sizeof(int));
@@ -501,11 +464,8 @@ int deleteRegisters(char* table_name, int* pks_to_delete, int n_pks_to_delete, T
 * retorno: status do processo (1 = sem erros, 0 = ocorreram erros)
 */
 int exec_delete(char* command){
-	// delete table professores where (id=3)
-	// create table professores columns (int* id, char[30] nome, float salario)
-	// insert into professores values (3, "maria", 4000.0)
+
 	// verifica se tem * após o nome da tabela
-	
 	if (strcmp(getWordFromIndex(command, ' ', 2), reserved_words[9])!=0) {
 		throwError("Comando \"table\" não encontrado!");
 		return 0;
@@ -526,14 +486,7 @@ int exec_delete(char* command){
 	//executa delete de linhas
 	// verifica se na posição 4 tem a palavra reservada 'where'
 	}else if(strcmp(getWordFromIndex(command, ' ', 4), reserved_words[13]) == 0){
-		//printf("tem o *\n");
 		// executa delete de registro
-		// select table alunos * where (media>5)
-		// select table alunos * where (nome%math)
-		//int* id, char[30] nome, float salario
-		/*1, "jose", 2000.0
-		2, "mario", 3000.0
-		3, "maria", 4000.0*/
 		char* filter = getStringBetweenSymbols(command, '(', ')');
 		
 		if (strcmp(filter, "error")==0) {
@@ -545,13 +498,8 @@ int exec_delete(char* command){
 		Table table = getTableWithData(table_name);
 		int n_pks_to_delete = 0;
 		int* pks_to_delete = applyFilter(&table, filter, &n_pks_to_delete);
-		//printTableWithFilter(table, pks_to_delete, n_pks_to_delete);
 		deleteRegisters(table_name, pks_to_delete, n_pks_to_delete, table);
 		exec_select(concat("select table ", table_name));
-		/*printf("tablename: %s\n", table.name);
-		printf("n_columns: %i\n", table.n_columns);
-		printf("n_rows: %i\n", table.n_rows);*/
-		
 	}
 }
 
