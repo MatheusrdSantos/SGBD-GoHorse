@@ -1,7 +1,7 @@
 /*
-* Retorna a palavra no index especificado
+* função: encontra a palavra no index especificado
 * EX: getWordFromIndex("matheus ricardo dos santos", ' ', 2) = "ricardo"
-* Se não exeistir o index retorna o comando
+* retorno: palavra na posição escolhida, caso não exista retorna o comando inteiro
 */
 char* getWordFromIndex(char* command, char separator, int index){
 	int cont = 1;
@@ -33,8 +33,9 @@ char* getWordFromIndex(char* command, char separator, int index){
 }
 
 /*
-* Conta o número de palavras em uma string de acordo com
+* função:  conta o número de palavras em uma string de acordo com
 * um separador.
+* retorno: o número de palavra de acordo com o separador
 */
 int countWords(char* command, char separator){
 	int cont = 1;
@@ -53,7 +54,8 @@ int countWords(char* command, char separator){
 }
 
 /*
-* Retorna a primeira palavra de uma string separada por espaço
+* função: recupera a primeira palavra de uma string
+* retorno: primeira palavra da string
 */
 char* getFirstWord(char* command){
 	char* firstWord =(char*) malloc(sizeof(char));
@@ -67,11 +69,11 @@ char* getFirstWord(char* command){
 	return firstWord;
 }
 
-/*
-* Retorna o index de ocorrencia de uma string em um vetor de strings
-* caso a string não exista no vetor retorna 0
-*/
 
+/*
+* função: verifica se uma palavra está em um vetor de strings
+* retorno: se está no vetor retorna o index+1, se não, retorna 0
+*/
 int valueIsInVector(char* word, char** array, int size){
 	for (int i = 0; i < size; ++i)
 	{
@@ -85,11 +87,9 @@ int valueIsInVector(char* word, char** array, int size){
 }
 
 /*
-* Retorna o index de ocorrencia de uma string no vetor de palavras reservadas
-* caso a string não exista no vetor retorna -1.
-* Na prática essa função informa se uma palavra é reservada ou não
+* função: encontra o index de determinada palavra no vetor de palavras reservadas
+* retorno: se está no vetor retorna o index, se não, retorna -1
 */
-
 int getWordIndex(char* word, char** array){
 	for (int i = 0; i < RESERVED_WORDS_SIZE; ++i)
 	{
@@ -100,8 +100,10 @@ int getWordIndex(char* word, char** array){
 	}
 	return -1;
 }
+
 /*
-* Recebe duas strings e retorna uma terceira concatenada
+* função: concatena duas strings
+* retorno: string composta pelas duas outras strings
 */
 char* concat(char *string1, char *string2){
     char *result = (char*) malloc(strlen(string1) + strlen(string2) + sizeof(char)); 
@@ -110,6 +112,10 @@ char* concat(char *string1, char *string2){
     return result;
 }
 
+/*
+* função: verifica se o banco de dados existe com base em seu nome
+* retorno: retorna o index na lista de bancos de dados ou -1 caso o banco não exista
+*/
 int databaseExist(char* db_name){
 	char** dbs_name = getDatabasesName();
 	int i = 0;
@@ -123,7 +129,10 @@ int databaseExist(char* db_name){
 	return -1;
 }
 
-//create table itens columns (int id, char[100] nome, float preco)
+/*
+* função: recupera o nome de todas as tabelas de um determinado banco
+* retorno: vetor com o nome das tabelas
+*/
 char** getTablesName(char* db_name){
 	char** tables = (char**) malloc(sizeof(char*));
 	int i = 0;
@@ -158,7 +167,8 @@ char** getTablesName(char* db_name){
 }
 
 /*
-* Retorna vetor de strings dos bancos criados.
+* função: recupera o nome de todos os bancos de dados criados
+* retorno: vetor de strings dos bancos criados
 */
 char** getDatabasesName(){
 	char** databases = (char**) malloc(sizeof(char*));
@@ -191,9 +201,9 @@ char** getDatabasesName(){
 }
 
 /*
-* Retorna o nome do dabase padrão
+* função: recupera o banco de dados padrão
+* retorno: string com o nome do banco
 */
-
 char* getDefaultDatabaseName(){
 	FILE *default_db;
 	char* db_name = (char*) malloc(sizeof(char)*100);
@@ -211,9 +221,9 @@ char* getDefaultDatabaseName(){
 }
 
 /*
-* remove todos os caracteres encontrado na string
+* função: remove todas as ocorrências de um caractere em uma string
+* retorno: nova string sem os caracteres
 */
-
 char* removeChar(char* old_string, char symbol){
 	char* new_string = (char*) malloc(sizeof(char));
 	
@@ -239,9 +249,9 @@ char* removeChar(char* old_string, char symbol){
 }
 
 /*
-* remove o char de uma posição
+* função: remove m caractere de uma posição especificada
+* retorno: a string sem o caractere
 */
-
 char* removeCharFromPosition(char* old_string, int position){
 	char* new_string = (char*) malloc(sizeof(char));
 	int size = strlen(old_string), k=0;
@@ -260,11 +270,12 @@ char* removeCharFromPosition(char* old_string, int position){
 	return new_string;
 }
 
-/*
-* Quebra a string onde existe o sepadator em várias strings e passa o tamanho do novo
-* vetor através de um ponteiro 
-*/
 
+/*
+* função: Quebra a string onde existe o sepadator em várias strings e passa o tamanho do novo
+* vetor através de um ponteiro
+* retorno: vetor de strings com base no separador
+*/
 char** split(char* text, char separator, int* size){
 	
 	//printf("initial text: %s\n", text);
@@ -273,17 +284,24 @@ char** split(char* text, char separator, int* size){
 	int cont = 0, text_size = strlen(text);
 	//printf("text_size: %i\n", text_size);
 	
+	// caso o separador não exista, retorna o vetor com a string passada
+	// por parâmetro
 	if(getFirstOcurrencyIndex(text, separator)==-1){
 		strings[0] = text;
 		*size = 1;
 		return strings;	
 	}
 
+	// se a string passada só tiver um caractere 
+	// somente ela será retornada
 	if (text_size==1)
 	{
 		strings[0] = text;
+		*size = 1;
 		return strings;
 	}
+
+
 	for (int i = 0; i < text_size; ++i)
 	{
 		if ((text[i]==separator && i!=0) || i==text_size-1)
@@ -300,8 +318,6 @@ char** split(char* text, char separator, int* size){
 				}else{
 					strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+2));
 					strings[cont][k] = text[j];
-					// se ele entrar no if pela condição i==text_size
-					// o erro que ocorria é que o ultimo caractere não era recuperado
 
 					if(j+1==i && text[i]!=separator){
 						strings[cont] = (char*) realloc(strings[cont], sizeof(char)*(k+3));
@@ -320,10 +336,12 @@ char** split(char* text, char separator, int* size){
 	//printf("size: %i\n", *size);
 	return strings;
 }
+
 /*
-* Separa os dados de uma linha.
-* A diferença da função acima é que em splitData() ele não quebra string na virgula
-* "mathes, ricardo" não vai bugar, pois ele ignora o que está entre as aspas
+* função: Separa os dados de uma linha.
+* A diferença da função split() é que em splitData() ele não quebra string na virgula ou no separador
+* "mathes, ricardo" pois ele ignora o que está entre as aspas
+* retorno: vetor de strings com base no separador
 */
 char** splitData(char* row_data, char separator, int* size){
 	//printf("aqui: %s\n", row_data);
@@ -389,10 +407,10 @@ char** splitData(char* row_data, char separator, int* size){
 }
 
 /*
-* Essa funçaõ é utilizada para a validação do comando de criação de tabela.
+* função: essa funçaõ é utilizada para a validação do comando de criação de tabela.
 * Ela basicamente conta quantas colunas foram declaradas utilizando o separador ','.
+* retorno: o número de colunas declaradas
 */
-
 int countColumns(char* columns_name_command){
 	int size=0;
 	split(columns_name_command,',', &size);
@@ -400,12 +418,12 @@ int countColumns(char* columns_name_command){
 }
 
 /*
-* Corta a string até o index especificado. Também pode ser interpertada como
+* função: corta a string até o index especificado. Também pode ser interpertada como
 * uma funçaõ que retorna a string até o enésimo char.
+* retorno: string cortada 
 * Ex: cropStringRight("matheus", 4) = "math"
 * right significa que ele vai ignorar o que tem à direita
 */
-
 char* cropStringRight(char* old_string, int index){
 	char* new_string = (char*) malloc(sizeof(char));
 	for (int i = 0; i <index; ++i)
@@ -419,11 +437,18 @@ char* cropStringRight(char* old_string, int index){
 
 /*
 * Corta a string até o index especificado. Também pode ser interpertada como
-* uma funçaõ que retorna a string até o enésimo char.
+* uma funçaõ que retorna a string até o enésimo char começando a contar do final.
 * Ex: cropStringLeft("matheus", 4) = "eus"
 * left significa que ele vai ignorar o que tem à esquerda
 */
 
+/*
+* função: corta a string até o index especificado. Também pode ser interpertada como
+* uma funçaõ que retorna a string até o enésimo char começando a contar do final.
+* retorno: string cortada 
+* Ex: cropStringLeft("matheus", 4) = "eus"
+* left significa que ele vai ignorar o que tem à esquerda
+*/
 char* cropStringLeft(char* old_string, int index){
 	char* new_string = (char*) malloc(sizeof(char));
 	int j = 0;
@@ -436,8 +461,10 @@ char* cropStringLeft(char* old_string, int index){
 	return new_string;
 }
 
-// essa função existe na lib math.h
-// mas ocorreu um problema de dependência no meu gcc
+/*
+* função: realiza uma operação de potência entre dois números
+* retorno: resultado da potência
+*/
 int myPow(int base, int expoent){
 	if (expoent==0)
 	{
@@ -452,7 +479,8 @@ int myPow(int base, int expoent){
 }
 
 /*
-* Converte um vetor de inteiros para um inteiro
+* função: converte um vetor de inteiros para um inteiro
+* retorno: inteiro resultante
 * Ex: [2,5,5] = 255
 */
 int intVectorToInt(int* numbers, int size){
@@ -467,9 +495,9 @@ int intVectorToInt(int* numbers, int size){
 }
 
 /*
-* Verifica se a declaração da coluna está certa e é do tipo int
+* função: verifica se a declaração da coluna está certa e é do tipo int
+* retorno: 1 = correta; 0 = incorreta
 */
-
 int isInt(char* declaration_type){
 	if (strlen(declaration_type)==4)
 	{
@@ -484,8 +512,13 @@ int isInt(char* declaration_type){
 	}
 	return 0;
 }
-// essa função já espera receber uma declaração de inteiro validada
+
+/*
+* função: verifica se a declaração do inteiro é primary key, ou seja, se tem forma 'int*'
+* retorno: 1 = correta; 0 = incorreta
+*/
 int isPrimary(char* declaration_type){
+	// essa função já espera receber uma declaração de inteiro validada
 	if (strlen(declaration_type)==4)
 	{
 		if (declaration_type[3]==reserved_symbols[3])
@@ -497,10 +530,11 @@ int isPrimary(char* declaration_type){
 	}
 	return 0;
 }
-/*
-* Verifica se a declaração da coluna está certa e é do tipo char
-*/
 
+/*
+* função: verifica se a declaração da coluna está certa e é do tipo char
+* retorno: 1 = correta; 0 = incorreta
+*/
 int isChar(char* declaration_type){
 	if(strcmp(cropStringRight(declaration_type, 4), primitive_types[2])==0){
 		if (declaration_type[4]=='[')
@@ -514,9 +548,7 @@ int isChar(char* declaration_type){
 				{
 					numbers[j] = (int)declaration_type[i] - '0'; 
 				}else{
-					red();
-					printf("Sintaxe inválida no tamanho do char\n");
-					resetColor();
+					throwError("Sintaxe inválida no tamanho do char\n");
 					return 0;
 				}
 			}
@@ -530,9 +562,9 @@ int isChar(char* declaration_type){
 }
 
 /*
-* Verifica se a declaração da coluna está certa e é do tipo float
+* função: verifica se a declaração da coluna está certa e é do tipo float
+* retorno: 1 = correta; 0 = incorreta
 */
-
 int isFloat(char* declaration_type){
 	if (strlen(declaration_type)==6)
 	{
@@ -550,9 +582,9 @@ int isFloat(char* declaration_type){
 }
 
 /*
-* Verifica se a declaração da coluna está certa e é do tipo date
+* função: verifica se a declaração da coluna está certa e é do tipo date
+* retorno: 1 = correta; 0 = incorreta
 */
-
 int isDate(char* declaration_type){
 	if (strlen(declaration_type)==5)
 	{
@@ -569,7 +601,8 @@ int isDate(char* declaration_type){
 }
 
 /*
-* Valida uma declaração de tipo de coluna
+* função: valida uma declaração de tipo de coluna
+* retorno: 1 = correta; 0 = incorreta
 */
 int validateColumnDeclaration(char* column_declaration){
 	char* column_declaration_type = getWordFromIndex(column_declaration, ' ', 1);
@@ -580,9 +613,9 @@ int validateColumnDeclaration(char* column_declaration){
 }
 
 /*
-* Essa funçaõ retonar o número de vezes que um char ocorre em uma string
+* função: conta o número de ocorrêcias de um char em uma string
+* retorno: número de ocorrências
 */
-
 int countCharInString(char* string_1, char symbol){
 	int cont = 0;
 	for (int i = 0; i < strlen(string_1); ++i)
@@ -596,8 +629,9 @@ int countCharInString(char* string_1, char symbol){
 }
 
 /*
-* Adiciona um char na string após cada ocorrencia de um dado simbolo
-* Ex: putCharAfterSymbol("1,matheus,19,brasil", ' ', ',') = "1, matheus, 19, brasil" 
+* função: adiciona um char na string após cada ocorrencia de um dado simbolo
+* retorno: string com o novo char
+* EX: putCharAfterSymbol("1,matheus,19,brasil", ' ', ',') = "1, matheus, 19, brasil"
 */
 char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 
@@ -618,8 +652,10 @@ char* putCharAfterSymbol(char* old_string, char new_char, char symbol){
 	return new_string;
 
 }
+
 /*
-* Verifica se em uma declaração de colunas existe alguma coluna como primaryKey
+* função: verifica se em uma declaração de colunas existe alguma coluna como primaryKey
+* retorno: 1 = tem primary key; 0 = não tem primary key ou tem mais de uma
 */
 int hasPrimaryKey(char* columns_name_command){
 	int n_columns = 0, found_primary_key = 0, n_key = 0;
@@ -649,15 +685,15 @@ int hasPrimaryKey(char* columns_name_command){
 }
 
 /*
-* Valida e formata uma declaração de colunas para a criação de uma tabela
+* função: valida e formata uma declaração de colunas para a criação de uma tabela
+* retorno: declaração das colunas formatadas ou "erro" em caso de sintaxe inválida
 */
-
 char* getTableHeader(char* columns_name_command){
 	// int *id, varchar[255] name, float height, date birthday)
 	char* column_name = (char*) malloc(sizeof(char));
 	if (columns_name_command[strlen(columns_name_command)-1]!=')')
 	{
-		printf("sintaxe error\n");
+		throwError("sintaxe error\n");
 		return "error";
 	}else{
 
@@ -674,6 +710,7 @@ char* getTableHeader(char* columns_name_command){
 				column_declaration = removeCharFromPosition(column_declaration, 0);
 			}
 			
+			// valida a declaração de colunas
 			if(!validateColumnDeclaration(column_declaration)){
 				red();
 				printf("Comando não reconhecido: \"%s\"\n", column_declaration);
@@ -694,6 +731,10 @@ char* getTableHeader(char* columns_name_command){
 	}
 }
 
+/*
+* função: recupera a primeira ocorrência de um char em uma string
+* retorno: index da ocorrência ou -1 caso ele não ocorra
+*/
 int getFirstOcurrencyIndex(char* string_1, char symbol){
 	for (int i = 0; i < strlen(string_1); ++i)
 	{
@@ -705,6 +746,10 @@ int getFirstOcurrencyIndex(char* string_1, char symbol){
 	return -1;
 }
 
+/*
+* função: recupera o index da enésima ocorrências de um char em uma string
+* retorno: o index ou -1 caso não exista a enésima ocorrência
+*/
 int getNOcurrencyIndex(char* string_1, char symbol, int n){
 	int n_ocurrency = 0;
 	for (int i = 0; i < strlen(string_1); ++i)
@@ -720,6 +765,10 @@ int getNOcurrencyIndex(char* string_1, char symbol, int n){
 	return -1;
 }
 
+/*
+* função: recupera o index da ultima ocorrências de um char em uma string
+* retorno: o index ou -1 caso não exista a ocorrência
+*/
 int getLastOcurrencyIndex(char* string_1, char symbol){
 	for (int i = strlen(string_1)-1; i>=0; --i)
 	{
@@ -730,8 +779,10 @@ int getLastOcurrencyIndex(char* string_1, char symbol){
 	}
 	return -1;
 }
+
 /*
-* Corta a string entre dois caracteres especificados
+* função: corta a string entre dois caracteres especificados
+* retorno: string cortada
 * Ex: getStringBetweenSymbols("insert into alunos values (1, “matheus”, 1.70, “09/07/1999”)", '(', ')')
 * = "1, “matheus”, 1.70, “09/07/1999”"
 */
@@ -752,8 +803,12 @@ char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol
 	result[strlen(result)] = '\0';
 	return result;
 }
+
 /*
-* recupera os dados
+* função: recupera os dados de uma declaração
+* retorno: string referente aos dados
+* Ex: getValuesFromDeclaration("insert into alunos values (1, “matheus”, 1.70, “09/07/1999”)", '(', ')')
+* = "1, “matheus”, 1.70, “09/07/1999”"
 */
 char* getValuesFromDeclaration(char* command){
 	if (command[strlen(command)-1]!=')')
@@ -767,6 +822,10 @@ char* getValuesFromDeclaration(char* command){
 	}
 }
 
+/*
+* função: recupera o arquivo aberto da tabela
+* retorno: arquivo aberto em forma de leitura
+*/
 FILE* getTableFileRead(char* db_name, char* table_name){
 	char* path = concat("storage/", db_name);
 	path = concat(path, "/\0");
@@ -778,6 +837,10 @@ FILE* getTableFileRead(char* db_name, char* table_name){
 	return table;
 }
 
+/*
+* função: recupera o arquivo aberto da tabela
+* retorno: arquivo aberto em forma de leitura binária
+*/
 FILE* getTableFileReadBinary(char* db_name, char* table_name){
 	char* path = concat("storage/", db_name);
 	path = concat(path, "/\0");
@@ -789,6 +852,10 @@ FILE* getTableFileReadBinary(char* db_name, char* table_name){
 	return table;
 }
 
+/*
+* função: recupera o arquivo aberto da tabela
+* retorno: arquivo aberto em forma de escrita
+*/
 FILE* getTableFileWrite(char* db_name, char* table_name){
 	char* path = concat("storage/", db_name);
 	path = concat(path, "/\0");
@@ -800,6 +867,10 @@ FILE* getTableFileWrite(char* db_name, char* table_name){
 	return table;
 }
 
+/*
+* função: recupera o arquivo aberto da tabela
+* retorno: arquivo aberto em forma de escrita no final do arquivo
+*/
 FILE* getTableFileAppend(char* db_name, char* table_name){
 	char* path = concat("storage/", db_name);
 	path = concat(path, "/\0");
@@ -811,6 +882,10 @@ FILE* getTableFileAppend(char* db_name, char* table_name){
 	return table;
 }
 
+/*
+* função: lê linha no index especificado a partir de um arquivo
+* retorno: string contendo a linha
+*/
 char* readLineFromFile(FILE* table, int index){
 	char* line = (char*) malloc(sizeof(char));
 	char c = '*';
@@ -849,9 +924,9 @@ char* readLineFromFile(FILE* table, int index){
 }
 
 /*
-* Recupera o header da tabela especificada
+* função: recupera o header da tabela especificada
+* retorno: string com o cabeçalho de declaração da tabela
 */
-
 char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	char* header;
 	FILE* table;
@@ -864,6 +939,10 @@ char* getTableHeaderFromDatabase(char* db_name, char* table_name){
 	return header;
 }
 
+/*
+* função: valida um dado que vede ser do tipo inteiro
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateInt(char* data){
 	
 	for(int i = 0; i < strlen(data); i++)
@@ -875,6 +954,11 @@ int validateInt(char* data){
 
 	return 1;
 }
+
+/*
+* função: verifica se um inteiro ocorre no vetor
+* retorno: 1 = ocorre; 0 = não ocorre
+*/
 int valueIsInIntVector(int* vecto, int size, int value){
 	for(int i = 0; i<size; i++){
 		if(vecto[i]==value){
@@ -883,6 +967,11 @@ int valueIsInIntVector(int* vecto, int size, int value){
 	}
 	return 0;
 }
+
+/*
+* função: verifica se a primary key já existe na tabela especificada
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateIntPrimary(char* data, char* table_name){
 	
 	if(!validateInt(data)){
@@ -897,6 +986,10 @@ int validateIntPrimary(char* data, char* table_name){
 	return 1;
 }
 
+/*
+* função: converte string de dígitos para inteiro
+* retorno: inteiro equivalente à string
+*/
 int stringToInt(char* data){
 	int* numbers = (int*) malloc(sizeof(int));
 	//printf("data: %s\n", data);
@@ -914,6 +1007,10 @@ int stringToInt(char* data){
 	
 }
 
+/*
+* função: valida um dado que vede ser do tipo float
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateFloat(char* data){
 	int size = strlen(data);
 	
@@ -932,10 +1029,16 @@ int validateFloat(char* data){
 	return 1;
 }
 
+/*
+* função: valida um dado que vede ser do tipo char
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateChar(char* data, char* type){
 	if(!(data[0]=='"') || !(data[strlen(data)-1]=='"')){
 		return 0;
 	}
+
+	// recupera o tamanho do char
 	int max_size =stringToInt(getStringBetweenSymbols(type, '[', ']'));
 
 	if(strlen(data)-2<= max_size){
@@ -944,6 +1047,10 @@ int validateChar(char* data, char* type){
 	return 0;
 }
 
+/*
+* função: verifica se é um dia válido para uma data
+* retorno: 1 = válido; 0 = inválido
+*/
 int isValidDay(int day){
 	if(day>0 && day<32){
 		return 1;
@@ -951,6 +1058,10 @@ int isValidDay(int day){
 	return 0;
 }
 
+/*
+* função: verifica se é um mês válido para uma data
+* retorno: 1 = válido; 0 = inválido
+*/
 int isValidMonth(int month){
 	if(month>0 && month<13){
 		return 1;
@@ -958,6 +1069,10 @@ int isValidMonth(int month){
 	return 0;
 }
 
+/*
+* função: verifica se é um ano válido para uma data
+* retorno: 1 = válido; 0 = inválido
+*/
 int isValidYear(int year){
 	if(year>-1){
 		return 1;
@@ -965,6 +1080,10 @@ int isValidYear(int year){
 	return 0;
 }
 
+/*
+* função: valida um dado que vede ser do tipo Date
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateDate(char* data){
 	int size = 0;
 	//printf("size com barra: %i\n", size);
@@ -984,8 +1103,10 @@ int validateDate(char* data){
 	return 0;
 }
 
-// a primayKey será checada nessa função, mas será implementada
-// em outro momento
+/*
+* função: verifica se o valor dado para uma coluna é correto para a sua declaração
+* retorno: 1 = válido; 0 = inválido
+*/
 int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	// remove os espaçoes iniciais
 	// é um loop porque o comando pode vim com mais de um espaço
@@ -993,6 +1114,7 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	while(type_declaration[0]==' '){
 		type_declaration = removeCharFromPosition(type_declaration, 0);
 	}
+
 	// faz a mesma coisa que o loop de cima porém com os dados
 	while(data[0]==' '){
 		data = removeCharFromPosition(data, 0);
@@ -1046,6 +1168,10 @@ int valueMatchWithType(char* data, char* type_declaration, char* table_name){
 	return 1;
 }
 
+/*
+* função: valida os dados que serão inseridos na tabela
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateValues(char* table_name, char** data){
 	char* db_name = getDefaultDatabaseName();
 	char* table_header = getTableHeaderFromDatabase(db_name, table_name);
@@ -1064,6 +1190,10 @@ int validateValues(char* table_name, char** data){
 	return 1;
 }
 
+/*
+* função: concatena um vetor de string com um separador entre elas
+* retorno: string concatenada
+*/
 char* concatVectorWithSeparator(char** vector, char separator, int size){
 	char* result;
 	for(int i = 0; i < size; i++)
@@ -1079,6 +1209,10 @@ char* concatVectorWithSeparator(char** vector, char separator, int size){
 	return result;
 }
 
+/*
+* função: encontra o index da primary key no header de uma tabela
+* retorno: index ou -1 caso não seja encontrado
+*/
 int findPrimaryKeyIndex(char* header){
 	int size; 
  	char** declarations = split(header, ',', &size);
@@ -1094,6 +1228,11 @@ int findPrimaryKeyIndex(char* header){
 	}
 	return -1;
 }
+
+/*
+* função: verifica se o char é um símbolo válido com operador
+* retorno: 1 = válido; 0 = inválido
+*/
 int isOperator(char symbol){
 	
 	for(int i = 0; i < RESERVED_SYMBOLS_SIZE; i++)
@@ -1104,6 +1243,11 @@ int isOperator(char symbol){
 	}
 	return 0;
 }
+
+/*
+* função: verifica se o filtro tem operador
+* retorno: 1 = tem; 0 = não tem
+*/
 int hasOperator(char* filter){
 	
 	for(int i = 0; i < strlen(filter); i++)
@@ -1116,7 +1260,10 @@ int hasOperator(char* filter){
 	return 0;
 }
 
-// faz uma validação únicamente da sintaxe
+/*
+* função: faz uma validação únicamente da sintaxe
+* retorno: 1 = válido; 0 = inválido
+*/
 int validateFilterSyntax(char** splited_filters, int n_filters){
 	
 	for(int i = 0; i < n_filters; i++)
@@ -1142,8 +1289,11 @@ int validateFilterSyntax(char** splited_filters, int n_filters){
 	
 }
 
+/*
+* função: encontra os índices que ocorrem os operadores em um comendo de filtro
+* retorno: vetor de índices
+*/
 int* findOperator(char* filter){
-	//int* operatorsIndex[3] = {-1, -1, 0};
 	int* operatorsIndex = (int*) malloc(sizeof(int)*3);
 	operatorsIndex[0] = -1;
 	operatorsIndex[1] = -1;
@@ -1162,6 +1312,11 @@ int* findOperator(char* filter){
 	return operatorsIndex;
 }
 
+/*
+* função: recupera o nome de uma coluna a partir de uma declaração de filtro
+* retorno: nome da coluna
+* ex: 10>=idade retorna apenas "idade"
+*/
 char* getColumnNameFromFilter(char* filter, Table table){
 	// filter
 	// ex: 10>=idade
@@ -1209,10 +1364,15 @@ char* getColumnNameFromFilter(char* filter, Table table){
 		throwError("Nome de operador incorreto!");
 		return NULL;
 	}
-	throwError("Nome de operador incorreto2!");
+	throwError("Nome de operador incorreto!");
 	return NULL;
 }
 
+/*
+* função: recupera o operador de uma coluna a partir de uma declaração de filtro
+* retorno: operador
+* ex: 10>=idade retorna apenas ">="
+*/
 char* getOperatorFromFilter(char* filter){
 	char* operator_c = (char*) malloc(sizeof(char));
 	int n_operators = 0;
@@ -1228,27 +1388,40 @@ char* getOperatorFromFilter(char* filter){
 	return operator_c;
 }
 
+/*
+* função: recupera o tipo da coluna a partir de seu nome
+* retorno: tipo da coluna ou NULL caso não encontre a coluna
+*/
 char* getColumnTypeFromName(Table table, char* column_name){
 	char* column_type;
 	char* column_declaration_name;
+
+	// percorre a tabela
 	for(int i=0; i<table.n_columns; i++){
 		while(table.columns[i][0] == ' '){
 			table.columns[i] = removeCharFromPosition(table.columns[i], 0);
 		}
+		// recupera o nome da tabela
 		column_declaration_name = getWordFromIndex(table.columns[i], ' ', 2);
 		
 		if (column_declaration_name[strlen(column_declaration_name)-1] == '\n') {
 			column_declaration_name = removeCharFromPosition(column_declaration_name, strlen(column_declaration_name)-1);
 		}
 		
+		// verifica se os nomes são iguais
 		if(strcmp(column_declaration_name, column_name) == 0){
-			
+			// retorna apenas o tipo
 			return getWordFromIndex(table.columns[i], ' ', 1);
 		}
 	}
 	return NULL;
 }
 
+/*
+* função: verifica se o operador é de operações numéricas
+* retorno: 1 = é numérico; 0 = não é
+* ex: '>', '<', '>=', '<=', '='
+*/
 int isMathOperator(char* operator_d){
 	//printf("entrou\n");
 	for(int i = 0; i < strlen(operator_d); i++)
@@ -1262,6 +1435,10 @@ int isMathOperator(char* operator_d){
 	return 1;
 }
 
+/*
+* função: verifica se o operador é do mesmo tipo da coluna declarada
+* retorno: 1 = válido; 0 = inválido
+*/
 int operatorMatchWithColumnType(char* operators, char* column_name, Table table){
 	int isMathOp = isMathOperator(operators);
 	char* column_type = NULL;
@@ -1294,9 +1471,10 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 }
 
 /*
-* verifica se uma declaração está filtrando alguma coluna
+* função: verifica se uma declaração está filtrando alguma coluna e se o tipo de filtro é
+* válido para o tipo da coluna
+* retorno: 1 = válido; 0 = inválido
 */
-
 int filterMatchWithColumn(char* filter, Table table){
 	char* column_name = getColumnNameFromFilter(filter, table);
 	//printf("column name: %s\n", column_name);
@@ -1311,10 +1489,10 @@ int filterMatchWithColumn(char* filter, Table table){
 	}
 }
 
-// retorna um código que significa alguma operação de:
-// >, <, >=, <=, =, %
-
 /*
+* função: interpretar a operação presente no filtro
+* retorno: código que significa alguma operação de:
+* >, <, >=, <=, =, %
 * {'=', '>', '<', '*', '%'}
 * Códigos de retorno de acordo com o filtro
 * 1 - >
@@ -1352,6 +1530,11 @@ int interpretFilter(char* filter){
 	return intVectorToInt(codes, n_symbols);
 }
 
+/*
+* função: recupera o valor de filtro
+* retorno: valor do filtro
+* ex: 10>=idade retorna apenas "10"
+*/
 char* getValueFromFilter(char* filter_declaration,char* c_name){
 	int* operatorsIndex = findOperator(filter_declaration);
 	
@@ -1390,6 +1573,10 @@ char* getValueFromFilter(char* filter_declaration,char* c_name){
 	return NULL;
 }
 
+/*
+* função: busca a coluna em um vetor de strings
+* retorno: index da coluna
+*/
 int getColumnIndex(char** columns, char* column_name, int n_columns){
 	//printf("n_columns: ->%i\n", n_columns);
 	for(int i = 0; i < n_columns; i++)
@@ -1407,6 +1594,10 @@ int getColumnIndex(char** columns, char* column_name, int n_columns){
 	return -1;
 }
 
+/*
+* função: verifica qual a maior string em um vetor de string
+* retorno: tamanho da maior string
+*/
 int getLargestStringInArray(char** received_array, int size){
 	int pos_largestString, largestLen = 0;
 	for(int i = 0; i < size; i++)
@@ -1417,6 +1608,10 @@ int getLargestStringInArray(char** received_array, int size){
 	return pos_largestString;
 }
 
+/*
+* função: aplica o filtro de maior que
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1444,6 +1639,10 @@ int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pk
 	
 }
 
+/*
+* função: converte uma string para a struct Date
+* retorno: struct Date preenchida
+*/
 Date stringToDate(char* text_date){
 	int vector_size;
 	char** date = split(text_date, '/', &vector_size);
@@ -1456,8 +1655,10 @@ Date stringToDate(char* text_date){
 	return new_date;
 }
 
-// verifica se a data 1 é maior que a data 2
-// (mais recente)
+/*
+* função: aplica o filtro de maior que na data, verifica se a data 1 é após a data 2
+* retorno: 1 = data 1 vem após; 0 = data 1 não vem após
+*/
 int compareDateGreater(Date date_1, Date date_2){
 	if(date_1.i_year>date_2.i_year){
 		return 1;
@@ -1469,6 +1670,10 @@ int compareDateGreater(Date date_1, Date date_2){
 	return 0;
 }
 
+/*
+* função: aplica o filtro de igualdade
+* retorno: 1 = datas iguais; 0 = datas diferentes
+*/
 int compareDateEqual(Date date_1, Date date_2){
 	if(date_1.i_year == date_2.i_year && date_1.i_month==date_2.i_month && date_1.i_day==date_2.i_day){
 		return 1;
@@ -1476,6 +1681,10 @@ int compareDateEqual(Date date_1, Date date_2){
 	return 0;
 }
 
+/*
+* função: aplica o filtro de maior que nas datas
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterThanDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1508,6 +1717,10 @@ int* applyGreaterThanDate(Table table, Date filter_value, int column_index, int*
 	
 }
 
+/*
+* função: aplica o filtro de maior ou igual nas datas
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1540,6 +1753,10 @@ int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, i
 	
 }
 
+/*
+* função: aplica o filtro de menor ou igual nas datas
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1572,6 +1789,10 @@ int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int*
 	
 }
 
+/*
+* função: aplica o filtro de menor que
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessThanDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1604,6 +1825,10 @@ int* applyLessThanDate(Table table, Date filter_value, int column_index, int* n_
 
 }
 
+/*
+* função: aplica o filtro de igualdade nas datas
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1636,6 +1861,10 @@ int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_p
 
 }
 
+/*
+* função: aplica o filtro de maior que em com valor inteiros em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1663,6 +1892,10 @@ int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, i
 	
 }
 
+/*
+* função: aplica o filtro de maior que em com valor float em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1690,6 +1923,10 @@ int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_inde
 	
 }
 
+/*
+* função: aplica o filtro de maior que em com valor float em uma coluna de int
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterThanFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1717,6 +1954,10 @@ int* applyGreaterThanFloatInt(Table table, float filter_value, int column_index,
 	
 }
 
+/*
+* função: aplica o filtro de menor que
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1744,6 +1985,10 @@ int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 	
 }
 
+/*
+* função: aplica o filtro de menor que com valor inteiro em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1771,6 +2016,10 @@ int* applyLessThanIntFloat(Table table, int filter_value, int column_index, int*
 	
 }
 
+/*
+* função: aplica o filtro de menor que com valor float em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1798,6 +2047,10 @@ int* applyLessThanFloatFloat(Table table, float filter_value, int column_index, 
 	
 }
 
+/*
+* função: aplica o filtro de menor que com valor float em uma coluna de inteiro
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessThanFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1825,6 +2078,10 @@ int* applyLessThanFloatInt(Table table, float filter_value, int column_index, in
 	
 }
 
+/*
+* função: aplica o filtro de igualdade com valor inteiro em uma coluna de inteiro
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyEqualTo(Table table, char* filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1855,6 +2112,10 @@ int* applyEqualTo(Table table, char* filter_value, int column_index, int* n_pks)
 	
 }
 
+/*
+* função: aplica o filtro de maior ou igualque com valor inteiro em uma coluna de inteiro
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1882,6 +2143,10 @@ int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n
 	
 }
 
+/*
+* função: aplica o filtro de maior ou igual com valor inteiro em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1909,6 +2174,10 @@ int* applyGreaterEqualToIntFloat(Table table, int filter_value, int column_index
 	
 }
 
+/*
+* função: aplica o filtro de maior ou igual com valor float em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1936,6 +2205,10 @@ int* applyGreaterEqualToFloatFloat(Table table, float filter_value, int column_i
 	
 }
 
+/*
+* função: aplica o filtro de maior ou igual em valor float em uma coluna de inteiro
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyGreaterEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1963,6 +2236,10 @@ int* applyGreaterEqualToFloatInt(Table table, float filter_value, int column_ind
 	
 }
 
+/*
+* função: aplica o filtro de menor ou igual com valor inteiro em uma coluna de inteiro
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -1990,6 +2267,10 @@ int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pk
 	
 }
 
+/*
+* função: aplica o filtro de menor ou igual com valor inteiro em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -2017,6 +2298,10 @@ int* applyLessEqualToIntFloat(Table table, int filter_value, int column_index, i
 	
 }
 
+/*
+* função: aplica o filtro de menor ou igual com valor float em uma coluna de float
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -2044,6 +2329,11 @@ int* applyLessEqualToFloatFloat(Table table, float filter_value, int column_inde
 	
 }
 
+
+/*
+* função: aplica o filtro de menor ou igual com valor float em uma coluna de inteiro
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyLessEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -2071,6 +2361,11 @@ int* applyLessEqualToFloatInt(Table table, float filter_value, int column_index,
 	
 }
 
+
+/*
+* função: aplica o filtro de proximidade de string (busca por substrings)
+* retorno: vetor com as primary keys que satisfazem o filtro
+*/
 int* applyStringSimilarity(Table table, char* filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
@@ -2100,6 +2395,8 @@ int* applyStringSimilarity(Table table, char* filter_value, int column_index, in
 }
 
 /*
+* função: aplica o filtro de acordo com o código da operação e com os tipos de dados e de colunas
+* retorno: primary keys restantes após o filtro
 * {'=', '>', '<', '*', '%'}
 * Códigos de retorno de acordo com o filtro
 * 1 - >
@@ -2240,8 +2537,13 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		}
 	}
 }
-// essa função só pode ser chamada caso exista um operador lógico
+
+/*
+* função: recupera a intersecção de dois vetores de inteiros
+* retorno: vetor que representa a intersecção
+*/
 int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
+	// essa função só pode ser chamada caso exista o oerador lógico 'and'
 	int* remainders = (int*) malloc(sizeof(int));
 	int n_remainders = 0;
 	for(int j = 0; j < n_pks[0]; j++)
@@ -2261,8 +2563,12 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 	return remainders;	
 }
 
-// essa função só pode ser chamada caso exista um operador lógico
+/*
+* função: recupera o complemento de dois vetores de inteiros
+* retorno: vetor que representa o complemento
+*/
 int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks){
+	// essa função só pode ser chamada caso exista o operador lógico 'or' 
 	int* remainders = (int*) malloc(sizeof(int));
 	
 	for(int i = 0; i < n_pks[0]; i++)
@@ -2288,6 +2594,10 @@ int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 	return remainders;	
 }
 
+/*
+* função: executa a operação com base nos operadores lógicos presentes no filtro
+* retorno: vetor com as primary keys que passaram pelos filtros
+*/
 int* execOperations(int* operations_code, int n_operations, Table* table, char** columnsName, char** filter_values, int isAnd, int* n_pks_to_print){
 	if(isAnd){
 		int** pks = (int**) malloc(sizeof(int*));
@@ -2377,6 +2687,10 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 	
 }
 
+/*
+* função: imprime a tabela com seus dados no terminal (sem filtro)
+* retorno: void
+*/
 void printTable(Table table){
 	//printf("->%s\n", table.rows[0].data[0]);
 	int table_content_string_splited_size;
@@ -2483,6 +2797,10 @@ void printTable(Table table){
 	//printf("fim\n");
 }
 
+/*
+* função: imprime a tabela com seus dados no terminal (com filtro)
+* retorno: void
+*/
 void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 	//printf("->%s\n", table.rows[0].data[0]);
 	int table_content_string_splited_size;
@@ -2590,7 +2908,8 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 }
 
 /*
-* Checa se uma string existe em determinado vetor de strings
+* função: checa se uma string ocorre em determinado vetor de strings
+* retorno: 1 = ocorre; 0 = não ocorre
 */
 int stringIsInVector(char** vector, char* string_1, int v_size){
 	//printf("string_1: %s\n", string_1);
@@ -2610,7 +2929,8 @@ int stringIsInVector(char** vector, char* string_1, int v_size){
 }
 
 /*
-* Imprime tabela com os filtros do comando
+* função: imprime a tabela com seus dados no terminal (com filtro de coluna)
+* retorno: void
 */
 void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_print, char* filter_columns){
 	//printf("->%s\n", table.rows[0].data[0]);
@@ -2753,12 +3073,9 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 	//printf("fim\n");
 }
 
-// operação controle:
-// select table alunos * where (media>5 and id>3)
-// select table alunos * where (id>2 and id>5)
-
 /*
-* Aplica os filtros advindos do comando que os necessita
+* função: aplica os filtros
+* retorno: vetor com as primary keys que passaram pelo filtro
 */
 int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 	// aplicar filtro na tabela
@@ -2837,7 +3154,8 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 }
 
 /*
-* Retorna todos os ids de uma tabela
+* função: recupera todas as primary keys de uma tabela
+* retorno: vetor com as primary keys
 */
 int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	FILE* table = NULL;
@@ -2893,7 +3211,8 @@ int* getAllIdsFromTable(char* table_name, int* n_numbers){
 }
 
 /*
-* retorna string entre posições de outra string
+* função: recupera a string entre dois índices
+* retorno: string cortada
 */
 char* getStringBetweenIndexes(char* text, int index_1, int index_2){
 	char* cropped_string = (char*) malloc(sizeof(char));
@@ -2918,7 +3237,8 @@ char* getStringBetweenIndexes(char* text, int index_1, int index_2){
 }
 
 /*
-* Deleta tabela do banco
+* função: recupera todas as primary keys de uma tabela
+* retorno: 1 = sem erros; 0 = com erros
 */
 int removeTable(char* db_name, char* table_name){
 	int ret_remove;
