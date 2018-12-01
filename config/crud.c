@@ -310,6 +310,7 @@ int exec_select(char* command){
 				if (strcmp(getWordFromIndex(command, ' ', 5), reserved_words[13])==0) {
 					// select table alunos * where (media>5)
 					// select table alunos * where (nome%math)
+					//printf("comando: %s\n", command);
 					char* filter = getStringBetweenSymbols(command, '(', ')');
 					char* table_name = getWordFromIndex(command, ' ', 3);
 					Table table = getTableWithData(table_name);

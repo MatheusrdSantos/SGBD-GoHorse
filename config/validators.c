@@ -75,13 +75,17 @@ int exec_input_file(){
 			
 			if (strcmp(PLATFORM_NAME, "windows")==0) {
 				//printf("windows\n");
-				if(command[j] == '\0'){
+				if(command[j-1] == '\0'){
+					//printf("entrou win 1");
 					//printf("input command: %s limit\n", command);
 					execute(command);
 				}else{	
-					command[j] = '\0';
+					//printf("entrou win 2");
+					if(command[j] != '\0'){
+						command[j] = '\0';
+					}
 					//printf("char: %c, i: %i\n", command[j-1], i);
-					command = removeCharFromPosition(command, j-1);
+					//command = removeCharFromPosition(command, j-1);
 					//printf("input command: %s limit\n", command);
 					execute(command);
 				}
@@ -92,8 +96,8 @@ int exec_input_file(){
 					//printf("input command: %s\n", command);
 					execute(command);
 				}else{	
-					command[j-1] = '\0';
-					printf("entou 2\n");
+					command[j] = '\0';
+					//printf("entou 2\n");
 
 					//printf("char: %c, i: %i\n", command[j-1], i);
 					//command = removeCharFromPosition(command, j-1);

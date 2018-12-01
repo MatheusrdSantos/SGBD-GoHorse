@@ -741,6 +741,7 @@ char* getStringBetweenSymbols(char* old_string, char symbol_initial, char symbol
 	int lastOcurrency = getLastOcurrencyIndex(old_string, symbol_final);
 	if (firstOcurrency == -1 || lastOcurrency== -1)
 	{
+		throwError("Declaração incorreta!");
 		return "error";
 	}
 	char* cropped_left = cropStringLeft(old_string, firstOcurrency);
@@ -1120,7 +1121,7 @@ int validateFilterSyntax(char** splited_filters, int n_filters){
 	
 	for(int i = 0; i < n_filters; i++)
 	{
-		
+		//printf("splited_f: %s\n", splited_filters[i]);
 		if (i%2 == 0) {
 			if(!hasOperator(splited_filters[i])){
 				red();

@@ -1,12 +1,14 @@
-create loja
+/create loja
 /set loja
 /list databases
 /create table produtos columns (int* id, char[255] descricao, float preco, date validade)
+/list tables
 /insert into produtos values (1, "arroz", 1.0, 10/10/2018)
 /insert into produtos values (2, "feijao", 2.0, 10/11/2018)
 /insert into produtos values (3, "garrafa", 2.5, 10/11/2028)
 /insert into produtos values (4, "batata", 3.5, 20/11/2018)
 /insert into produtos values (5, "chocolate", 13.5, 20/12/2018)
+/insert into produtos values (6, "chocolate de chocolate", 23.5, 20/12/2018)
 /select table produtos * where (id>2)
 /select table produtos * where (id>2 and preco<=3.5)
 /select table produtos * where (id=1 or preco>10)
