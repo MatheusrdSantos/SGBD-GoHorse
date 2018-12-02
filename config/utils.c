@@ -803,7 +803,6 @@ FILE* getTableFileRead(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "r");
 	return table;
@@ -818,7 +817,6 @@ FILE* getTableFileReadBinary(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "rb");
 	return table;
@@ -833,7 +831,6 @@ FILE* getTableFileWrite(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "w");
 	return table;
@@ -848,7 +845,6 @@ FILE* getTableFileAppend(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-	//printf("path: %s\n", path);
 	FILE* table = NULL;
 	table = fopen(path, "a");
 	return table;
@@ -877,21 +873,17 @@ char* readLineFromFile(FILE* table, int index){
 				}
 			}
 		}else{
-			//printf("erro\n");
 			return NULL;
 		}
-		//printf("%i\n", cont2);
 	}
 
 	while(c!='\n'){
-		//printf("%i\n", cont);
 		c = fgetc(table);
 		line = (char*) realloc(line, sizeof(char)*(cont+1));
 		line[cont] = c;
 		cont++;
 	}
 	line[cont] = '\0';
-	//printf("line: %s\n", line);
 	return line;
 }
 
@@ -964,10 +956,8 @@ int validateIntPrimary(char* data, char* table_name){
 */
 int stringToInt(char* data){
 	int* numbers = (int*) malloc(sizeof(int));
-	//printf("data: %s\n", data);
 	data = removeChar(data, '\n');
 	data = removeChar(data, ' ');
-	//printf("pos data: %s\n", data);
 	for(int i = 0; i < strlen(data); i++)
 	{
 		numbers = (int*) realloc(numbers, sizeof(int)*(i+1));
@@ -1058,7 +1048,6 @@ int isValidYear(int year){
 */
 int validateDate(char* data){
 	int size = 0;
-	//printf("size com barra: %i\n", size);
 	char** date = split(data, '/', &size);
 	if(size!=3){
 		return 0;	
@@ -1193,7 +1182,6 @@ int findPrimaryKeyIndex(char* header){
 			declarations[i] = removeCharFromPosition(declarations[i], 0);
 		}
 		char* type = getWordFromIndex(declarations[i], ' ', 1);
-		//printf("type: %s - i: %i - size: %i\n", type, i, size);
 		if(isPrimary(type)){
 			return i;
 		}
@@ -1309,24 +1297,16 @@ char* getColumnNameFromFilter(char* filter, Table table){
 			throwError("Operadores inválidos!");
 			return NULL;
 		}
-		//
-		// DEBUG
-		/*printf("left: %s\n", cropped_left);
-		printf("right: %s / size: %i\n", cropped_right, (int)strlen(cropped_right));
-		printf("n_columns: %i\n", table.n_columns);*/
+
 		for(int i = 0; i < table.n_columns; i++)
 		{
 			while(table.columns[i][0]==' '){
 				table.columns[i] = removeCharFromPosition(table.columns[i], 0);
 			}
-			//printf("original: %s\n", table.columns[i]);
+
 			char* column_name = getWordFromIndex(table.columns[i], ' ', 2);
 			column_name = removeChar(column_name, '\n');
 		
-			//printf("name->: %s -/- size: %i\n", column_name, (int)strlen(column_name));
-			/*if(column_name[strlen(column_name)-1]=='\n'){
-				column_name = removeCharFromPosition(column_name, strlen(column_name)-1);
-			}*/
 			if (strcmp(column_name, cropped_left)==0) {
 				return cropped_left;
 			}else if(strcmp(column_name, cropped_right)==0){
@@ -1395,15 +1375,14 @@ char* getColumnTypeFromName(Table table, char* column_name){
 * ex: '>', '<', '>=', '<=', '='
 */
 int isMathOperator(char* operator_d){
-	//printf("entrou\n");
+
 	for(int i = 0; i < strlen(operator_d); i++)
 	{
 		if(operator_d[i]!=reserved_symbols[0] && operator_d[i]!=reserved_symbols[1] && operator_d[i]!=reserved_symbols[2]){
 			return 0;
 		}
 	}
-	
-	//printf("saiu\n");
+
 	return 1;
 }
 
@@ -1415,30 +1394,24 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 	int isMathOp = isMathOperator(operators);
 	char* column_type = NULL;
 	if(isMathOp){
-		//printf("antes\n");
+
 		column_type = getColumnTypeFromName(table, column_name);
-		//printf("depois\n");
-		//printf("column_type: %s\n", column_type);
+
 		if(isInt(column_type) || isFloat(column_type) || isDate(column_type)){
-			//printf("Is interger match\n");
 			return 1;
 		}else{
-			//printf("Not Intege match\n");
 			return 0;
 		}
 	}else{
 		column_type = getColumnTypeFromName(table, column_name);
 		
 		if (isChar(column_type)) {
-			//printf("char match\n");
 			return 1;
 		}else{
-			//printf("char not match\n");
 			return 0;
 		}
 		
 	}
-	//printf("none match\n");
 	return 0;
 }
 
@@ -1449,14 +1422,11 @@ int operatorMatchWithColumnType(char* operators, char* column_name, Table table)
 */
 int filterMatchWithColumn(char* filter, Table table){
 	char* column_name = getColumnNameFromFilter(filter, table);
-	//printf("column name: %s\n", column_name);
 	char* operators = getOperatorFromFilter(filter);
-	//printf("operator: %s\n", operators);
+
 	if(operatorMatchWithColumnType(operators, column_name, table)){
-		//printf("Operador correto!\n");
 		return 1;
 	}else{
-		//printf("Operador incorreto\n");
 		return 0;
 	}
 }
@@ -1476,8 +1446,8 @@ int filterMatchWithColumn(char* filter, Table table){
 */
 int interpretFilter(char* filter){
 	int* codes = (int*) malloc(sizeof(int));
-	//printf("complete filter: %s\n", filter);
 	int n_symbols = 0;
+
 	for(int i = 0; i < strlen(filter); i++)
 	{
 		if(filter[i]==reserved_symbols[0]){
@@ -1525,15 +1495,11 @@ char* getValueFromFilter(char* filter_declaration,char* c_name){
 			throwError("Operadores inválidos!");
 			return NULL;
 		}
-		// DEBUG
-		/*printf("left: %s\n", cropped_left);
-		printf("right: %s\n", cropped_right);*/
-		
 		
 		while(c_name[0]==' '){
 			c_name = removeCharFromPosition(c_name, 0);
 		}
-		//printf("name->: %s\n", c_name);
+
 		if (strcmp(c_name, cropped_left)!=0) {
 			return cropped_left;
 		}else if(strcmp(c_name, cropped_right)!=0){
@@ -1550,7 +1516,6 @@ char* getValueFromFilter(char* filter_declaration,char* c_name){
 * retorno: index da coluna
 */
 int getColumnIndex(char** columns, char* column_name, int n_columns){
-	//printf("n_columns: ->%i\n", n_columns);
 	for(int i = 0; i < n_columns; i++)
 	{
 		while(columns[i][0]==' '){
@@ -1587,22 +1552,15 @@ int getLargestStringInArray(char** received_array, int size){
 int* applyGreaterThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
+
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
 		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1660,27 +1618,19 @@ int compareDateEqual(Date date_1, Date date_2){
 int* applyGreaterThanDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
+
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
-		
 		char* row_value = table.rows[i].data[column_index];
 		Date value_date;
 		value_date.i_day = stringToDate(row_value).i_day;
 		value_date.i_month = stringToDate(row_value).i_month;
 		value_date.i_year = stringToDate(row_value).i_year;
-		//printf("row_value: %i\n", row_value);
+
 		if(compareDateGreater(value_date, filter_value)){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1696,27 +1646,17 @@ int* applyGreaterThanDate(Table table, Date filter_value, int column_index, int*
 int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
-		
 		char* row_value = table.rows[i].data[column_index];
 		Date value_date;
 		value_date.i_day = stringToDate(row_value).i_day;
 		value_date.i_month = stringToDate(row_value).i_month;
 		value_date.i_year = stringToDate(row_value).i_year;
-		//printf("row_value: %i\n", row_value);
 		if(compareDateGreater(value_date, filter_value) || compareDateEqual(value_date, filter_value)){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1732,27 +1672,18 @@ int* applyGreaterEqualToDate(Table table, Date filter_value, int column_index, i
 int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
+
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
-		
 		char* row_value = table.rows[i].data[column_index];
 		Date value_date;
 		value_date.i_day = stringToDate(row_value).i_day;
 		value_date.i_month = stringToDate(row_value).i_month;
 		value_date.i_year = stringToDate(row_value).i_year;
-		//printf("row_value: %i\n", row_value);
 		if(compareDateGreater(filter_value, value_date) || compareDateEqual(value_date, filter_value)){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1768,27 +1699,18 @@ int* applyLessEqualToDate(Table table, Date filter_value, int column_index, int*
 int* applyLessThanDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
-		
 		char* row_value = table.rows[i].data[column_index];
 		Date value_date;
 		value_date.i_day = stringToDate(row_value).i_day;
 		value_date.i_month = stringToDate(row_value).i_month;
 		value_date.i_year = stringToDate(row_value).i_year;
-		//printf("row_value: %i\n", row_value);
 		if(compareDateGreater(filter_value, value_date)){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1804,27 +1726,18 @@ int* applyLessThanDate(Table table, Date filter_value, int column_index, int* n_
 int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
-		
 		char* row_value = table.rows[i].data[column_index];
 		Date value_date;
 		value_date.i_day = stringToDate(row_value).i_day;
 		value_date.i_month = stringToDate(row_value).i_month;
 		value_date.i_year = stringToDate(row_value).i_year;
-		//printf("row_value: %i\n", row_value);
 		if(compareDateEqual(filter_value, value_date)){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1840,22 +1753,13 @@ int* applyEqualToDate(Table table, Date filter_value, int column_index, int* n_p
 int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		float row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1871,22 +1775,13 @@ int* applyGreaterThanIntFloat(Table table, int filter_value, int column_index, i
 int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		float row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1902,22 +1797,15 @@ int* applyGreaterThanFloatFloat(Table table, float filter_value, int column_inde
 int* applyGreaterThanFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
+
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		float row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>filter_value){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1933,22 +1821,14 @@ int* applyGreaterThanFloatInt(Table table, float filter_value, int column_index,
 int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<filter_value){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1964,22 +1844,14 @@ int* applyLessThan(Table table, int filter_value, int column_index, int* n_pks){
 int* applyLessThanIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		float row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<filter_value){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -1995,22 +1867,13 @@ int* applyLessThanIntFloat(Table table, int filter_value, int column_index, int*
 int* applyLessThanFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		float row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2026,22 +1889,13 @@ int* applyLessThanFloatFloat(Table table, float filter_value, int column_index, 
 int* applyLessThanFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		float row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2057,25 +1911,15 @@ int* applyLessThanFloatInt(Table table, float filter_value, int column_index, in
 int* applyEqualTo(Table table, char* filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		char* row_value = table.rows[i].data[column_index];
 		row_value = removeChar(row_value, '\n');
 		row_value = removeChar(row_value, ' ');
-		/*printf("row_value: %s\n", row_value);
-		printf("filter: %s\n", filter_value);*/
 		if(strcmp(row_value, filter_value)==0){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2091,22 +1935,14 @@ int* applyEqualTo(Table table, char* filter_value, int column_index, int* n_pks)
 int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>=filter_value){
 			// pega o valor da pk
 			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2122,22 +1958,13 @@ int* applyGreaterEqualTo(Table table, int filter_value, int column_index, int* n
 int* applyGreaterEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2153,22 +1980,13 @@ int* applyGreaterEqualToIntFloat(Table table, int filter_value, int column_index
 int* applyGreaterEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2184,22 +2002,13 @@ int* applyGreaterEqualToFloatFloat(Table table, float filter_value, int column_i
 int* applyGreaterEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value>=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2215,22 +2024,13 @@ int* applyGreaterEqualToFloatInt(Table table, float filter_value, int column_ind
 int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2246,22 +2046,13 @@ int* applyLessEqualTo(Table table, int filter_value, int column_index, int* n_pk
 int* applyLessEqualToIntFloat(Table table, int filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2277,22 +2068,13 @@ int* applyLessEqualToIntFloat(Table table, int filter_value, int column_index, i
 int* applyLessEqualToFloatFloat(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = strtof(table.rows[i].data[column_index], NULL);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2309,19 +2091,11 @@ int* applyLessEqualToFloatFloat(Table table, float filter_value, int column_inde
 int* applyLessEqualToFloatInt(Table table, float filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		int row_value = stringToInt(table.rows[i].data[column_index]);
-		//printf("row_value: %i\n", row_value);
 		if(row_value<=filter_value){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
 			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
@@ -2341,23 +2115,13 @@ int* applyLessEqualToFloatInt(Table table, float filter_value, int column_index,
 int* applyStringSimilarity(Table table, char* filter_value, int column_index, int* n_pks){
 	int* pks = (int*) malloc(sizeof(int));
 	int n_pks_local = 0;
-	//printf("n_rows: %i\n", table.n_rows);
 	for(int i = 0; i < table.n_rows-1; i++)
 	{
-		// pode não ser inteiro
-		/*
-		printf("column_i: %i\n", column_index);
-		*/
-		//printf("valor suspeito: %s - size: %i\n", table.rows[i].data[column_index], (int)strlen(table.rows[i].data[column_index]));
 		char* row_value = table.rows[i].data[column_index];
-		//printf("row_value: %i\n", row_value);
-		//isSubstring()
 		if(strstr(row_value, filter_value) != NULL){
 			// pega o valor da pk
-			
 			pks = (int*) realloc(pks, sizeof(int)*(n_pks_local+1));
 			pks[n_pks_local] = stringToInt(table.rows[i].data[table.pk_index]);
-			//printf("result: %s\n", table.rows[i].data[table.pk_index]);
 			n_pks_local++;
 		}
 	}
@@ -2380,25 +2144,16 @@ int* applyStringSimilarity(Table table, char* filter_value, int column_index, in
 */
 int* orientateFilterAnd(int operation_code, Table* table, char* column_name, char* filter_value, int* n_pks){
 	int column_index = getColumnIndex((*table).columns, column_name, (*table).n_columns);
-	//int column_index = 0;
+
 	//comparações de igualdade entre float podem ser feitas como comparação de string
 	if(operation_code == 1){
 		int* remainders_pk;
-		// verificar se filter value é int ou float
-		//printf("column index: %i\n", column_index);
-		//printf("%s\n", filter_value);
-		
 		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
-			//printf("entrou no if\n");
 			remainders_pk = applyGreaterThanDate((*table), stringToDate(filter_value), column_index, n_pks);
 			return remainders_pk;
 		}
-		//printf("deu merda aqui!\n");
-			// applys the same filter logic
-		// aplysFilter
 
 		if (validateInt(filter_value) && isInt(getWordFromIndex((*table).columns[column_index], ' ', 1))) {
-			
 			remainders_pk = applyGreaterThan((*table), stringToInt(filter_value), column_index, n_pks);
 			return remainders_pk;
 		}else if(validateInt(filter_value) && isFloat(getWordFromIndex((*table).columns[column_index], ' ', 1))){
@@ -2412,14 +2167,9 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 			return remainders_pk;
 
 		}
-		
-		//printf("column index2: %i\n", column_index);
 	}else if(operation_code == 2){
 		int* remainders_pk;
-		// verificar se filter value é int ou float
-		//printf("column index: %i\n", column_index);
 		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
-
 			remainders_pk = applyLessThanDate((*table), stringToDate(filter_value), column_index, n_pks);
 			return remainders_pk;
 		}
@@ -2440,8 +2190,6 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 
 	}else if(operation_code == 3){
 		int* remainders_pk;
-		// verificar se filter value é int ou float
-		//printf("column index: %i\n", column_index);
 		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
 
 			remainders_pk = applyEqualToDate((*table), stringToDate(filter_value), column_index, n_pks);
@@ -2450,21 +2198,14 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 		remainders_pk = applyEqualTo((*table), filter_value, column_index, n_pks);
 		return remainders_pk;
 		
-		//printf("column index2: %i\n", column_index);
-		
 	}else if(operation_code == 4){
 		int* remainders_pk;
-		// verificar se filter value é int ou float
-		//printf("column index: %i\n", column_index);
 		remainders_pk = applyStringSimilarity((*table), filter_value, column_index, n_pks);
 		return remainders_pk;
-		//printf("column index2: %i\n", column_index);
 
 	}else if(operation_code == 13){
 
 		int* remainders_pk;
-		// verificar se filter value é int ou float
-		//printf("column index: %i\n", column_index);
 		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
 
 			remainders_pk = applyGreaterEqualToDate((*table), stringToDate(filter_value), column_index, n_pks);
@@ -2487,10 +2228,7 @@ int* orientateFilterAnd(int operation_code, Table* table, char* column_name, cha
 
 	}else if(operation_code == 23){
 		int* remainders_pk;
-		// verificar se filter value é int ou float
-		//printf("column index: %i\n", column_index);
 		if(validateDate(filter_value) && isDate(getWordFromIndex((*table).columns[column_index], ' ', 1))){
-
 			remainders_pk = applyLessEqualToDate((*table), stringToDate(filter_value), column_index, n_pks);
 			return remainders_pk;
 		}
@@ -2524,7 +2262,6 @@ int* getIntersectionFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 		{
 			if(pks[0][j] == pks[1][k]){
 				remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
-				//printf("-> %i\n", pks[0][j]);
 				remainders[n_remainders] = pks[0][j];
 				n_remainders++; 
 			}
@@ -2548,20 +2285,16 @@ int* getComplementFromIntVector(int** pks, int* n_pks, int* n_result_pks){
 		remainders = (int*) realloc(remainders, sizeof(int)*(i+1));
 		remainders[i] = pks[0][i];
 	}
-	//printf("entrou aqui\n");
 	
 	int n_remainders = n_pks[0];
 	for(int j = 0; j < n_pks[1]; j++)
 	{	
 		if(!valueIsInIntVector(remainders, n_remainders, pks[1][j])){
-			//printf("entrou--\n");
 			remainders = (int*) realloc(remainders, sizeof(int)*(n_remainders+1));
 			remainders[n_remainders] = pks[1][j];
 			n_remainders++;
 		}
 	}
-	//printf("n_results: %i\n", n_remainders);
-	//printf("n_vetor 2: %i\n", n_pks[1]);
 	*n_result_pks =n_remainders;
 	return remainders;	
 }
@@ -2575,12 +2308,8 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 		int** pks = (int**) malloc(sizeof(int*));
 		int* n_pks = (int*) malloc(sizeof(int));
 		int n_pks_aux, i;
-		//printf("n_operation: %i\n", n_operations);
 		for(i = 0; i < n_operations; i++)
 		{
-			/*printf("operations_code: %i\n", operations_code[i]);
-			printf("columns_name: %s\n", columnsName[i]);
-			printf("filter_values: %s\n", filter_values[i]);*/
 			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
 			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
 			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
@@ -2589,25 +2318,11 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 		}
 		pks[i] = NULL;
 		if(n_operations>1){
-
-			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
 			int j = 0, n_result_pks;
 			int* result_pks = getIntersectionFromIntVector(pks, n_pks, &n_result_pks);
-			/*printf("--------\n RESULT\n ------\n");
-			printf("n_results: %i\n", n_result_pks);
-			for(int j = 0; j < n_result_pks; j++)
-			{
-				printf("pk: %i\n", result_pks[j]);
-			}*/
 			*n_pks_to_print = n_result_pks;
 			return result_pks;
 		}else{
-			/*printf("--------\n RESULT\n ------\n");
-			printf("n_pks: %i\n", n_pks[0]);
-			for(int j = 0; j < n_pks[0]; j++)
-			{
-				printf("pks: %i\n", pks[0][j]);
-			}*/
 			*n_pks_to_print = n_pks[0];
 			return pks[0];
 		}
@@ -2617,39 +2332,21 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 		int** pks = (int**) malloc(sizeof(int*));
 		int* n_pks = (int*) malloc(sizeof(int));
 		int n_pks_aux, i;
-		//printf("n_operation: %i\n", n_operations);
 		for(i = 0; i < n_operations; i++)
 		{
-			/*printf("operations_code: %i\n", operations_code[i]);
-			printf("columns_name: %s\n", columnsName[i]);*/
 			n_pks = (int*) realloc(n_pks, sizeof(int)*(i+1));
 			pks = (int**) realloc(pks, sizeof(int*)*(i+2));
 			pks[i] = orientateFilterAnd(operations_code[i], table, columnsName[i], filter_values[i], &n_pks_aux);
-			//printf("filter_values: %s\n", filter_values[i]);
 			n_pks[i] = n_pks_aux;
 
 		}
 		pks[i] = NULL;
 		if(n_operations>1){
-
-			// aplicar função que tranforme os dois vetores em penas um que represente a intersecção entre eles
 			int j = 0, n_result_pks;
 			int* result_pks = getComplementFromIntVector(pks, n_pks, &n_result_pks);
-			/*printf("--------\n RESULT\n ------\n");
-			printf("n_results: %i\n", n_result_pks);
-			for(int j = 0; j < n_result_pks; j++)
-			{
-				printf("pk: %i\n", result_pks[j]);
-			}*/
 			*n_pks_to_print = n_result_pks;
 			return result_pks;
 		}else{
-			/*printf("--------\n RESULT\n ------\n");
-			printf("n_pks: %i\n", n_pks[0]);
-			for(int j = 0; j < n_pks[0]; j++)
-			{
-				printf("pks: %i\n", pks[0][j]);
-			}*/
 			*n_pks_to_print = n_pks[0];
 			return pks[0];
 		}
@@ -2664,7 +2361,6 @@ int* execOperations(int* operations_code, int n_operations, Table* table, char**
 * retorno: void
 */
 void printTable(Table table){
-	//printf("->%s\n", table.rows[0].data[0]);
 	int table_content_string_splited_size;
 	int size_largestString = 0;
 	for (int i = 0; i < table.n_rows-1; i++){
@@ -2673,7 +2369,6 @@ void printTable(Table table){
 		if(size_largestString < size_largestString_line)
 			size_largestString = size_largestString_line;
 	}
-	//printf("inicio\n");
 	
 	size_largestString++;
 	b_blue();
@@ -2733,11 +2428,7 @@ void printTable(Table table){
 	
 	for (int i = 0; i < table.n_rows-1; i++){
 		int current_pk = stringToInt(table.rows[i].data[table.pk_index]); 
-		/*if(!valueIsInIntVector(pks_to_print, n_pks_to_print, current_pk)){
-			continue;
-		}*/
 		green();
-		//char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
 		int actual_stringSize;
 		for (int j = 0; j < table.n_columns; j++)
 		{
@@ -2766,7 +2457,6 @@ void printTable(Table table){
 		printf("\n");
 	}
 	resetColor();
-	//printf("fim\n");
 }
 
 /*
@@ -2774,7 +2464,6 @@ void printTable(Table table){
 * retorno: void
 */
 void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
-	//printf("->%s\n", table.rows[0].data[0]);
 	int table_content_string_splited_size;
 	int size_largestString = 0;
 	for (int i = 0; i < table.n_rows-1; i++){
@@ -2783,7 +2472,6 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 		if(size_largestString < size_largestString_line)
 			size_largestString = size_largestString_line;
 	}
-	//printf("inicio\n");
 	
 	size_largestString++;
 	b_blue();
@@ -2847,7 +2535,7 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 			continue;
 		}
 		green();
-		//char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
+
 		int actual_stringSize;
 		for (int j = 0; j < table.n_columns; j++)
 		{
@@ -2876,7 +2564,6 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 		printf("\n");
 	}
 	resetColor();
-	//printf("fim\n");
 }
 
 /*
@@ -2884,7 +2571,6 @@ void printTableWithFilter(Table table, int* pks_to_print, int n_pks_to_print){
 * retorno: 1 = ocorre; 0 = não ocorre
 */
 int stringIsInVector(char** vector, char* string_1, int v_size){
-	//printf("string_1: %s\n", string_1);
 	string_1 = removeChar(string_1, ' ');
 	string_1 = removeChar(string_1, '\n');
 	for(int i = 0; i < v_size; i++)
@@ -2905,10 +2591,8 @@ int stringIsInVector(char** vector, char* string_1, int v_size){
 * retorno: void
 */
 void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_print, char* filter_columns){
-	//printf("->%s\n", table.rows[0].data[0]);
 	int n_filter_columns_vector;
 	char** filter_columns_vector = split(filter_columns, ',', &n_filter_columns_vector);
-	//printf("1pos: %s\n", filter_columns_vector[0]);
 
 	int table_content_string_splited_size;
 	int size_largestString = 0;
@@ -2918,7 +2602,6 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 		if(size_largestString < size_largestString_line)
 			size_largestString = size_largestString_line;
 	}
-	//printf("inicio\n");
 	
 	size_largestString++;
 	b_blue();
@@ -2937,12 +2620,10 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 
 		}
 	}
-	//printf("n_coluns: %i\n", table.n_columns);
 	int n_displayed = 0;
 	for(int l = 0; l < table.n_columns; l++)
 	{
 		int actual_size = strlen(table.columns[l]);
-		//printf("coluns: %s\n", table.columns[l]);
 	
 		table.columns[l] = removeChar(table.columns[l], '\n');
 		while(table.columns[l][0]==' '){
@@ -3004,7 +2685,7 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 			continue;
 		}
 		green();
-		//char** table_splited_twice = splitData(table_content_string_splited[i], ',', &table_splited_twice_size);
+
 		int actual_stringSize;
 		for (int j = 0; j < table.n_columns; j++)
 		{
@@ -3042,7 +2723,6 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 		printf("\n");
 	}
 	resetColor();
-	//printf("fim\n");
 }
 
 /*
@@ -3051,22 +2731,12 @@ void printTableWithFilterColumns(Table table, int* pks_to_print, int n_pks_to_pr
 */
 int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 	// aplicar filtro na tabela
-
-	// DEBUG
-	//printf("filter: %s\n", filters);
-	
 	int n_filters, has_error = 0, n_columns = 0;
 	char** splited_filters = split(filters, ' ', &n_filters);
 	char** columnsName = (char**) malloc(sizeof(char*));
 	char** filter_values = (char**) malloc(sizeof(char*));
 	char* v_name;
 	char* c_name;
-	
-	// DEBUG
-	/*for(int i = 0; i < n_filters; i++)
-	{
-		printf("Splited filter: %s\n", splited_filters[i]);
-	}*/
 
 	// se for inválido imprime um erro e deixa table = NULL
 	if(validateFilterSyntax(splited_filters, n_filters)){
@@ -3076,13 +2746,10 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 			if(i%2==0){
 				columnsName = (char**) realloc(columnsName, sizeof(char*)*(n_columns+1));
 				filter_values = (char**) realloc(filter_values, sizeof(char*)*(n_columns+1));
-				/*printf("c_name\n");
-				printf("solited_f: %s\n", splited_filters[i]);*/
 				c_name = getColumnNameFromFilter(splited_filters[i], *table);
 				v_name = getValueFromFilter(splited_filters[i], c_name);
 				columnsName[n_columns] = c_name;
 				filter_values[n_columns] = v_name;
-				//printf("v_name: %s\n", v_name);
 				n_columns++;
 				
 				if(!filterMatchWithColumn(splited_filters[i], *table)){
@@ -3090,7 +2757,6 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 				}
 			}
 		}
-		//printf("quebrou aqui!\n");
 		
 		if(has_error){
 			throwError("Filtros aplicados incorretamente às colunas. Operação não executada!\n");
@@ -3103,7 +2769,6 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 				if(i%2==0){
 					operations_code = (int*) realloc(operations_code, sizeof(int)*(n_operations+1));
 					operations_code[n_operations] = interpretFilter(splited_filters[i]);
-					//printf("operation code: %i\n", operations_code[n_operations]);
 					n_operations++;
 				}else{
 					if(strcmp(splited_filters[i], reserved_words[16])==0){
@@ -3117,7 +2782,6 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 				}
 			}
 			return execOperations(operations_code, n_operations, table, columnsName, filter_values, isAnd, n_pks_to_print);
-			//displayConfirmMessage("Aplicando filtros...\n");
 		}
 	}else{
 		throwError("Filtros inválidos. Operação não executada!\n");
@@ -3131,15 +2795,6 @@ int* applyFilter(Table* table, char* filters, int* n_pks_to_print){
 */
 int* getAllIdsFromTable(char* table_name, int* n_numbers){
 	FILE* table = NULL;
-	/* FILE* table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 1));
-	fclose(table);
-	table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 2));
-	fclose(table);
-	table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 3));
-	fclose(table); */
 	char** rows = (char**) malloc(sizeof(char**));
 	char* row;
 	int i;
@@ -3152,34 +2807,21 @@ int* getAllIdsFromTable(char* table_name, int* n_numbers){
 		fclose(table);
 		if(row != NULL){
 			rows = (char**) realloc(rows, sizeof(char*)*(i+1));
-			//printf("%s\n", row);
 			rows[i] = row;
 		}
 	}
 	i--;
 	int pk_index = findPrimaryKeyIndex(rows[0]);
-	//printf("rows[0]: %s\n", rows[0]);
-	//printf("pk: %i - i: %i\n", pk_index, i);
 	int size;
 	for(int j = 1; j < i; j++)
 	{
 		char* pk_data = splitData(rows[j], ',', &size)[pk_index];
 		numbers = (int*) realloc(numbers, sizeof(int*)*(j));
-		//numbers[j-1] = 1;
 		numbers[j-1] = stringToInt(pk_data);
 	}
 	
-	/*for(int k = 0; k < i-1; k++)
-	{
-		printf("%i\n", numbers[k]);
-	}*/
-	//printf("PASSOU\n");
 	*n_numbers = i-1;
 	return numbers;
-
-	/* table = getTableFileRead(getDefaultDatabaseName(), table_name);
-	printf("-> %s\n", readLineFromFile(table, 4));
-	fclose(table); */
 }
 
 /*
