@@ -52,20 +52,8 @@ int exec_input_file(){
 	fread(table_content_string, table_content_string_size, 1, input);
 
 	table_content_string[table_content_string_size] = '\0';
-	//printf("content size: %i\n", table_content_string_size);
-	//printf("%s\n", table_content_string);
 	fclose(input);
 
-
-	/*int table_content_splited_size;
-	char** table_content_splited = split(table_content_string, '\n', &table_content_splited_size);
-	printf("size: %i\n", table_content_splited_size);
-	printf("%s-", table_content_splited[0]);*/
-	/*for(int i = 0; i < table_content_splited_size; i++)
-	{
-		printf("%s-", table_content_splited[i]);
-		execute(concat(table_content_splited[i], "\n"));
-	}*/
 	int i = 0;
 	while(table_content_string[i]!='\0' && i<table_content_string_size){
 		char* command = (char*) malloc(sizeof(char));
@@ -89,35 +77,19 @@ int exec_input_file(){
 		if(!commented_line){
 			
 			if (strcmp(PLATFORM_NAME, "windows")==0) {
-				//printf("windows\n");
 				if(command[j-1] == '\0'){
-					//printf("entrou win 1");
-					//printf("input command: %s limit\n", command);
 					execute(command);
 				}else{	
-					//printf("entrou win 2");
 					if(command[j] != '\0'){
 						command[j] = '\0';
 					}
-					//printf("char: %c, i: %i\n", command[j-1], i);
-					//command = removeCharFromPosition(command, j-1);
-					//printf("input command: %s limit\n", command);
 					execute(command);
 				}
 			}else if(strcmp(PLATFORM_NAME, "linux")==0){
-				//printf("linux\n");
 				if(command[j-1] == '\0'){
-					//printf("entou 1\n");
-					//printf("input command: %s\n", command);
 					execute(command);
 				}else{	
 					command[j] = '\0';
-					//printf("entou 2\n");
-
-					//printf("char: %c, i: %i\n", command[j-1], i);
-					//command = removeCharFromPosition(command, j-1);
-					//printf("input command: %s\n", command);
-					//printf("final pos: %i", (int) '\0');
 					execute(command);
 				}
 
@@ -161,8 +133,6 @@ void execute(char* command){
 			exec_list(command);
 		}else if(command_index == 6){
 			exec_insert(command);
-		}else if(command_index == 7){
-			//exec_add(command);
 		}else if(command_index == 18){
 			exec_input_file();
 		}

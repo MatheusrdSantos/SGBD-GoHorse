@@ -2860,7 +2860,6 @@ int removeTable(char* db_name, char* table_name){
 	path = concat(path, "/\0");
 	path = concat(path, table_name);
 	path = concat(path, ".csv\0");
-
 	ret_remove = remove(path);
 
 	return ret_remove;

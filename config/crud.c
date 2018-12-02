@@ -140,11 +140,9 @@ int exec_list(char* command){
 		int i = 0;
 
 		while(databases[i] != NULL){
-			//printf("i: %i\n", i);
 			if(strcmp(databases[i], default_databese_name)==0){
 				b_green();
 				printf("%s*\n", databases[i]);
-				//printf("----\n");
 				resetColor();
 				i++;
 			}else{
